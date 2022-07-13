@@ -17,6 +17,9 @@ function Home({ yourLocalBalance, readContracts }) {
   return (
     <div>
       <div style={{ margin: 32 }}>
+        <h1 style={{ marginBottom: 10 }}>This is an example app of unlock protocol 👜 + scaffold-eth 🧑‍🔧</h1>
+        <h2 style={{ marginBottom: 20 }}>Head to the dashboard to see some pretty cool stuff 😉</h2>
+        <h3 style={{ marginBottom: 32 }}>Hint: First setup unlock protocol variables in settings tab to get started</h3>
         <span style={{ marginRight: 8 }}>📝</span>
         This Is Your App Home. You can start editing it in{" "}
         <span

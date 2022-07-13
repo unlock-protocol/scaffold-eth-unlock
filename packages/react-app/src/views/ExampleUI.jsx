@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
-import { Address, Balance, Events } from "../components";
+import { Address, Balance, Events, UnlockVariables } from "../components";
 
 export default function ExampleUI({
   purpose,
@@ -15,6 +15,7 @@ export default function ExampleUI({
   tx,
   readContracts,
   writeContracts,
+  targetNetwork
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
 
@@ -27,6 +28,9 @@ export default function ExampleUI({
         <h2>Example UI:</h2>
         <h4>purpose: {purpose}</h4>
         <Divider />
+        <UnlockVariables
+          targetNetwork={targetNetwork}
+        />
         <div style={{ margin: 8 }}>
           <Input
             onChange={e => {

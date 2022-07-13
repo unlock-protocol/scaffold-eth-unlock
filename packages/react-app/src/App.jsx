@@ -23,14 +23,17 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
+  GatedNav
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home,Dashboard, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+// unlock contract abis
+const abis = require("@unlock-protocol/contracts");
 
 const { ethers } = require("ethers");
 /*
@@ -53,7 +56,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -244,6 +247,44 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  ////////////////Unlock Protocol///////////////////
+  const unlockData = JSON.parse(window.localStorage.getItem("unlock"));
+  const publicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
+  useEffect(() => {
+    if (unlockData && publicLockData) {
+      const unlockAddress = unlockData.unlockAddress;
+      const publicLockAddress = publicLockData.publicLockAddress;
+      setDeployedUnlockAddress(unlockAddress);
+      setPublicLockAddress(publicLockAddress);
+    }
+  }, []);
+
+  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState();
+  const [publicLockAddress, setPublicLockAddress] = useState();
+  const [publicLock, setPublicLock] = useState();
+  const [unlock, setUnlock] = useState();
+
+  useEffect(() => {
+    const readyUnlock = () => {
+      let unlockContract;
+      let publicLockContract;
+      try {
+        if (deployedUnlockAddress) {
+          unlockContract = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner)
+        }
+        if (publicLockAddress) {
+          publicLockContract = new ethers.Contract(publicLockAddress, abis.PublicLockV10.abi, userSigner)
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      setUnlock(unlockContract);
+      setPublicLock(publicLockContract);
+    };
+    readyUnlock();
+  }, [address, yourLocalBalance]);
+  ////////////// UNLOCK PROTOCOL: THE END /////////////
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -286,31 +327,25 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
+      <GatedNav
+        address={address}
+        publicLock={publicLock}
+        location={location}
+      />
 
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+        </Route>
+        <Route exact path="/dashboard">
+          <Dashboard
+            price={price}
+            unlock={unlock}
+            publicLock={publicLock}
+            targetNetwork={targetNetwork}
+            address={address}
+          />
         </Route>
         <Route exact path="/debug">
           {/*
@@ -337,7 +372,7 @@ function App(props) {
             price={price}
           />
         </Route>
-        <Route path="/exampleui">
+        <Route path="/settings">
           <ExampleUI
             address={address}
             userSigner={userSigner}
@@ -349,6 +384,7 @@ function App(props) {
             writeContracts={writeContracts}
             readContracts={readContracts}
             purpose={purpose}
+            targetNetwork={targetNetwork}
           />
         </Route>
         <Route path="/mainnetdai">
