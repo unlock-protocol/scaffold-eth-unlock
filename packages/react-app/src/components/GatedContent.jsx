@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import ContentPaywall from "./ContentPaywall";
 import { CreateLock, UnlockVariables } from "../components";
-// const ethers = require("ethers");
-// import { Paywall } from '@unlock-protocol/paywall';
 
 
 /*

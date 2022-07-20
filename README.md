@@ -1,3 +1,7 @@
+# Scaffold-ETH + Unlock Protocol
+
+Scaffold-ETH gives you everything you need to get started building on Ethereum and we've added some additional tools to help you get started in creating NFTs using Unlock Protocol.
+
 # 🏗 Scaffold-ETH
 
 > everything you need to build on Ethereum! 🚀
@@ -14,13 +18,13 @@ Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](htt
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/scaffold-eth/scaffold-eth.git
+git clone https://github.com/wonderwomancode/scaffold-eth-unlock.git
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
-cd scaffold-eth
+cd scaffold-eth-unlock
 yarn install
 yarn chain
 ```
@@ -28,14 +32,14 @@ yarn chain
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
+cd scaffold-eth-unlock
 yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd scaffold-eth-unlock
 yarn deploy
 ```
 

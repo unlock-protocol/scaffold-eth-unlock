@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 
 
 /*
-  ~ TODO:: What it does? ~
+  ~ What it does? ~
   Displays a UI that reveals content based on whether a user is a member or not.
   ~ How can I use? ~
   <GatedNav
@@ -16,7 +16,7 @@ import { useHistory } from "react-router-dom";
     location={location}
   />
 
-  ~ TODO:: Features ~
+  ~ Features ~
   - address={address} passes active user's address to the component to check whether they are members or not
   - publicLock={publicLock} passes the specific lock to check for the user's membership
   - location={location} passes the current app network to the <ContentPaywall /> to determine the network to connect to
@@ -24,8 +24,6 @@ import { useHistory } from "react-router-dom";
 
 
 const GatedNav = ({ publicLock, address, location }) => {
-  // const routeHistory = useHistory();
-  // const [isLoading, setIsLoading] = useState(false);
     const [hasValidKey, setHasValidKey] = useState(false);
 
   useEffect(() => {

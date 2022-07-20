@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 const ethers = require("ethers");
 
 /*
-  ~ TODO ::: What it does? ~
+  ~ What it does? ~
   Displays an UI to deploy a lock using unlock protocol
   ~ How can I use? ~
   <CreateLock
@@ -15,7 +15,7 @@ const ethers = require("ethers");
     value={toAddress}
     onChange={setToAddress}
   />
-  ~ TODO::: Features ~
+  ~ Features ~
   - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
               (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
   - Provide placeholder="Enter address" value for the input
@@ -35,20 +35,6 @@ const CreateLock = ({ price, unlock }) => {
   const [lockName, setLockName] = useState();
   const [lockTxHash, setLockTxHash] = useState();
   const [newLockAddress, setNewLockAddress] = useState();
-
-
-    
-//     ```solidity
-// function createLock(
-    // uint256 _expirationDuration,
-    // address _tokenAddress,
-    // uint256 _keyPrice,
-    // uint256 _maxNumberOfKeys,
-    // string _lockName,
-    // bytes12
-    // ) external nonpayable returns(address)
-
-
 
   const createLock = (
     <>
