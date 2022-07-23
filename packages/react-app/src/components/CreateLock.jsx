@@ -6,26 +6,14 @@ import moment from 'moment';
 import { BlockOutlined } from "@ant-design/icons";
 const ethers = require("ethers");
 
-
-
 /*
   ~ What it does? ~
   Displays an UI to deploy a lock using unlock protocol
   ~ How can I use? ~
   <CreateLock
-    autoFocus
-    ensProvider={mainnetProvider}
-    placeholder="Enter address"
-    value={toAddress}
-    onChange={setToAddress}
+    price={price}
+    unlock={unlock}
   />
-  ~ Features ~
-  - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
-              (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
-  - Provide placeholder="Enter address" value for the input
-  - Value of the address input is stored in value={toAddress}
-  - Control input change by onChange={setToAddress}
-                          or onChange={address => { setToAddress(address);}}
 */
 
 const CreateLock = ({ price, unlock }) => {
