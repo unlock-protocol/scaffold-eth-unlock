@@ -1,8 +1,9 @@
 import { Button, Col, Menu, Row } from "antd";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import { useHistory } from "react-router-dom";
+import  {useUnlockState} from "../hooks";
+
 
 
 
@@ -24,17 +25,19 @@ import { useHistory } from "react-router-dom";
 
 
 const GatedNav = ({ publicLock, address, location }) => {
-    const [hasValidKey, setHasValidKey] = useState(false);
-
-  useEffect(() => {
-    const isMember = async () => {
-      if (publicLock) {
-        const hasKey = await publicLock.getHasValidKey(address);
-        setHasValidKey(hasKey);
-      }
-    }
-    isMember();
-  }, [address, publicLock]);
+    // const [hasValidKey, setHasValidKey] = useState(false);
+    
+  const hasValidKey = useUnlockState(publicLock, address);
+  
+  // useEffect(() => {
+  //   const isMember = async () => {
+  //     if (publicLock) {
+  //       const hasKey = await publicLock.getHasValidKey(address);
+  //       setHasValidKey(hasKey);
+  //     }
+  //   }
+  //   isMember();
+  // }, [address, publicLock]);
 
   const previewNav = (
     <>

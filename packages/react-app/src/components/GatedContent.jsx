@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import ContentPaywall from "./ContentPaywall";
 import { CreateLock, UnlockVariables } from "../components";
+import  {useUnlockState} from "../hooks";
+
 
 
 /*
@@ -23,23 +25,7 @@ import { CreateLock, UnlockVariables } from "../components";
 
 
 const GatedContent = ({ publicLock, price, unlock, address, targetNetwork }) => {
-  // const routeHistory = useHistory();
-  // const [isLoading, setIsLoading] = useState(false);
-  const [hasValidKey, setHasValidKey] = useState();
-
-  useEffect(() => {
-    const isMember = async () => {
-      try {
-        if (publicLock) {
-          const hasKey = await publicLock.getHasValidKey(address);
-          setHasValidKey(hasKey);
-        }
-      } catch (e) {
-        console.log("ERROR CHECKING MEMBERSHIP STATUS: ", e);
-      }
-    }
-    isMember();
-  }, [address, publicLock]);
+  const hasValidKey = useUnlockState(publicLock, address);
 
   const previewContent = (
     <>
