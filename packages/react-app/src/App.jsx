@@ -23,7 +23,7 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
-  GatedNav
+  LockedNav
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -327,7 +327,7 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <GatedNav
+      <LockedNav
         address={address}
         publicLock={publicLock}
         location={location}

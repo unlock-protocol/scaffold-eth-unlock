@@ -11,7 +11,7 @@ import  {useUnlockState} from "../hooks";
   ~ What it does? ~
   Displays a UI that reveals content based on whether a user is a member or not.
   ~ How can I use? ~
-  <GatedNav
+  <LockedNav
     address={address}
     publicLock={publicLock}
     location={location}
@@ -24,7 +24,7 @@ import  {useUnlockState} from "../hooks";
 */
 
 
-const GatedNav = ({ publicLock, address, location }) => {
+const LockedNav = ({ publicLock, address, location }) => {
     // const [hasValidKey, setHasValidKey] = useState(false);
     
   const hasValidKey = useUnlockState(publicLock, address);
@@ -55,7 +55,7 @@ const GatedNav = ({ publicLock, address, location }) => {
     </>
   );
 
-  const gatedNav = (
+  const lockedNav = (
     <>
     <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
       <Menu.Item key="/">
@@ -88,7 +88,7 @@ const GatedNav = ({ publicLock, address, location }) => {
       <Row>
         <Col span={24}>
           { hasValidKey && hasValidKey !== false
-            ? gatedNav
+            ? lockedNav
             : previewNav
           }
         </Col>
@@ -97,4 +97,4 @@ const GatedNav = ({ publicLock, address, location }) => {
   );
 };
 
-export default GatedNav;
+export default LockedNav;

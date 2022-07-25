@@ -2,7 +2,7 @@ import { Button, Card, Col, Input, Row, DatePicker, Select, Space, TimePicker } 
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import ContentPaywall from "./ContentPaywall";
-import { CreateLock, UnlockVariables } from "../components";
+import { CreateLock, UnlockVariables } from ".";
 import  {useUnlockState} from "../hooks";
 
 
@@ -11,7 +11,7 @@ import  {useUnlockState} from "../hooks";
   ~ What it does? ~
   Displays a UI that reveals content based on whether a user is a member or not.
   ~ How can I use? ~
-  <GatedContent
+  <LockedContent
     address={address}
     publicLock={publicLock}
     targetNetwork={targetNetwork}
@@ -24,7 +24,7 @@ import  {useUnlockState} from "../hooks";
 */
 
 
-const GatedContent = ({ publicLock, price, unlock, address, targetNetwork }) => {
+const LockedContent = ({ publicLock, price, unlock, address, targetNetwork }) => {
   const hasValidKey = useUnlockState(publicLock, address);
 
   const previewContent = (
@@ -48,12 +48,12 @@ const GatedContent = ({ publicLock, price, unlock, address, targetNetwork }) => 
     </>
   );
 
-  const gatedContent = (
+  const lockedContent = (
     <>
       <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
-          <Card title="Gated Content">
+          <Card title="Locked Content">
             <div style={{ padding: 8 }}>
-              YOU NOW HAVE ACCESS TO THE GATED CONTENT
+              YOU NOW HAVE ACCESS TO THE LOCKED CONTENT
           </div>
           <UnlockVariables
             targetNetwork={targetNetwork}
@@ -72,7 +72,7 @@ const GatedContent = ({ publicLock, price, unlock, address, targetNetwork }) => 
       <Row>
         <Col span={24}>
           { hasValidKey && hasValidKey !== false
-            ? gatedContent
+            ? lockedContent
             : previewContent
           }
         </Col>
@@ -81,4 +81,4 @@ const GatedContent = ({ publicLock, price, unlock, address, targetNetwork }) => 
   );
 };
 
-export default GatedContent;
+export default LockedContent;
