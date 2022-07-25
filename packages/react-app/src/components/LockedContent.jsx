@@ -1,7 +1,7 @@
 import { Button, Card, Col, Input, Row, DatePicker, Select, Space, TimePicker } from "antd";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import ContentPaywall from "./ContentPaywall";
+import UnlockPaywall from "./UnlockPaywall";
 import { CreateLock, UnlockVariables } from ".";
 import  {useUnlockState} from "../hooks";
 
@@ -20,7 +20,7 @@ import  {useUnlockState} from "../hooks";
   ~ Features ~
   - address={address} passes active user's address to the component to check whether they are members or not
   - publicLock={publicLock} passes the specific lock to check for the user's membership
-  - targetNetwork={targetNetwork} passes the current app network to the <ContentPaywall /> to determine the network to connect to
+  - targetNetwork={targetNetwork} passes the current app network to the <UnlockPaywall /> to determine the network to connect to
 */
 
 
@@ -35,7 +35,7 @@ const LockedContent = ({ publicLock, price, unlock, address, targetNetwork }) =>
             Lorem ipsum dolor, sit amet consectetur adipisicing elit.
             debitis nisi quos. Placeat quos alias harum accusantium soluta,
             fugiat error nemo, illo dicta illum labore hic aliquid aspernatur?
-            <ContentPaywall
+            <UnlockPaywall
               shape={"round"}
               size={"large"}
               displayText={"Become a member to view full content"}

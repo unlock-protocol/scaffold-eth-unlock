@@ -7,7 +7,7 @@ import { Paywall } from '@unlock-protocol/paywall';
   ~ What it does? ~
   Displays a UI that allows a user is a member to purchase a membership.
   ~ How can I use? ~
-  <ContentPaywall
+  <UnlockPaywall
     publicLock={publicLock}
     displayText={"YourString"}
     shape={"round"}
@@ -23,7 +23,7 @@ import { Paywall } from '@unlock-protocol/paywall';
   - taregtNetwork={targetNework} passes the current network the app is pointing to
 */
 
-const ContentPaywall = ({ shape, size, publicLock, displayText, targetNetwork }) => {
+const UnlockPaywall = ({ shape, size, publicLock, displayText, targetNetwork }) => {
   const [lockName, setLockName] = useState();
   const lockAddress = publicLock?.address;
 
@@ -103,4 +103,4 @@ const ContentPaywall = ({ shape, size, publicLock, displayText, targetNetwork })
   );
 };
 
-export default ContentPaywall;
+export default UnlockPaywall;

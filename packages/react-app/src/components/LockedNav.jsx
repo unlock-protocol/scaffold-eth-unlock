@@ -20,7 +20,7 @@ import  {useUnlockState} from "../hooks";
   ~ Features ~
   - address={address} passes active user's address to the component to check whether they are members or not
   - publicLock={publicLock} passes the specific lock to check for the user's membership
-  - location={location} passes the current app network to the <ContentPaywall /> to determine the network to connect to
+  - location={location} passes the current app network to the <UnlockPaywall /> to determine the network to connect to
 */
 
 
