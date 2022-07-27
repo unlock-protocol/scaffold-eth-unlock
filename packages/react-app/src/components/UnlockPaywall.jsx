@@ -82,6 +82,11 @@ const UnlockPaywall = ({ shape, size, publicLock, displayText, targetNetwork }) 
       locksmithUri: "https://locksmith.unlock-protocol.com",
       unlockAppUrl: "https://app.unlock-protocol.com",
     },
+    5: {
+      readOnlyProvider: targetNetwork.rpcUrl,
+      locksmithUri: "https://locksmith.unlock-protocol.com",
+      unlockAppUrl: "https://app.unlock-protocol.com",
+    },
     // etc
   };
 

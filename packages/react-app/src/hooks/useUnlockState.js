@@ -11,13 +11,17 @@ import { useState, useEffect } from "react";
 */
 
 const useUnlockState = (publicLock, address) => {
-  const [hasValidKey, sethasValidKey] = useState({});
+  const [hasValidKey, sethasValidKey] = useState(false);
 
   useEffect(() => {
     const loadFunc = async () => {
-      if (publicLock) {
-        const result = await publicLock.getHasValidKey(address);
-        sethasValidKey(result);
+      try {
+        if (publicLock) {
+          const result = await publicLock.getHasValidKey(address);
+          sethasValidKey(result);
+        }
+      } catch (e) {
+        console.log(e);
       }
     };
     void loadFunc();
