@@ -3,15 +3,15 @@ import React, { useState } from "react";
 // import { utils } from "ethers";
 
 import { useTokenList } from "eth-hooks/dapps/dex";
-// import { Address, AddressInput, CreateLock, GatedContent, UnlockVariables } from "../components";
-import { GatedContent } from "../components";
+// import { Address, AddressInput, CreateLock, LockedContent, UnlockVariables } from "../components";
+import { LockedContent } from "../components";
 
 
 export default function Dashboard({ publicLock, price, unlock, targetNetwork, address }) {
 
   return (
     <div style={{ padding: 30 }}>
-      <GatedContent
+      <LockedContent
         address={address}
         publicLock={publicLock}
         targetNetwork={targetNetwork}

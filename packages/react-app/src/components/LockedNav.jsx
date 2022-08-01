@@ -1,8 +1,9 @@
 import { Button, Col, Menu, Row } from "antd";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import { useHistory } from "react-router-dom";
+import  {useUnlockState} from "../hooks";
+
 
 
 
@@ -10,7 +11,7 @@ import { useHistory } from "react-router-dom";
   ~ What it does? ~
   Displays a UI that reveals content based on whether a user is a member or not.
   ~ How can I use? ~
-  <GatedNav
+  <LockedNav
     address={address}
     publicLock={publicLock}
     location={location}
@@ -19,22 +20,24 @@ import { useHistory } from "react-router-dom";
   ~ Features ~
   - address={address} passes active user's address to the component to check whether they are members or not
   - publicLock={publicLock} passes the specific lock to check for the user's membership
-  - location={location} passes the current app network to the <ContentPaywall /> to determine the network to connect to
+  - location={location} passes the current app network to the <UnlockPaywall /> to determine the network to connect to
 */
 
 
-const GatedNav = ({ publicLock, address, location }) => {
-    const [hasValidKey, setHasValidKey] = useState(false);
-
-  useEffect(() => {
-    const isMember = async () => {
-      if (publicLock) {
-        const hasKey = await publicLock.getHasValidKey(address);
-        setHasValidKey(hasKey);
-      }
-    }
-    isMember();
-  }, [address, publicLock]);
+const LockedNav = ({ publicLock, address, location }) => {
+    // const [hasValidKey, setHasValidKey] = useState(false);
+    
+  const hasValidKey = useUnlockState(publicLock, address);
+  
+  // useEffect(() => {
+  //   const isMember = async () => {
+  //     if (publicLock) {
+  //       const hasKey = await publicLock.getHasValidKey(address);
+  //       setHasValidKey(hasKey);
+  //     }
+  //   }
+  //   isMember();
+  // }, [address, publicLock]);
 
   const previewNav = (
     <>
@@ -52,7 +55,7 @@ const GatedNav = ({ publicLock, address, location }) => {
     </>
   );
 
-  const gatedNav = (
+  const lockedNav = (
     <>
     <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
       <Menu.Item key="/">
@@ -85,7 +88,7 @@ const GatedNav = ({ publicLock, address, location }) => {
       <Row>
         <Col span={24}>
           { hasValidKey && hasValidKey !== false
-            ? gatedNav
+            ? lockedNav
             : previewNav
           }
         </Col>
@@ -94,4 +97,4 @@ const GatedNav = ({ publicLock, address, location }) => {
   );
 };
 
-export default GatedNav;
+export default LockedNav;
