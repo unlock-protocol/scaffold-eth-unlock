@@ -51,6 +51,14 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
+# Unlock Settings
+
+⚙️ Configure Unlock-protocol variables on `settings` tab or `packages/react-app/src/components/UnlockVariables.jsx`
+
+🔧 Modify your Locked Navigation and Locked Content at `/src/components/LockedNav.jsx` and `/src/components/LockedContent.jsx`
+
+🚀 Deploy a new Lock with the Create Lock Component on `Dashboard` 
+
 # 📚 Documentation
 
 Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
