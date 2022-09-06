@@ -1,122 +1,62 @@
 import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { Col, Divider, Row, Space, Image } from "antd";
+import { CenterContent, ContentRow, ContentCol } from "../components";
+import ethImg from "../img/eth-mh.svg";
 
-/**
- * web3 props can be passed from '../App.jsx' into your local view component for use
- * @param {*} yourLocalBalance balance on current network
- * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
- * @returns react component
- **/
-function Home({ yourLocalBalance, readContracts }) {
-  // you can also use hooks locally in your component of choice
-  // in this case, let's keep track of 'purpose' variable from our contract
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+function Home({ yourLocalBalance }) {
+  const [loading, setLoading] = useState([]);
 
   return (
     <div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>📝</span>
-        This Is Your App Home. You can start editing it in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/react-app/src/views/Home.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>✏️</span>
-        Edit your smart contract{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          YourContract.sol
-        </span>{" "}
-        in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/contracts
-        </span>
-      </div>
-      {!purpose ? (
+      <CenterContent>
         <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>👷‍♀️</span>
-          You haven't deployed your contract yet, run
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn chain
-          </span>{" "}
-          and{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn deploy
-          </span>{" "}
-          to deploy your first contract!
+          <ContentRow margin={"0 0 150px 0"}>
+            <ContentCol>
+              <h1 style={{ fontSize: 50, fontWeight: 700, margin: "82px 0px 85px" }}>
+                The Members <span style={{ color: "#FFB44F" }}>Hub</span>
+              </h1>
+              <p style={{ fontSize: 21, fontWeight: 400, margin: "0 0px 25px 0" }}>All aboard the member ship 🚢</p>
+              <p style={{ marginBottom: 85, padding: "20px 50px 20px 50px", fontWeight: 300, fontSize: 16 }}>
+                As we explore the ever expansive brave new world of web3, new and exciting communities spawn up almost
+                on a daily basis, some of which may align with our values and interests but there's one problem.
+              </p>
+              <QuestionCircleOutlined style={{ fontSize: "66px", color: "#08c" }} />
+            </ContentCol>
+          </ContentRow>
+          <ContentRow margin={"50px 0 150px 0"}>
+            <ContentCol flex={2}>
+              <Image width={200} src={ethImg} />
+            </ContentCol>
+            <ContentCol flex={3}>
+              <div style={{ textAlign: "left", paddingLeft: 50 }}>
+                <h3>Obsqurity</h3>
+                <p style={{ color: "#b1a8a8", fontSize: 14 }}>
+                  We don't know about them! We simply do not know they exist!!! Finding communities and projects or
+                  services that excites us can be a daunting task in web3 simply becuase of how fast things are moving,
+                  it's difficult to keep track or keep up with everything.
+                </p>
+              </div>
+            </ContentCol>
+          </ContentRow>
+          <h3>What if we could change that?</h3>
+          <ContentRow margin={"50px 0 150px 0"}>
+            <ContentCol flex={3}>
+              <p>
+                Members Hub try to solve this by providing a platform where communities can broadcast their existence so
+                people who are interested can find them
+              </p>
+              <p>
+                Simply publish your community and people would be able to find you by searching the memberships explorer
+              </p>
+            </ContentCol>
+            <ContentCol flex={2}>2 / 5</ContentCol>
+          </ContentRow>
         </div>
-      ) : (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>🤓</span>
-          The "purpose" variable from your contract is{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            {purpose}
-          </span>
-        </div>
-      )}
-
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🤖</span>
-        An example prop of your balance{" "}
-        <span style={{ fontWeight: "bold", color: "green" }}>({ethers.utils.formatEther(yourLocalBalance)})</span> was
-        passed into the
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          Home.jsx
-        </span>{" "}
-        component from
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          App.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>💭</span>
-        Check out the <Link to="/hints">"Hints"</Link> tab for more tips.
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🛠</span>
-        Tinker with your smart contract using the <Link to="/debug">"Debug Contract"</Link> tab.
-      </div>
+      </CenterContent>
     </div>
   );
 }

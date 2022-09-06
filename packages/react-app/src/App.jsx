@@ -32,7 +32,12 @@ import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
+// import { apolloClient } from "./helpers/lens/apollo-client";
+// import { gql } from "@apollo/client";
+// import { ChakraProvider } from '@chakra-ui/react'
+
 const { ethers } = require("ethers");
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -53,7 +58,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -286,7 +291,7 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
+      {/* <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
@@ -305,12 +310,12 @@ function App(props) {
         <Menu.Item key="/subgraph">
           <Link to="/subgraph">Subgraph</Link>
         </Menu.Item>
-      </Menu>
+      </Menu> */}
 
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <Home yourLocalBalance={yourLocalBalance} address={address} web3Modal={web3Modal} userSigner={userSigner} />
         </Route>
         <Route exact path="/debug">
           {/*

@@ -65,10 +65,10 @@ export default function Account({
 
   const display = !minimized && (
     <span>
-      {address && (
+      {/* {address && (
         <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={20} />
-      )}
-      <Balance address={address} provider={localProvider} price={price} size={20} />
+      )} */}
+      {/* <Balance address={address} provider={localProvider} price={price} size={20} /> */}
       {!isContract && (
         <Wallet
           address={address}
@@ -85,7 +85,7 @@ export default function Account({
   );
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       {display}
       {web3Modal && (
         <Button style={{ marginLeft: 8 }} shape="round" onClick={accountButtonInfo.action}>
