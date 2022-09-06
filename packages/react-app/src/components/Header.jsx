@@ -15,7 +15,7 @@ export default function Header({ link, title, subTitle, ...props }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "1.2rem", margin: "0 15px" }}>
       <div style={{ display: "flex", flexDirection: "column", flex: 1, alignItems: "start" }}>
-        <a href={link} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center" }}>
+        <a href={link} rel="noopener noreferrer" style={{ display: "flex", alignItems: "center" }}>
           <Avatar
             size={40}
             src={

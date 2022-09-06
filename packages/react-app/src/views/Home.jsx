@@ -3,18 +3,18 @@ import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { Col, Divider, Row, Space, Image } from "antd";
+import { Col, Divider, Row, Space, Image, Button } from "antd";
 import { CenterContent, ContentRow, ContentCol } from "../components";
-import ethImg from "../img/eth-mh.svg";
+import { ethImg, mhLogo, searchImg } from "../img";
 
-function Home({ yourLocalBalance }) {
+function Home({ address, loadWeb3Modal, yourLocalBalance }) {
   const [loading, setLoading] = useState([]);
 
   return (
     <div>
       <CenterContent>
         <div style={{ margin: 32 }}>
-          <ContentRow margin={"0 0 150px 0"}>
+          <ContentRow margin={"0 0 250px 0"}>
             <ContentCol>
               <h1 style={{ fontSize: 50, fontWeight: 700, margin: "82px 0px 85px" }}>
                 The Members <span style={{ color: "#FFB44F" }}>Hub</span>
@@ -27,33 +27,55 @@ function Home({ yourLocalBalance }) {
               <QuestionCircleOutlined style={{ fontSize: "66px", color: "#08c" }} />
             </ContentCol>
           </ContentRow>
-          <ContentRow margin={"50px 0 150px 0"}>
+          <ContentRow margin={"0 0 250px 0"}>
             <ContentCol flex={2}>
-              <Image width={200} src={ethImg} />
+              <Image preview={false} width={200} src={ethImg} />
             </ContentCol>
-            <ContentCol flex={3}>
-              <div style={{ textAlign: "left", paddingLeft: 50 }}>
-                <h3>Obsqurity</h3>
+            <ContentCol textAlign={"left"} padding={"0 0 0 100px"} flex={3}>
+              <div>
+                {/* <div style={{ textAlign: "left", paddingLeft: 50 }}> */}
+                <h3 style={{ fontSize: 19 }}>Obsqurity</h3>
                 <p style={{ color: "#b1a8a8", fontSize: 14 }}>
                   We don't know about them! We simply do not know they exist!!! Finding communities and projects or
                   services that excites us can be a daunting task in web3 simply becuase of how fast things are moving,
                   it's difficult to keep track or keep up with everything.
                 </p>
+                <Button style={{ marginTop: 13 }} shape="round" size={"large"}>
+                  Discover
+                </Button>
               </div>
             </ContentCol>
           </ContentRow>
-          <h3>What if we could change that?</h3>
-          <ContentRow margin={"50px 0 150px 0"}>
-            <ContentCol flex={3}>
-              <p>
-                Members Hub try to solve this by providing a platform where communities can broadcast their existence so
-                people who are interested can find them
-              </p>
-              <p>
-                Simply publish your community and people would be able to find you by searching the memberships explorer
-              </p>
+          <h3 style={{ fontSize: 21, fontWeight: 400 }}>What if we could change that?</h3>
+          <ContentRow margin={"30px 0 250px 0"}>
+            <ContentCol textAlign={"right"} padding={"0 135px 0 0"} flex={3}>
+              <div>
+                <p style={{ textAlign: "right", color: "#b1a8a8", fontSize: 14 }}>
+                  Members Hub try to solve this by providing a platform where communities can broadcast their existence
+                  so people who are interested can find them
+                </p>
+                <Button style={{ marginTop: 13 }} shape="round" size={"large"}>
+                  Get started
+                </Button>
+              </div>
             </ContentCol>
-            <ContentCol flex={2}>2 / 5</ContentCol>
+            <ContentCol flex={2}>
+              <Image preview={false} width={200} src={searchImg} />
+            </ContentCol>
+          </ContentRow>
+          <ContentRow>
+            <ContentCol>
+              <span style={{ fontSize: 75, marginBottom: 40 }}>💡</span>
+              <div style={{ padding: "0 100px 250px 100px" }}>
+                <h3 style={{ color: "#b1a8a8", fontSize: 14 }}>
+                  Simply publish your community and people would be able to find you by searching the memberships
+                  explorer
+                </h3>
+                <Button style={{ marginTop: 13 }} shape="round" size={"large"}>
+                  Connect wallet
+                </Button>
+              </div>
+            </ContentCol>
           </ContentRow>
         </div>
       </CenterContent>
