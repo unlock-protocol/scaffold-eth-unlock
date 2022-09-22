@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function CenterContent({ ...props }) {
+function CenterContent({ left, right, ...props }) {
   //   const [posts, setPosts] = useState([]);
 
   //   const signIn = async () => {
@@ -21,7 +21,7 @@ function CenterContent({ ...props }) {
   //     }
   //   };
 
-  return <div style={{ marginLeft: "320px", marginRight: "320px" }}>{props.children}</div>;
+  return <div style={{ marginLeft: left, marginRight: right }}>{props.children}</div>;
 }
 
 export default CenterContent;

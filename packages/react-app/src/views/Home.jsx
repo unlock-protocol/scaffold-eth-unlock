@@ -11,8 +11,8 @@ function Home({ address, loadWeb3Modal, yourLocalBalance }) {
   const [loading, setLoading] = useState([]);
 
   return (
-    <div>
-      <CenterContent>
+    <div className="home">
+      <CenterContent left={320} right={320}>
         <div style={{ margin: 32 }}>
           <ContentRow margin={"0 0 250px 0"}>
             <ContentCol>

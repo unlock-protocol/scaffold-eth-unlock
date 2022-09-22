@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Typography, Button, Avatar } from "antd";
 import {
   HomeOutlined,
@@ -8,8 +8,10 @@ import {
   SyncOutlined,
   QuestionCircleOutlined,
 } from "@ant-design/icons";
+
+// @notice displays a page header
+
 const { Title, Text } = Typography;
-// displays a page header
 
 export default function Header({ link, title, subTitle, ...props }) {
   return (
@@ -36,7 +38,7 @@ export default function Header({ link, title, subTitle, ...props }) {
 }
 
 Header.defaultProps = {
-  link: "#",
+  link: "/#",
   title: "M | H",
   subTitle: "Discover communities",
 };
