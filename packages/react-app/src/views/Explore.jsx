@@ -1,33 +1,23 @@
-// import { useContractReader } from "eth-hooks";
-import { QuestionCircleOutlined, LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
-// import { Link } from "react-router-dom";
-// import { ethImg, mhLogo, searchImg } from "../img";
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Image, Avatar, Button, List, Skeleton, Space, Divider } from "antd";
-import { CenterContent, ContentRow, ContentCol, SearchInput, MultiSelect } from "../components";
+import { CenterContent, ContentRow, ContentCol, MultiSelect } from "../components";
+import { apolloClient, membershipQuery, subgraphURI } from "../helpers/graphQueryData";
+import { gql } from "@apollo/client";
+import fetch from "isomorphic-fetch";
+// unlock contract abis
+const abis = require("@unlock-protocol/contracts");
+// async function membershipsList(tagName) {
+//   console.log("fetching tag", tagName);
+//   const { data } = await apolloClient.query({
+//     query: gql(membershipQuery),
+//   });
+//   console.log("grrrrr", data);
+// }
+// membershipsList();
 
 const count = 3;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-const data2 = Array.from({
-  length: 1,
-}).map((_, i) => ({
-  // gender: "female",
-  name: { title: "Ms", first: "Josefina", last: "Lozano" },
-  // email: "josefina.lozano@example.com",
-  picture: {
-    large: "https://randomuser.me/api/portraits/women/78.jpg",
-    medium: "https://randomuser.me/api/portraits/med/women/78.jpg",
-    thumbnail: "https://randomuser.me/api/portraits/thumb/women/78.jpg",
-  },
-  // nat: "ES",
-  href: "https://ant.design",
-  title: `ant design part ${i}`,
-  avatar: "https://joeschmoe.io/api/v1/random",
-  description: "Ant Design, a design language for background applications, is refined by Ant UED Team.",
-  content:
-    "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-}));
 
 const IconText = ({ icon, text }) => (
   <Space>
@@ -36,12 +26,12 @@ const IconText = ({ icon, text }) => (
   </Space>
 );
 
-function Home({ address, loadWeb3Modal }) {
+function Home({ address, loadWeb3Modal, userSigner }) {
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [list, setList] = useState([]);
-
+  const [memberships, setMemberships] = useState();
   useEffect(() => {
     fetch(fakeDataUrl)
       .then(res => res.json())
@@ -51,6 +41,56 @@ function Home({ address, loadWeb3Modal }) {
         setList(res.results);
       });
   }, []);
+
+  useEffect(() => {
+    async function getMembershipsList() {
+      const { data } = await apolloClient.query({
+        query: gql(membershipQuery),
+      });
+      setMemberships(data.memberships);
+    }
+    getMembershipsList();
+  }, []);
+  console.log("grrrrr", memberships);
+  console.log("grrlll", list);
+
+  ////////////////Unlock Protocol///////////////////
+  const unlockData = JSON.parse(window.localStorage.getItem("unlock"));
+  const publicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
+  useEffect(() => {
+    if (unlockData && publicLockData) {
+      const unlockAddress = unlockData.unlockAddress;
+      const publicLockAddress = publicLockData.publicLockAddress;
+      setDeployedUnlockAddress(unlockAddress);
+      setPublicLockAddress(publicLockAddress);
+    }
+  }, []);
+
+  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState();
+  const [publicLockAddress, setPublicLockAddress] = useState();
+  const [publicLock, setPublicLock] = useState();
+  const [unlock, setUnlock] = useState();
+
+  useEffect(() => {
+    const readyUnlock = () => {
+      let unlockContract;
+      let publicLockContract;
+      try {
+        if (deployedUnlockAddress) {
+          unlockContract = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner);
+        }
+        if (publicLockAddress) {
+          publicLockContract = new ethers.Contract(publicLockAddress, abis.PublicLockV10.abi, userSigner);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      setUnlock(unlockContract);
+      setPublicLock(publicLockContract);
+    };
+    readyUnlock();
+  }, [address]);
+  ////////////// UNLOCK PROTOCOL: THE END /////////////
 
   const onLoadMore = () => {
     setLoading(true);
@@ -96,13 +136,6 @@ function Home({ address, loadWeb3Modal }) {
       <ContentRow>
         <ContentCol flex={1}>
           <div style={{ alignSelf: "center" }}>
-            {/* <SearchInput
-              // readContracts={readContracts}
-              // writeContracts={writeContracts}
-              placeholder={"Search memberships"}
-              width={450}
-              size="large"
-            /> */}
             <MultiSelect />
           </div>
         </ContentCol>
@@ -116,13 +149,13 @@ function Home({ address, loadWeb3Modal }) {
               itemLayout="horizontal"
               // loadMore={loadMore}
               // dataSource={data2}
-              dataSource={list}
+              dataSource={memberships}
               renderItem={item => (
-                <List.Item actions={[<a key="list-loadmore-edit">Follow</a>, <a key="list-loadmore-more">Details</a>]}>
+                <List.Item actions={[<a key="list-loadmore-more">Details</a>]}>
                   <Skeleton avatar title={false} loading={item.loading} active>
                     <List.Item.Meta
-                      avatar={<Avatar size={50} src={item.picture.large} />}
-                      title={<a href="https://ant.design">{item.name?.last}</a>}
+                      // avatar={<Avatar size={50} src={item.picture.large} />}
+                      title={<a href="https://ant.design">{item.membershipAddress}</a>}
                       description="Ant Design, a design language for background applications, is refined by Ant UED Team"
                     />
                     {/* <div>content</div> */}
@@ -130,23 +163,13 @@ function Home({ address, loadWeb3Modal }) {
                 </List.Item>
               )}
             />
-            <Divider />
+
+            {/* <Divider />
             <List
               itemLayout="vertical"
               size="large"
-              // pagination={{
-              //   onChange: page => {
-              //     console.log(page);
-              //   },
-              //   pageSize: 1,
-              // }}
               dataSource={data2}
-              footer={
-                <div>
-                  {/* <Button onClick={loadMore}>Load more</Button> */}
-                  {loadMore}
-                </div>
-              }
+              footer={<div>{loadMore}</div>}
               renderItem={item => (
                 <List.Item
                   key={item.title}
@@ -171,7 +194,7 @@ function Home({ address, loadWeb3Modal }) {
                   {item.content}
                 </List.Item>
               )}
-            />
+            /> */}
           </div>
         </ContentCol>
       </ContentRow>

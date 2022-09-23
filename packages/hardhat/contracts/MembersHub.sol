@@ -11,9 +11,10 @@ import "./interface/IPublicLockV10.sol";
  */
 
  // Todo
- // Make add tag payable and charge small fee
+ // Make adding tag payable and charge small fee
  // Make MembersHub upgradable(Still contemplating)
- // Add withdrawal
+ // Add withdrawal (if adding tags is now payable)
+ // [Contemplating - needs research] Make tags NFTs 
 
 contract MembersHub is Ownable {
     string[] public tags;
@@ -33,11 +34,7 @@ contract MembersHub is Ownable {
     mapping(address => bool) allBroadcasts;
     mapping(address => mapping(string => bool)) public tagsByUser;
     
-    constructor() {
-        // console.log("contract deployed by: Me");
-         // 'msg.sender' is sender of current call, contract deployer for a constructor
-        // emit OwnerSet(address(0), owner);
-    }
+    constructor() { }
 
     // /**
     //  * @dev check if tag already exists 
@@ -111,48 +108,29 @@ contract MembersHub is Ownable {
 
     // /**
     //  * @dev broadcast membership 
-    //  * @param membership lock address
     //  * @param list of related tags
+    //  * @param membership lock address
     //  */
-    // function broadcastMembership(IPublicLock _publicLock, string[] calldata _relatedTags)external {
-    //     string[] memory _tags; 
-    //     uint256 tagsCount = _relatedTags.length;
-    //     address _membershipAddress = address(_publicLock);
-    //     //check related tags are not more than max tags per membership
-    //     require(tagsCount <= maxTagsPerMembershp, "Too many tags");
-    //     // check that related tags is not empty
-    //     require(_relatedTags.length >= 1, "Empty tags");
-    //     // check that caller is a lock manager
-    //     require(_isLockManager(_publicLock), "Not Manager");
-    //     // check that membership is not already broadcasted
-    //     require(allBroadcasts[_membershipAddress] == false, "Membership exist");
-    //     // check that related tags are in the tags array
-    //     for(uint i = 0; i < _relatedTags.length; i++) {
-    //         require(doesTagExist(_relatedTags[i]) == true, "Nonexistent Tag");
-    //         _tags[i] = _relatedTags[i];
-    //     }
-    //     //update membershipsData with provided data
-    //     _setMembershipData(_membershipAddress, _tags);
-    //     // add membership to allBroadcasts
-    //     allBroadcasts[_membershipAddress] = true;
-        
-    //     emit BroadcastMembership(_membershipAddress, msg.sender, _tags);
-    // }
     function broadcastMembership(
         string[] calldata _relTags,
-        address _membershipAdr
+        IPublicLock _publicLock
     ) external returns (string[] memory) {
-        require(allBroadcasts[_membershipAdr] == false, "Membership exist");
+        uint256 tagsCount = _relTags.length;
+        address _membershipAddress = address(_publicLock);
+        require(tagsCount <= maxTagsPerMembershp, "Too many tags"); //check related tags are not more than max tags per membership
+        require(_relTags.length >= 1, "Empty tags");// check that related tags is not empty
+        require(_isLockManager(_publicLock), "Not Manager");// check that caller is a lock manager
+        require(allBroadcasts[_membershipAddress] == false, "Membership exist");// check that membership is not already broadcasted
         for(uint i = 0; i < _relTags.length; i++) {
-            require(doesTagExist(_relTags[i]) == true, "Nonexistent Tag");
+            require(doesTagExist(_relTags[i]) == true, "Nonexistent Tag");// check that related tags are in the tags array
         }
-        Membership memory s;
-        s.membershipAddress = _membershipAdr;
+        Membership memory s; //New membership struct
+        s.membershipAddress = _membershipAddress;
         s.creator = msg.sender;
         s.relatedTags = _relTags;
-        membershipsData[_membershipAdr] = s;
-        allBroadcasts[_membershipAdr] = true;
-        emit BroadcastMembership(_membershipAdr, msg.sender, _relTags);
+        membershipsData[_membershipAddress] = s;
+        allBroadcasts[_membershipAddress] = true;
+        emit BroadcastMembership(_membershipAddress, msg.sender, _relTags);
         return _relTags;
     }
 
@@ -161,4 +139,21 @@ contract MembersHub is Ownable {
         return membership;
     }
  
+    // function broadcastMembership(
+    //     string[] calldata _relTags,
+    //     address _membershipAdr
+    // ) external returns (string[] memory) {
+    //     require(allBroadcasts[_membershipAdr] == false, "Membership exist");
+    //     for(uint i = 0; i < _relTags.length; i++) {
+    //         require(doesTagExist(_relTags[i]) == true, "Nonexistent Tag");
+    //     }
+    //     Membership memory s;
+    //     s.membershipAddress = _membershipAdr;
+    //     s.creator = msg.sender;
+    //     s.relatedTags = _relTags;
+    //     membershipsData[_membershipAdr] = s;
+    //     allBroadcasts[_membershipAdr] = true;
+    //     emit BroadcastMembership(_membershipAdr, msg.sender, _relTags);
+    //     return _relTags;
+    // }
 }

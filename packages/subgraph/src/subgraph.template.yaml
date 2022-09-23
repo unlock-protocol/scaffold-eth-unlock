@@ -4,7 +4,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: MembersHub
-    network: localhost
+    network: rinkeby
     source:
       address: "{{localhost_MembersHubAddress}}"
       abi: MembersHub

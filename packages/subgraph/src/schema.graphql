@@ -10,7 +10,7 @@ type Tag @entity {
 type TagCreator @entity {
   id: ID!
   address: Bytes!
-  tagsCount: BigInt
+  tagsCount: BigInt!
   tagz: [Tag!] @derivedFrom(field: "creator")
 }
 
@@ -27,5 +27,5 @@ type Broadcaster @entity {
   id: ID!
   address: Bytes!
   memberships: [Membership!] @derivedFrom(field: "creator")
-  membershipsCount: BigInt
+  membershipsCount: BigInt!
 }

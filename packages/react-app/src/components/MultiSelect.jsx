@@ -1,7 +1,7 @@
 import { Select, Spin } from "antd";
 import debounce from "lodash/debounce";
 import React, { useMemo, useRef, useState } from "react";
-import { gql, ApolloClient, InMemoryCache, useQuery } from "@apollo/client";
+import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 // import fetch from "isomorphic-fetch";
 
 function DebounceSelect({ fetchOptions, debounceTimeout = 1000, ...props }) {
@@ -55,6 +55,7 @@ const tagQuery = `
     }
   }
   `;
+
 async function fetchTagList(tagName) {
   console.log("fetching tag", tagName);
   const { data } = await client.query({
@@ -66,7 +67,7 @@ async function fetchTagList(tagName) {
   }));
 }
 
-// const MultiSelect = ({placeholder, fetchOptions, value, onChange}) => {
+// const MultiSelect = ({placeholder, xfetchOptions, onChange}) => {
 const MultiSelect = () => {
   const [value, setValue] = useState([]);
   return (
@@ -81,7 +82,7 @@ const MultiSelect = () => {
       }}
       // value={value}
       // placeholder={placeholder}
-      // fetchOptions={fetchOptions}
+      // fetchOptions={xfetchOptions}
       // onChange={onChange}
       style={{
         width: 450,
