@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Menu } from "antd";
 // import { utils } from "ethers";
-import { SyncOutlined, LaptopOutlined, NotificationOutlined, UserOutlined } from "@ant-design/icons";
+import { SyncOutlined, LaptopOutlined, NotificationOutlined, UserOutlined, SettingOutlined } from "@ant-design/icons";
 import { Address, Balance, Events, Contract, SearchInput } from "../components";
 import { Link, Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { Explore, Create } from ".";
+import { Explore, Create, Subgraph } from ".";
+import { read } from "fs";
 // import * as EpnsAPI from "@epnsproject/sdk-restapi";
 // import { NotificationItem, chainNameType } from "@epnsproject/sdk-uiweb";
 // import { EmbedSDK } from "@epnsproject/sdk-uiembed";
@@ -18,13 +19,14 @@ export default function ExampleUI({
   mainnetProvider,
   blockExplorer,
   localProvider,
+  localChainId,
   userSigner,
   contractConfig,
   name,
-  localChainId,
   readContracts,
   writeContracts,
-  // ...props
+  tx,
+  ...props
 }) {
   const { Sider, Content } = Layout;
   const history = useHistory();
@@ -33,6 +35,15 @@ export default function ExampleUI({
   // const userAddress = "0xca7632327567796e51920f6b16373e92c7823854";
   // // const userCAIP = `eip155:${localChainId}:${address}`;
   // const userCAIP = `eip155:${chainId}:${userAddress}`;
+  // useEffect(() => {
+  //   const test = async () => {
+  //     if (readContracts && readContracts.MembersHub) {
+  //       let tags = await readContracts.MembersHub.getTags();
+  //       console.log("yyyyy", tags);
+  //     }
+  //   };
+  //   test();
+  // }, [readContracts]);
 
   return (
     <Layout>
@@ -66,6 +77,11 @@ export default function ExampleUI({
                 <UserOutlined /> <span>Profile</span>{" "}
               </Link>
             </Menu.Item>
+            <Menu.Item key="/debug">
+              <Link to="/dashboard/debug">
+                <SettingOutlined /> <span>Debug</span>{" "}
+              </Link>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout
@@ -73,10 +89,15 @@ export default function ExampleUI({
             padding: "0 24px 24px",
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", padding: "20px 12px 20px 12px" }}>
-            <div>
-              <SearchInput placeholder={"Search"} width={400} />
-            </div>
+          <div style={{ display: "flex", justifyContent: "flex-end", padding: "20px 12px 20px 12px" }}>
+            {/* <div>
+              <SearchInput
+                readContracts={readContracts}
+                writeContracts={writeContracts}
+                placeholder={"Search"}
+                width={400}
+              />
+            </div> */}
             {address && (
               <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={18} />
             )}
@@ -91,21 +112,43 @@ export default function ExampleUI({
           >
             <Switch>
               <Route exact path="/dashboard">
-                <Contract
+                {/* <Contract
                   name={name}
                   signer={userSigner}
                   provider={localProvider}
                   address={address}
                   blockExplorer={blockExplorer}
                   contractConfig={contractConfig}
-                />
+                /> */}
               </Route>
-              <Route path="/dashboard/profile">PROFILE</Route>
+              <Route path="/dashboard/profile">
+                <div style={{ textAlign: "center" }}>
+                  <Subgraph
+                    // subgraphUri={props.subgraphUri}
+                    tx={tx}
+                    writeContracts={writeContracts}
+                    mainnetProvider={mainnetProvider}
+                  />
+                </div>
+              </Route>
               <Route path="/dashboard/explore">
                 <Explore />
               </Route>
               <Route path="/dashboard/create">
                 <Create />
+              </Route>
+              <Route path="/dashboard/debug">
+                <div style={{ textAlign: "center" }}>
+                  <Contract
+                    name={name}
+                    chainId={localChainId}
+                    signer={userSigner}
+                    provider={localProvider}
+                    address={address}
+                    blockExplorer={blockExplorer}
+                    contractConfig={contractConfig}
+                  />
+                </div>
               </Route>
             </Switch>
             {/* {props.children} */}

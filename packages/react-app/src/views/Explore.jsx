@@ -5,23 +5,7 @@ import { QuestionCircleOutlined, LikeOutlined, MessageOutlined, StarOutlined } f
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Image, Avatar, Button, List, Skeleton, Space, Divider } from "antd";
-import { CenterContent, ContentRow, ContentCol } from "../components";
-
-const hd = {
-  results: [
-    {
-      gender: "female",
-      name: { title: "Ms", first: "Josefina", last: "Lozano" },
-      // email: "josefina.lozano@example.com",
-      picture: {
-        large: "https://randomuser.me/api/portraits/women/78.jpg",
-        medium: "https://randomuser.me/api/portraits/med/women/78.jpg",
-        thumbnail: "https://randomuser.me/api/portraits/thumb/women/78.jpg",
-      },
-      // nat: "ES",
-    },
-  ],
-};
+import { CenterContent, ContentRow, ContentCol, SearchInput, MultiSelect } from "../components";
 
 const count = 3;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
@@ -109,6 +93,20 @@ function Home({ address, loadWeb3Modal }) {
   return (
     // <div>
     <CenterContent right={50} left={50}>
+      <ContentRow>
+        <ContentCol flex={1}>
+          <div style={{ alignSelf: "center" }}>
+            {/* <SearchInput
+              // readContracts={readContracts}
+              // writeContracts={writeContracts}
+              placeholder={"Search memberships"}
+              width={450}
+              size="large"
+            /> */}
+            <MultiSelect />
+          </div>
+        </ContentCol>
+      </ContentRow>
       <ContentRow>
         <ContentCol flex={1}>
           <div className="mh-dashboard-content">

@@ -28,3 +28,4 @@ export { default as SearchInput } from "./SearchInput";
 export { default as CenterContent } from "./helpers/CenterContent";
 export { default as ContentRow } from "./helpers/ContentRow";
 export { default as ContentCol } from "./helpers/ContentCol";
+export { default as MultiSelect } from "./MultiSelect";

@@ -57,7 +57,8 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const initialNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -151,6 +152,7 @@ function App(props) {
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
+  console.log("READCONTRACTS", readContracts);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -246,18 +248,17 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
-  console.log("address", address);
-  //  useEffect(() => {
-  //   if (address) {
-  //     let username = `eip155:42:${address}`;
-  //     let username2 = `eip155:42:0xCA7632327567796e51920F6b16373e92c7823854`
-  //     console.log("username3", address);
-  //     console.log("username", username);
-  //     console.log("username2", username2 === username);
+  useEffect(() => {
+    console.log("dress", readContracts);
+    // if (address) {
+    //   let username = `eip155:42:${address}`;
+    //   let username2 = `eip155:42:0xCA7632327567796e51920F6b16373e92c7823854`
+    //   console.log("username3", address);
+    //   console.log("username", username);
+    //   console.log("username2", username2 === username);
 
-  //   }
-
-  // },[address])
+    // }
+  }, [readContracts]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
@@ -318,7 +319,10 @@ function App(props) {
             writeContracts={writeContracts}
             readContracts={readContracts}
             contractConfig={contractConfig}
+            signer={userSigner}
+            blockExplorer={blockExplorer}
             name={"MembersHub"}
+            tx={tx}
           />
           {/* </ExampleUI> */}
         </Route>

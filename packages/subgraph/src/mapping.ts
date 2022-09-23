@@ -1,33 +1,63 @@
-import { BigInt, Address } from "@graphprotocol/graph-ts";
+import { BigInt, Address } from "@graphprotocol/graph-ts"
+
 import {
-  YourContract,
-  SetPurpose,
-} from "../generated/YourContract/YourContract";
-import { Purpose, Sender } from "../generated/schema";
+  BroadcastMembership,
+  NewTag
+} from "../generated/MembersHub/MembersHub"
 
-export function handleSetPurpose(event: SetPurpose): void {
-  let senderString = event.params.sender.toHexString();
+import { Tag, TagCreator,Membership,Broadcaster } from "../generated/schema"
 
-  let sender = Sender.load(senderString);
-
-  if (sender === null) {
-    sender = new Sender(senderString);
-    sender.address = event.params.sender;
-    sender.createdAt = event.block.timestamp;
-    sender.purposeCount = BigInt.fromI32(1);
+export function handleNewTag(event: NewTag): void {
+  
+  //  tag creator
+  let tagCreatorId = event.transaction.hash.toHex()
+  let tagCreator = TagCreator.load(tagCreatorId)
+  if (tagCreator == null) {
+    tagCreator = new TagCreator(tagCreatorId)
+    tagCreator.tagsCount = BigInt.fromI32(1)
   } else {
-    sender.purposeCount = sender.purposeCount.plus(BigInt.fromI32(1));
+    // tagCreator.tagsCount = tagCreator.tagsCount.plus(BigInt.fromI32(1))
   }
+  tagCreator.address = event.params.creator
+  tagCreator.save()
+  
+  // tags
+  let tagId = event.params.tag
+  let tag = Tag.load(tagId)
+  if (tag == null) {
+    tag = new Tag(tagId)
+  }
+  tag.name = event.params.tag
+  tag.creator = tagCreatorId
+  tag.createdAt = event.block.timestamp
+  tag.transactionHash = event.transaction.hash.toString()
+  tag.save()
+}
 
-  let purpose = new Purpose(
+export function handleBroadcastMembership(event: BroadcastMembership): void {
+  
+  // Broadcaster
+  let broadcasterId = event.transaction.hash.toHex()
+  let broadcaster = Broadcaster.load(broadcasterId)
+  if (broadcaster == null) {
+    broadcaster = new Broadcaster(broadcasterId)
+    broadcaster.membershipsCount = BigInt.fromI32(1);
+  } else {
+    // broadcaster.membershipsCount = broadcaster.membershipsCount.plus(BigInt.fromI32(1))
+  }
+  broadcaster.address = event.params.creator
+  broadcaster.save()
+    
+  //membership
+  let membership = new Membership(
     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
   );
-
-  purpose.purpose = event.params.purpose;
-  purpose.sender = senderString;
-  purpose.createdAt = event.block.timestamp;
-  purpose.transactionHash = event.transaction.hash.toHex();
-
-  purpose.save();
-  sender.save();
+  membership.membershipAddress = event.params.membershipAddress;
+  membership.creator = broadcasterId;
+  membership.createdAt = event.block.timestamp;
+  membership.transactionHash = event.transaction.hash.toHex();
+  membership.relatedTags = event.params.relatedTags.map<string>(
+    (item) => item.toString()
+  )
+  membership.save();
 }
