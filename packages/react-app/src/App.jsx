@@ -319,7 +319,6 @@ function App(props) {
             writeContracts={writeContracts}
             readContracts={readContracts}
             contractConfig={contractConfig}
-            signer={userSigner}
             blockExplorer={blockExplorer}
             name={"MembersHub"}
             tx={tx}

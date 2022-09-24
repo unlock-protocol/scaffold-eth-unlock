@@ -1,5 +1,3 @@
-// import { Layout } from 'antd';
-// import { SyncOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
 import { Layout, Menu } from "antd";
 // import { utils } from "ethers";
@@ -90,14 +88,6 @@ export default function ExampleUI({
           }}
         >
           <div style={{ display: "flex", justifyContent: "flex-end", padding: "20px 12px 20px 12px" }}>
-            {/* <div>
-              <SearchInput
-                readContracts={readContracts}
-                writeContracts={writeContracts}
-                placeholder={"Search"}
-                width={400}
-              />
-            </div> */}
             {address && (
               <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={18} />
             )}
@@ -123,19 +113,14 @@ export default function ExampleUI({
               </Route>
               <Route path="/dashboard/profile">
                 <div style={{ textAlign: "center" }}>
-                  <Subgraph
-                    // subgraphUri={props.subgraphUri}
-                    tx={tx}
-                    writeContracts={writeContracts}
-                    mainnetProvider={mainnetProvider}
-                  />
+                  <Subgraph tx={tx} writeContracts={writeContracts} mainnetProvider={mainnetProvider} />
                 </div>
               </Route>
               <Route path="/dashboard/explore">
                 <Explore />
               </Route>
               <Route path="/dashboard/create">
-                <Create />
+                <Create writeContracts={writeContracts} userSigner={userSigner} />
               </Route>
               <Route path="/dashboard/debug">
                 <div style={{ textAlign: "center" }}>

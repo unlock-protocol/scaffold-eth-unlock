@@ -30,3 +30,4 @@ export { default as ContentRow } from "./helpers/ContentRow";
 export { default as ContentCol } from "./helpers/ContentCol";
 export { default as MultiSelect } from "./MultiSelect";
 export { default as UnlockPaywall } from "./UnlockPaywall";
+export { default as CreateLock } from "./CreateLock";

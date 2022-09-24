@@ -25,4 +25,6 @@ dataSources:
           handler: handleNewTag
         - event: BroadcastMembership(indexed address,address,string[])
           handler: handleBroadcastMembership
+        - event: RemoveTag(address,string)
+          handler: handleRemoveTag
       file: ./src/mapping.ts
