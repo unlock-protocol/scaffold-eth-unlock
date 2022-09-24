@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-// export const subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub";
-export const subgraphURI = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
+// export const subgraphURI = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
+export const subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub";
 
 export const apolloClient = new ApolloClient({
   uri: subgraphURI,

@@ -1,4 +1,4 @@
-import { Select, Button, Card, Col, Input, Row, DatePicker, Checkbox } from "antd";
+import { Select, Button, Card, Col, Input, Row, DatePicker, Checkbox, Skeleton, Typography } from "antd";
 import { EtherInput } from "./";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -8,6 +8,7 @@ import { gql } from "@apollo/client";
 import { CaretLeftOutlined } from "@ant-design/icons";
 
 const ethers = require("ethers");
+const { Text } = Typography;
 const { Option } = Select;
 const children = [];
 /*
@@ -23,17 +24,10 @@ async function getTagsList() {
   const { data } = await apolloClient.query({
     query: gql(tagQuery),
   });
-  console.log("xxxxx", data);
   data.tags.map(tag => children.push(<Option key={tag.id}>{tag.id}</Option>));
   // setMemberships(data.memberships);
 }
 getTagsList();
-// for (let i = 10; i < 36; i++) {
-//   children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-// }
-// const handleChange = value => {
-//   console.log("selected", value);
-// };
 
 const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
   const routeHistory = useHistory();
@@ -64,7 +58,7 @@ const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
   const createLock = (
     <>
       <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
-        <Button onClick={goBack} style={{ position: "relative", left: -145, top: -70 }}>
+        <Button onClick={goBack} style={{ position: "relative", top: -10 }}>
           <CaretLeftOutlined />
           Back
         </Button>
@@ -154,7 +148,6 @@ const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
               }}
               placeholder="Select related tags (Max 5)"
               onChange={value => {
-                // const newValue = e.target.value;
                 setSelectedTags(value);
               }}
             >
@@ -203,9 +196,13 @@ const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
               Broadcast membership
             </Button>
           </div>
-          <div style={{ textAlign: "left" }}>
-            {lockTxHash ? <p>Transaction Hash: {lockTxHash}</p> : ""}
-            {lockTxHash && newLockAddress ? <p>New Lock Address: {newLockAddress}</p> : ""}
+          <div style={{ textAlign: "left", marginTop: 20 }}>
+            {lockTxHash ? <Text copyable={{ text: lockTxHash }}>Transaction Hash: {lockTxHash}</Text> : ""}
+            {lockTxHash && newLockAddress ? (
+              <Text copyable={{ text: newLockAddress }}>New Lock Address: {newLockAddress}</Text>
+            ) : (
+              ""
+            )}
           </div>
         </Card>
       </div>
