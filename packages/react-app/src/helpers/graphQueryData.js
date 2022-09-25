@@ -110,11 +110,9 @@ query($first: Int, $orderBy: BigInt, $orderDirection: String) {
     }
   }`;
 
-export const testVarQuery = `
-  query($first: Int, $where: [String!]) {
-   memberships(
-      first: $first, where: {relatedTags_contains: $where}
-    ) {
+export const testVarQuery = gql`
+  query ($where: String) {
+    memberships(where: { relatedTags_contains: [$where] }) {
       id
       membershipAddress
       relatedTags {
@@ -127,3 +125,30 @@ export const testVarQuery = `
     }
   }
 `;
+
+// memberships(
+// skip: Int = 0
+// first: Int = 100
+// orderBy: Membership_orderBy
+// orderDirection: OrderDirection
+// where: Membership_filter
+// block: Block_height
+// subgraphError: _SubgraphErrorPolicy_! = deny
+// ): [Membership!]!
+
+// const testVarQueryx = gql`
+//   query ($where: String) {
+//    {
+//     memberships(where: { relatedTags_contains: [$where] }) {
+//       id
+//       membershipAddress
+//       relatedTags {
+//         id
+//         name
+//       }
+//       creator {
+//         address
+//       }
+//     }
+//   }
+// `;

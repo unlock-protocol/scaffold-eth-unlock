@@ -27,14 +27,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // Getting a previously deployed contract
   const membersHub = await ethers.getContract("MembersHub", deployer);
+  await membersHub.transferOwnership(
+    "0xCA7632327567796e51920F6b16373e92c7823854"
+  );
   /*  await YourContract.setPurpose("Hello");
   
     // To take ownership of yourContract using the ownable library uncomment next line and add the 
     // address you want to be the owner. 
     
-    await YourContract.transferOwnership(
-      "ADDRESS_HERE"
-    );
 
     //const YourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   */

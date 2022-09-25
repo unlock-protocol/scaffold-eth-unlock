@@ -1,47 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { Image, Avatar, Button, List, Skeleton, Space, Divider, Spin } from "antd";
+import { Button, List, Skeleton, Spin } from "antd";
 import { CenterContent, ContentRow, ContentCol, MultiSelect, UnlockPaywall } from "../components";
 import { apolloClient, membershipQuery } from "../helpers/graphQueryData";
-import { gql, useQuery } from "@apollo/client";
-// import fetch from "isomorphic-fetch";
+import { gql, useQuery, useLazyQuery } from "@apollo/client";
+
 // unlock contract abis
 const abis = require("@unlock-protocol/contracts");
-// async function membershipsList(tagName) {
-//   console.log("fetching tag", tagName);
-//   const { data } = await apolloClient.query({
-//     query: gql(membershipQuery),
-//   });
-//   console.log("grrrrr", data);
-// }
-// membershipsList();
-
-// const count = 3;
-// const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-
-// const IconText = ({ icon, text }) => (
-//   <Space>
-//     {React.createElement(icon)}
-//     {text}
-//   </Space>
-// );
 
 function Home({ address, userSigner, targetNetwork }) {
   const [initLoading, setInitLoading] = useState(true);
-  // const [loading, setLoading] = useState(false);
-  // const [data, setData] = useState([]);
-  // const [list, setList] = useState([]);
   const [memberships, setMemberships] = useState();
   const [membershipsData, setMembershipsData] = useState([]);
   const [publicLockContracts, setPublicLockContracts] = useState([]);
   const [fetching, setFetching] = useState();
   const [selectedTags, setSelectedTags] = useState();
 
-  // const [unlock, setUnlock] = useState();
-
-  const testQuery = gql`
-    {
-      memberships(first: 20, orderBy: createdAt, orderDirection: asc) {
+  const SEARCH_BY_TAGS = gql`
+    query ($where: Membership_filter) {
+      memberships(first: 20, where: $where) {
         id
         membershipAddress
         relatedTags {
@@ -54,7 +31,13 @@ function Home({ address, userSigner, targetNetwork }) {
       }
     }
   `;
-  const { data, isloading, error, refetch } = useQuery(testQuery, { pollInterval: 2500 });
+
+  const { data, isloading, error, refetch } = useQuery(SEARCH_BY_TAGS, {
+    pollInterval: 2500,
+    variables: {
+      where: { relatedTags_contains: selectedTags },
+    },
+  });
 
   useEffect(() => {
     if (isloading) {
@@ -63,7 +46,7 @@ function Home({ address, userSigner, targetNetwork }) {
       setMemberships(data.memberships);
       setInitLoading(false);
     } else {
-      console.log("error getting data from the graph", error);
+      console.log("q error getting data from the graph", error);
     }
   }, [data, isloading, error]);
 
@@ -155,15 +138,15 @@ function Home({ address, userSigner, targetNetwork }) {
         <Button onClick={onLoadMore}>load more</Button>
       </div>
     ) : null;
+
   const handleSelect = opt => {
     let chosenTags = [];
     opt.map(item => chosenTags.push(item.value));
     setSelectedTags(chosenTags);
+    refetch({ relatedTags_contains: selectedTags });
   };
-  console.log("qqqqq", selectedTags);
 
   return (
-    // <div>
     <CenterContent right={50} left={50}>
       <ContentRow>
         <ContentCol flex={1}>
@@ -208,42 +191,10 @@ function Home({ address, userSigner, targetNetwork }) {
             ) : (
               <Spin></Spin>
             )}
-            {/* <Divider />
-            <List
-              itemLayout="vertical"
-              size="large"
-              dataSource={data2}
-              footer={<div>{loadMore}</div>}
-              renderItem={item => (
-                <List.Item
-                  key={item.title}
-                  actions={[
-                    <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
-                    <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
-                    <IconText icon={MessageOutlined} text="2" key="list-vertical-message" />,
-                  ]}
-                  extra={
-                    <img
-                      width={272}
-                      alt="logo"
-                      src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-                    />
-                  }
-                >
-                  <List.Item.Meta
-                    avatar={<Avatar src={item.avatar} />}
-                    title={<a href={item.href}>{item.title}</a>}
-                    description={item.description}
-                  />
-                  {item.content}
-                </List.Item>
-              )}
-            /> */}
           </div>
         </ContentCol>
       </ContentRow>
     </CenterContent>
-    // </div>
   );
 }
 

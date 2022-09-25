@@ -5,10 +5,12 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Col, Divider, Row, Space, Image, Button } from "antd";
 import { CenterContent, ContentRow, ContentCol } from "../components";
+import { useHistory } from "react-router-dom";
+
 import { ethImg, mhLogo, searchImg } from "../img";
 
-function Home({ address, loadWeb3Modal, yourLocalBalance }) {
-  const [loading, setLoading] = useState([]);
+function Home({ loadWeb3Modal, injectedProvider }) {
+  let history = useHistory();
 
   return (
     <div className="home">
@@ -40,8 +42,15 @@ function Home({ address, loadWeb3Modal, yourLocalBalance }) {
                   services that excites us can be a daunting task in web3 simply becuase of how fast things are moving,
                   it's difficult to keep track or keep up with everything.
                 </p>
-                <Button style={{ marginTop: 13 }} shape="round" size={"large"}>
-                  Discover
+                <Button
+                  onClick={() => {
+                    history.push("/dashboard/explore");
+                  }}
+                  style={{ marginTop: 13 }}
+                  shape="round"
+                  size={"large"}
+                >
+                  {injectedProvider ? "Discover" : "Connect Wallet"}
                 </Button>
               </div>
             </ContentCol>
@@ -54,8 +63,15 @@ function Home({ address, loadWeb3Modal, yourLocalBalance }) {
                   Members Hub try to solve this by providing a platform where communities can broadcast their existence
                   so people who are interested can find them
                 </p>
-                <Button style={{ marginTop: 13 }} shape="round" size={"large"}>
-                  Get started
+                <Button
+                  onClick={() => {
+                    history.push("/dashboard/");
+                  }}
+                  style={{ marginTop: 13 }}
+                  shape="round"
+                  size={"large"}
+                >
+                  {injectedProvider ? "Get started" : "Connect Wallet"}
                 </Button>
               </div>
             </ContentCol>
@@ -71,8 +87,20 @@ function Home({ address, loadWeb3Modal, yourLocalBalance }) {
                   Simply publish your community and people would be able to find you by searching the memberships
                   explorer
                 </h3>
-                <Button style={{ marginTop: 13 }} shape="round" size={"large"}>
-                  Connect wallet
+                <Button
+                  // onClick={!address && !userSigner ? loadWeb3Modal : history.push("/dashboard")}
+                  onClick={() => {
+                    if (injectedProvider) {
+                      history.push("/dashboard");
+                    } else {
+                      loadWeb3Modal();
+                    }
+                  }}
+                  style={{ marginTop: 13 }}
+                  shape="round"
+                  size={"large"}
+                >
+                  {injectedProvider ? "Dashboard" : "Connect Wallet"}
                 </Button>
               </div>
             </ContentCol>

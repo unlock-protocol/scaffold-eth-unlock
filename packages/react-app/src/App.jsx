@@ -247,18 +247,6 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
-  useEffect(() => {
-    console.log("dress", readContracts);
-    // if (address) {
-    //   let username = `eip155:42:${address}`;
-    //   let username2 = `eip155:42:0xCA7632327567796e51920F6b16373e92c7823854`
-    //   console.log("username3", address);
-    //   console.log("username", username);
-    //   console.log("username2", username2 === username);
-
-    // }
-  }, [readContracts]);
-
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   return (
@@ -306,7 +294,13 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          <Home address={address} web3Modal={web3Modal} userSigner={userSigner} />
+          <Home
+            address={address}
+            web3Modal={web3Modal}
+            injectedProvider={injectedProvider}
+            loadWeb3Modal={loadWeb3Modal}
+            userSigner={userSigner}
+          />
         </Route>
         <Route path="/dashboard">
           <ExampleUI
@@ -320,6 +314,7 @@ function App(props) {
             contractConfig={contractConfig}
             blockExplorer={blockExplorer}
             targetNetwork={targetNetwork}
+            injectedProvider={injectedProvider}
             name={"MembersHub"}
             tx={tx}
           />

@@ -4,7 +4,7 @@ import { Layout, Menu } from "antd";
 import { SyncOutlined, LaptopOutlined, NotificationOutlined, UserOutlined, SettingOutlined } from "@ant-design/icons";
 import { Address, Balance, Events, Contract, SearchInput } from "../components";
 import { Link, Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { Explore, Create, Subgraph } from ".";
+import { Explore, Create, Subgraph, Dashboard } from ".";
 import { read } from "fs";
 // import * as EpnsAPI from "@epnsproject/sdk-restapi";
 // import { NotificationItem, chainNameType } from "@epnsproject/sdk-uiweb";
@@ -24,6 +24,7 @@ export default function ExampleUI({
   readContracts,
   writeContracts,
   targetNetwork,
+  injectedProvider,
   tx,
   ...props
 }) {
@@ -34,15 +35,11 @@ export default function ExampleUI({
   // const userAddress = "0xca7632327567796e51920f6b16373e92c7823854";
   // // const userCAIP = `eip155:${localChainId}:${address}`;
   // const userCAIP = `eip155:${chainId}:${userAddress}`;
-  // useEffect(() => {
-  //   const test = async () => {
-  //     if (readContracts && readContracts.MembersHub) {
-  //       let tags = await readContracts.MembersHub.getTags();
-  //       console.log("yyyyy", tags);
-  //     }
-  //   };
-  //   test();
-  // }, [readContracts]);
+  useEffect(() => {
+    if (!injectedProvider) {
+      history.push("/");
+    }
+  }, [injectedProvider]);
 
   return (
     <Layout>
@@ -71,11 +68,11 @@ export default function ExampleUI({
                 <NotificationOutlined /> <span>Broadcast</span>{" "}
               </Link>
             </Menu.Item>
-            <Menu.Item key="/profile">
+            {/* <Menu.Item key="/profile">
               <Link to="/dashboard/profile">
                 <UserOutlined /> <span>Profile</span>{" "}
               </Link>
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item key="/debug">
               <Link to="/dashboard/debug">
                 <SettingOutlined /> <span>Debug</span>{" "}
@@ -103,20 +100,20 @@ export default function ExampleUI({
           >
             <Switch>
               <Route exact path="/dashboard">
-                {/* <Contract
-                  name={name}
+                <Dashboard
                   signer={userSigner}
                   provider={localProvider}
                   address={address}
+                  writeContracts={writeContracts}
                   blockExplorer={blockExplorer}
                   contractConfig={contractConfig}
-                /> */}
+                />
               </Route>
-              <Route path="/dashboard/profile">
+              {/* <Route path="/dashboard/profile">
                 <div style={{ textAlign: "center" }}>
                   <Subgraph tx={tx} writeContracts={writeContracts} mainnetProvider={mainnetProvider} />
                 </div>
-              </Route>
+              </Route> */}
               <Route path="/dashboard/explore">
                 <Explore userSigner={userSigner} address={address} targetNetwork={targetNetwork} />
               </Route>

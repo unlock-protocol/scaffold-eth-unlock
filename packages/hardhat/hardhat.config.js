@@ -27,7 +27,9 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-// const defaultNetwork = "localhost";
+// const defaultNetwork = "polygon";
+// const defaultNetwork = "mumbai";
+// const defaultNetwork = "optimism";
 const defaultNetwork = "rinkeby";
 
 function mnemonic() {
