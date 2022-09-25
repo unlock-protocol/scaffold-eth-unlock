@@ -70,12 +70,11 @@ function Create({ writeContracts, userSigner, price }) {
           lockData.maxKeys = await publicLock.maxNumberOfKeys();
           lockData.totalSupply = await publicLock.totalSupply();
           setImportedLockData(lockData);
+          console.log("ooooooo", publicLock);
         } catch (e) {
           console.log("error getting imported Lock data: ", e);
         }
       }
-      console.log("lock data", lockData);
-      console.log("publickLock", publicLock);
       setIsImporting(false);
     };
     getLockData();

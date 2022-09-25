@@ -86,7 +86,6 @@ function App(props) {
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
-
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
 
@@ -320,6 +319,7 @@ function App(props) {
             readContracts={readContracts}
             contractConfig={contractConfig}
             blockExplorer={blockExplorer}
+            targetNetwork={targetNetwork}
             name={"MembersHub"}
             tx={tx}
           />

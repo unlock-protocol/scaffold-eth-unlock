@@ -2,6 +2,8 @@ import { Select, Spin } from "antd";
 import debounce from "lodash/debounce";
 import React, { useMemo, useRef, useState } from "react";
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
+import { tagQuery, subgraphURI } from "../helpers/graphQueryData";
+
 // import fetch from "isomorphic-fetch";
 
 function DebounceSelect({ fetchOptions, debounceTimeout = 1000, ...props }) {
@@ -39,22 +41,22 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 1000, ...props }) {
   );
 } // Usage of DebounceSelect
 
-let subgraphURI = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
+// let subgraphURI = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
 const client = new ApolloClient({
   uri: subgraphURI,
   cache: new InMemoryCache(),
 });
-const tagQuery = `
-  {
-    tags(first: 25, orderBy: createdAt, orderDirection: asc) {
-      id
-      name
-      creator {
-        address
-      }
-    }
-  }
-  `;
+// const tagQuery = `
+//   {
+//     tags(first: 25, orderBy: createdAt, orderDirection: asc) {
+//       id
+//       name
+//       creator {
+//         address
+//       }
+//     }
+//   }
+//   `;
 
 async function fetchTagList(tagName) {
   console.log("fetching tag", tagName);
@@ -68,7 +70,7 @@ async function fetchTagList(tagName) {
 }
 
 // const MultiSelect = ({placeholder, xfetchOptions, onChange}) => {
-const MultiSelect = () => {
+const MultiSelect = props => {
   const [value, setValue] = useState([]);
   return (
     <DebounceSelect
@@ -79,6 +81,7 @@ const MultiSelect = () => {
       fetchOptions={fetchTagList}
       onChange={newValue => {
         setValue(newValue);
+        props.onChange(newValue);
       }}
       // value={value}
       // placeholder={placeholder}

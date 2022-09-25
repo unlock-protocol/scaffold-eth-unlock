@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 // export const subgraphURI = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
 export const subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub";
 
@@ -82,9 +82,11 @@ const broadcasterQuery = `
 //   });
 //   return res.data.challenge.text;
 // };
-const getTagQuery = `
-  query($request: Tag!) {
-    tag(name: $request) {
+export const tagsQuery = gql`
+  {
+    tags {
+      id
+      name
       creator {
         address
       }
@@ -95,4 +97,33 @@ const getTagQuery = `
       }
     }
   }
-  `;
+`;
+
+const varQuery = `
+query($first: Int, $orderBy: BigInt, $orderDirection: String) {
+    memberships(where: {relatedTags_contains: ["NFT"]}, orderBy: createdAt, orderDirection: desc) {
+      id
+      createdAt
+      creator {
+        address
+      }
+    }
+  }`;
+
+export const testVarQuery = `
+  query($first: Int, $where: [String!]) {
+   memberships(
+      first: $first, where: {relatedTags_contains: $where}
+    ) {
+      id
+      membershipAddress
+      relatedTags {
+        id
+        name
+      }
+      creator {
+        address
+      }
+    }
+  }
+`;

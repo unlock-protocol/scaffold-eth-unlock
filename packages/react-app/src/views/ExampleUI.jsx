@@ -23,6 +23,7 @@ export default function ExampleUI({
   name,
   readContracts,
   writeContracts,
+  targetNetwork,
   tx,
   ...props
 }) {
@@ -117,7 +118,7 @@ export default function ExampleUI({
                 </div>
               </Route>
               <Route path="/dashboard/explore">
-                <Explore />
+                <Explore userSigner={userSigner} address={address} targetNetwork={targetNetwork} />
               </Route>
               <Route path="/dashboard/create">
                 <Create writeContracts={writeContracts} userSigner={userSigner} />
