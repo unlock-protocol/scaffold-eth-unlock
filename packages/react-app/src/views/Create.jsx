@@ -25,7 +25,7 @@ async function getTagsList() {
 }
 getTagsList();
 
-function Create({ writeContracts, userSigner, price }) {
+function Create({ writeContracts, userSigner, price, tx }) {
   const [selectedTags, setSelectedTags] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [importedLockAddress, setImportedLockAddress] = useState(false);
@@ -42,7 +42,15 @@ function Create({ writeContracts, userSigner, price }) {
       try {
         if (userSigner) {
           unlockContract = new ethers.Contract(
-            "0xd8c88be5e8eb88e38e6ff5ce186d764676012b0b", //Unlock Rinkeby
+            "0xE8E5cd156f89F7bdB267EabD5C43Af3d5AF2A78f", // Unlock Polygon
+            // "0x3d5409CcE1d45233dE1D4eBDEe74b8E004abDD13", // Unlock Mainnet
+            // "0x99b1348a9129ac49c6de7F11245773dE2f51fB0c", // Unlock Optimism
+            // "0xeC83410DbC48C7797D2f2AFe624881674c65c856", // Unlock BSC
+            // "0x1bc53f4303c711cc693F6Ec3477B83703DcB317f", // Unlock Gnosis
+            // "0x1FF7e338d5E582138C46044dc238543Ce555C963", // Unlock Mumbai
+            // "0x627118a4fB747016911e5cDA82e2E77C531e8206", // Unlock Goerli
+            // "0xd8c88be5e8eb88e38e6ff5ce186d764676012b0b", // Unlock Rinkeby
+            // "0x1FF7e338d5E582138C46044dc238543Ce555C963", // Unlock Celo
             abis.UnlockV11.abi,
             userSigner,
           );
@@ -81,6 +89,7 @@ function Create({ writeContracts, userSigner, price }) {
   }, [importedLockAddress, publicLock]);
 
   const goBack = () => {
+    setIsLoading(false);
     setBroadcastMethod(0);
   };
 
@@ -128,7 +137,7 @@ function Create({ writeContracts, userSigner, price }) {
       <Title level={3} style={{ textAlign: "center", marginBottom: 30 }}>
         Broadcast Community / Membership
       </Title>
-      <CreateLock writeContracts={writeContracts} unlock={unlock} price={price} goBack={goBack} />
+      <CreateLock writeContracts={writeContracts} unlock={unlock} txn={tx} price={price} goBack={goBack} />
     </div>
   );
 
@@ -202,17 +211,18 @@ function Create({ writeContracts, userSigner, price }) {
                       type="primary"
                       size="large"
                       loading={isLoading}
-                      onClick={async () => {
+                      onClick={() => {
                         setIsLoading(true);
-                        try {
-                          const broadcastTx = await writeContracts.MembersHub.broadcastMembership(
-                            selectedTags,
-                            importedLockAddress,
-                          );
-                          console.log("broadcast txn", broadcastTx);
-                        } catch (e) {
-                          console.log(e);
-                        }
+                        (async function () {
+                          try {
+                            const broadcastTx = tx(
+                              await writeContracts.MembersHub.broadcastMembership(selectedTags, importedLockAddress),
+                            );
+                            console.log("broadcast txn", broadcastTx);
+                          } catch (e) {
+                            console.log(e);
+                          }
+                        })(selectedTags, importedLockAddress);
                         setTimeout(setIsLoading(false), 3000);
                       }}
                       disabled={isLoading}

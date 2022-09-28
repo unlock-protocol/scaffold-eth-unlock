@@ -41,7 +41,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 1000, ...props }) {
   );
 } // Usage of DebounceSelect
 
-// let subgraphURI = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
+// let subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon";
 const client = new ApolloClient({
   uri: subgraphURI,
   cache: new InMemoryCache(),

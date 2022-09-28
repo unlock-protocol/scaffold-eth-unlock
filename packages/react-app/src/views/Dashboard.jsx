@@ -2,42 +2,16 @@ import React, { useEffect, useState } from "react";
 import { CaretLeftOutlined, TagOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Input, Card, Button, Typography, Select, Skeleton, Spin } from "antd";
 
-import { CenterContent, ContentRow, ContentCol, CreateLock, ButtonCard } from "../components";
+import { CenterContent, ContentRow, ContentCol, ButtonCard } from "../components";
 
-function Create({ writeContracts, userSigner, price }) {
-  // const [selectedTags, setSelectedTags] = useState();
+function Create({ writeContracts, txn }) {
   const [isLoading, setIsLoading] = useState(false);
-  // const [importedLockAddress, setImportedLockAddress] = useState(false);
   const [tagOperation, setTagOperation] = useState(0);
-  // const [publicLock, setPublicLock] = useState();
-  // const [unlock, setUnlock] = useState();
-  // const [addingTag, setAddingTag] = useState();
   const [tag, setTag] = useState();
-  // const [importedLockData, setImportedLockData] = useState();
-  // const [isImporting, setIsImporting] = useState();
-
-  // const handleNewBroadCast = () => {
-  //   history.push("/dashboard/create");
-  // };
 
   const goBack = () => {
     setTagOperation(0);
-  };
-  const addTag = async tag => {
-    try {
-      let tagTX = await writeContracts.MembersHub.addTag(tag);
-      return tagTX;
-    } catch (e) {
-      console.log("error adding tag", e);
-    }
-  };
-  const removeTag = async tag => {
-    try {
-      let tagTX = await writeContracts.MembersHub.removeTag(tag);
-      return tagTX;
-    } catch (e) {
-      console.log("error removing tag", e);
-    }
+    setIsLoading(false);
   };
 
   const addTagForm = (
@@ -67,10 +41,16 @@ function Create({ writeContracts, userSigner, price }) {
                   loading={isLoading}
                   onClick={() => {
                     setIsLoading(true);
-                    addTag(tag);
-                    setTimeout(() => {
-                      setIsLoading(false);
-                    }, 5000);
+                    (async function () {
+                      try {
+                        let tagTX = await txn(writeContracts.MembersHub.addTag(tag));
+                        console.log("add tag tx ", tagTX);
+                        setIsLoading(false);
+                        return tagTX;
+                      } catch (e) {
+                        console.log("error adding tag", e);
+                      }
+                    })(tag);
                   }}
                   disabled={isLoading}
                 >
@@ -110,10 +90,15 @@ function Create({ writeContracts, userSigner, price }) {
                   loading={isLoading}
                   onClick={() => {
                     setIsLoading(true);
-                    removeTag(tag);
-                    setTimeout(() => {
-                      setIsLoading(false);
-                    }, 5000);
+                    (async function () {
+                      try {
+                        let tagTX = await txn(writeContracts.MembersHub.removeTag(tag));
+                        setIsLoading(false);
+                        return tagTX;
+                      } catch (e) {
+                        console.log("error adding tag", e);
+                      }
+                    })(tag);
                   }}
                   disabled={isLoading}
                 >

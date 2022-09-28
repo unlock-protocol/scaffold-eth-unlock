@@ -16,11 +16,11 @@ const highlight = {
 };
 
 // Subgraph endpoints:
-// Queries (HTTP):     http://localhost:8000/subgraphs/name/scaffold-eth/your-contract
+// Queries (HTTP):     "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon"
 // Subscriptions (WS): http://localhost:8001/subgraphs/name/scaffold-eth/your-contract
 
 function Subgraph(props) {
-  let subgraphURI = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
+  let subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon";
   function graphQLFetcher(graphQLParams) {
     // return fetch(props.subgraphUri, {
     return fetch(subgraphURI, {

@@ -5,7 +5,7 @@ import fetch from "isomorphic-fetch";
 const { Option } = Select;
 const children = [];
 
-let subgraphURI = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
+let subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon";
 // function graphQLFetcher(graphQLParams) {
 //   // return fetch(props.subgraphUri, {
 //   return fetch(subgraphURI, {

@@ -1,8 +1,9 @@
-import { BigInt, Address } from "@graphprotocol/graph-ts"
+import { BigInt, store } from "@graphprotocol/graph-ts"
 
 import {
   BroadcastMembership,
-  NewTag
+  NewTag,
+  RemoveTag
 } from "../generated/MembersHub/MembersHub"
 
 import { Tag, TagCreator,Membership,Broadcaster } from "../generated/schema"
@@ -60,4 +61,10 @@ export function handleBroadcastMembership(event: BroadcastMembership): void {
     (item) => item.toString()
   )
   membership.save();
+}
+
+export function handleRemoveTag(event: RemoveTag): void {
+  // Remove tag
+  let tagId = event.params.tag
+  store.remove('Tag', tagId)
 }

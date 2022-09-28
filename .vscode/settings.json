@@ -32,5 +32,6 @@
       "**/yarn-error.log": true,
       "**/yarn.lock": true
    },
-   "git.detectSubmodules": false
+   "git.detectSubmodules": false,
+   "task.allowAutomaticTasks": "off"
 }

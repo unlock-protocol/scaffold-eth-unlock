@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Spin } from "antd";
 // import { utils } from "ethers";
 import { SyncOutlined, LaptopOutlined, NotificationOutlined, UserOutlined, SettingOutlined } from "@ant-design/icons";
-import { Address, Balance, Events, Contract, SearchInput } from "../components";
+import { Address, Contract, CenterContent, ContentRow, ContentCol } from "../components";
 import { Link, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { Explore, Create, Subgraph, Dashboard } from ".";
 import { read } from "fs";
@@ -29,6 +29,7 @@ export default function ExampleUI({
   ...props
 }) {
   const { Sider, Content } = Layout;
+  const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
   // const [notifications, setNotifications] = useState();
   // const chainId = 42;
@@ -36,12 +37,13 @@ export default function ExampleUI({
   // // const userCAIP = `eip155:${localChainId}:${address}`;
   // const userCAIP = `eip155:${chainId}:${userAddress}`;
   useEffect(() => {
-    if (!injectedProvider) {
-      history.push("/");
+    if (injectedProvider) {
+      setIsLoading(false);
+      // history.push("/");
     }
   }, [injectedProvider]);
 
-  return (
+  return !isLoading ? (
     <Layout>
       <Layout>
         <Sider width={200} className="site-layout-background">
@@ -68,11 +70,11 @@ export default function ExampleUI({
                 <NotificationOutlined /> <span>Broadcast</span>{" "}
               </Link>
             </Menu.Item>
-            {/* <Menu.Item key="/profile">
+            <Menu.Item key="/profile">
               <Link to="/dashboard/profile">
                 <UserOutlined /> <span>Profile</span>{" "}
               </Link>
-            </Menu.Item> */}
+            </Menu.Item>
             <Menu.Item key="/debug">
               <Link to="/dashboard/debug">
                 <SettingOutlined /> <span>Debug</span>{" "}
@@ -107,18 +109,19 @@ export default function ExampleUI({
                   writeContracts={writeContracts}
                   blockExplorer={blockExplorer}
                   contractConfig={contractConfig}
+                  txn={tx}
                 />
               </Route>
-              {/* <Route path="/dashboard/profile">
+              <Route path="/dashboard/profile">
                 <div style={{ textAlign: "center" }}>
                   <Subgraph tx={tx} writeContracts={writeContracts} mainnetProvider={mainnetProvider} />
                 </div>
-              </Route> */}
+              </Route>
               <Route path="/dashboard/explore">
                 <Explore userSigner={userSigner} address={address} targetNetwork={targetNetwork} />
               </Route>
               <Route path="/dashboard/create">
-                <Create writeContracts={writeContracts} userSigner={userSigner} />
+                <Create writeContracts={writeContracts} tx={tx} userSigner={userSigner} />
               </Route>
               <Route path="/dashboard/debug">
                 <div style={{ textAlign: "center" }}>
@@ -139,5 +142,13 @@ export default function ExampleUI({
         </Layout>
       </Layout>
     </Layout>
+  ) : (
+    <CenterContent>
+      <ContentRow>
+        <ContentCol flex={1} alignItems={"center"}>
+          <Spin></Spin>
+        </ContentCol>
+      </ContentRow>
+    </CenterContent>
   );
 }

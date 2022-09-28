@@ -13,7 +13,7 @@ const themes = {
 
 const prevTheme = window.localStorage.getItem("theme");
 
-const subgraphUri = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub";
+const subgraphUri = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon";
 
 const client = new ApolloClient({
   uri: subgraphUri,

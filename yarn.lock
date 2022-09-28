@@ -5352,6 +5352,18 @@
     "@uniswap/lib" "1.1.1"
     "@uniswap/v2-core" "1.0.0"
 
+"@unlock-protocol/contracts@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@unlock-protocol/contracts/-/contracts-0.0.9.tgz#c6656466cb9ce3fa62f22847d111ff6404d91c38"
+  integrity sha512-dAxlZCbILBZamDzPKmyBZJsJ94dIFnooGU6CjdacMhZ3f1rFYqTJVjQ7vWYyqBvQIYy8r+nIkyVxmLU91NQA6g==
+
+"@unlock-protocol/paywall@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@unlock-protocol/paywall/-/paywall-0.1.0.tgz#ff11465c226c08b64834ff4286d185a693a52d14"
+  integrity sha512-GDquBUaWl+YOWgpt0hdCXWj8UTTHdW5XtMGyFUGQaQZwxnnebCv+U2z5SDvedS+A7Xi9++LDd0jDpW7vywNDUw==
+  dependencies:
+    postmate "1.5.2"
+
 "@walletconnect/browser-utils@^1.5.2":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@walletconnect/browser-utils/-/browser-utils-1.5.2.tgz#6fe7fad96328f156b052e196a5399277d0f6ebc6"
@@ -19488,6 +19500,11 @@ postinstall-postinstall@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/postinstall-postinstall/-/postinstall-postinstall-2.1.0.tgz#4f7f77441ef539d1512c40bd04c71b06a4704ca3"
   integrity sha512-7hQX6ZlZXIoRiWNrbMQaLzUUfH+sSx39u8EJ9HYuDc1kLo9IXKWjM5RSquZN1ad5GnH8CGFM78fsAAQi3OKEEQ==
+
+postmate@1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/postmate/-/postmate-1.5.2.tgz#d59a78b3780023c5d32225fd40633b364958bdb3"
+  integrity sha512-EHLlEmrUA/hALls49oBrtE7BzDXXjB9EiO4MZpsoO3R/jRuBmD+2WKQuYAbeuVEpTzrPpUTT79z2cz4qaFgPRg==
 
 preact@10.4.1:
   version "10.4.1"

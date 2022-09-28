@@ -29,7 +29,7 @@ async function getTagsList() {
 }
 getTagsList();
 
-const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
+const CreateLock = ({ price, unlock, writeContracts, txn, goBack }) => {
   const routeHistory = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [expirationDuration, setExpirationDuration] = useState({});
@@ -51,10 +51,14 @@ const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
   const toggleUseUnlimitedDate = () => {
     setUseUnlimitedDate(!useUnlimitedDate);
   };
-  useEffect(() => {
-    console.log("selected tags", selectedTags);
-  }, [selectedTags]);
-
+  // useEffect(() => {
+  //   console.log("selected tags", selectedTags);
+  // }, [selectedTags]);
+  // useEffect(() => {
+  //   if (tx) {
+  //     settxn(tx);
+  //   }
+  // }, [tx]);
   const createLock = (
     <>
       <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
@@ -106,9 +110,11 @@ const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
             />
 
             <Input
+              type="number"
               style={{ textAlign: "left", marginTop: 15 }}
               placeholder={"Max number of keys"}
-              value={!maxNumberOfKeys && !maxNumberOfKeys ? 0 : maxNumberOfKeys}
+              // value={!maxNumberOfKeys && !maxNumberOfKeys ? 0 : maxNumberOfKeys}
+              value={maxNumberOfKeys}
               onChange={e => {
                 const newValue = parseInt(e.target.value);
                 console.log("Max key ", newValue);
@@ -178,9 +184,8 @@ const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
                   console.log("deploy lock events", event);
                   const newLockAddress = event[0].address;
                   if (newLockAddress) {
-                    const broadcastTx = await writeContracts.MembersHub.broadcastMembership(
-                      selectedTags,
-                      newLockAddress,
+                    const broadcastTx = await txn(
+                      writeContracts.MembersHub.broadcastMembership(selectedTags, newLockAddress),
                     );
                     console.log("broadcast txn", broadcastTx);
                   }
@@ -198,6 +203,7 @@ const CreateLock = ({ price, unlock, writeContracts, goBack }) => {
           </div>
           <div style={{ textAlign: "left", marginTop: 20 }}>
             {lockTxHash ? <Text copyable={{ text: lockTxHash }}>Transaction Hash: {lockTxHash}</Text> : ""}
+            <br />
             {lockTxHash && newLockAddress ? (
               <Text copyable={{ text: newLockAddress }}>New Lock Address: {newLockAddress}</Text>
             ) : (

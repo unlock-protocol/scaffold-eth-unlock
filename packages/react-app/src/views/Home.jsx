@@ -11,6 +11,13 @@ import { ethImg, mhLogo, searchImg } from "../img";
 
 function Home({ loadWeb3Modal, injectedProvider }) {
   let history = useHistory();
+  const getStarted = route => {
+    if (injectedProvider) {
+      history.push(route);
+    } else {
+      loadWeb3Modal();
+    }
+  };
 
   return (
     <div className="home">
@@ -43,8 +50,15 @@ function Home({ loadWeb3Modal, injectedProvider }) {
                   it's difficult to keep track or keep up with everything.
                 </p>
                 <Button
+                  // onClick={() => {
+                  //   if (injectedProvider) {
+                  //     history.push("/dashboard/explore");
+                  //   } else {
+                  //     loadWeb3Modal();
+                  //   }
+                  // }}
                   onClick={() => {
-                    history.push("/dashboard/explore");
+                    getStarted("/dashboard/explore");
                   }}
                   style={{ marginTop: 13 }}
                   shape="round"
@@ -65,7 +79,8 @@ function Home({ loadWeb3Modal, injectedProvider }) {
                 </p>
                 <Button
                   onClick={() => {
-                    history.push("/dashboard/");
+                    getStarted("/dashboard/");
+                    // history.push("/dashboard/");
                   }}
                   style={{ marginTop: 13 }}
                   shape="round"
@@ -88,13 +103,8 @@ function Home({ loadWeb3Modal, injectedProvider }) {
                   explorer
                 </h3>
                 <Button
-                  // onClick={!address && !userSigner ? loadWeb3Modal : history.push("/dashboard")}
                   onClick={() => {
-                    if (injectedProvider) {
-                      history.push("/dashboard");
-                    } else {
-                      loadWeb3Modal();
-                    }
+                    getStarted("/dashboard/");
                   }}
                   style={{ marginTop: 13 }}
                   shape="round"
