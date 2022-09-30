@@ -1,36 +1,27 @@
-import { Select, Button, Card, Col, Input, Row, DatePicker, Checkbox, Skeleton, Typography } from "antd";
+import { Button, Card, Col, Input, Row, DatePicker, Checkbox, Skeleton, Typography } from "antd";
 import { EtherInput } from "./";
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { MultiSelect } from "./";
 import moment from "moment";
-import { apolloClient, tagQuery } from "../helpers/graphQueryData";
-import { gql } from "@apollo/client";
 import { CaretLeftOutlined } from "@ant-design/icons";
-
 const ethers = require("ethers");
 const { Text } = Typography;
-const { Option } = Select;
-const children = [];
+
 /*
   ~ What it does? ~
-  Displays an UI to deploy a lock using unlock protocol
+  Displays an UI to deploy a membership lock using unlock protocol and the broadcast membership
+  for discovery by users
   ~ How can I use? ~
   <CreateLock
     price={price}
     unlock={unlock}
+    writeContracts={writeContracts}
+    txn={tx}
+    goBack={myRouteFunction}
   />
 */
-async function getTagsList() {
-  const { data } = await apolloClient.query({
-    query: gql(tagQuery),
-  });
-  data.tags.map(tag => children.push(<Option key={tag.id}>{tag.id}</Option>));
-  // setMemberships(data.memberships);
-}
-getTagsList();
 
 const CreateLock = ({ price, unlock, writeContracts, txn, goBack }) => {
-  const routeHistory = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [expirationDuration, setExpirationDuration] = useState({});
   const [tokenAddress, setTokenAddress] = useState();
@@ -51,14 +42,12 @@ const CreateLock = ({ price, unlock, writeContracts, txn, goBack }) => {
   const toggleUseUnlimitedDate = () => {
     setUseUnlimitedDate(!useUnlimitedDate);
   };
-  // useEffect(() => {
-  //   console.log("selected tags", selectedTags);
-  // }, [selectedTags]);
-  // useEffect(() => {
-  //   if (tx) {
-  //     settxn(tx);
-  //   }
-  // }, [tx]);
+  const handleSelect = opt => {
+    let chosenTags = [];
+    opt.map(item => chosenTags.push(item));
+    setSelectedTags(chosenTags);
+  };
+
   const createLock = (
     <>
       <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
@@ -144,21 +133,14 @@ const CreateLock = ({ price, unlock, writeContracts, txn, goBack }) => {
                 Unlimited expiry
               </Checkbox>
             </div>
-            <Select
-              status={selectedTags && selectedTags.length < 1 ? "error" : "success"}
-              mode="multiple"
-              allowClear
-              style={{
-                width: "100%",
-                marginTop: 15,
-              }}
-              placeholder="Select related tags (Max 5)"
-              onChange={value => {
-                setSelectedTags(value);
-              }}
-            >
-              {children}
-            </Select>
+            <div style={{ textAlign: "left" }}>
+              <MultiSelect
+                placeholder={"Select related tags (Max 5)"}
+                marginTop={15}
+                onChange={handleSelect}
+                status={selectedTags && selectedTags.length < 1 ? "error" : "success"}
+              />
+            </div>
           </div>
 
           <div style={{ padding: 8, textAlign: "center", marginTop: 25 }}>

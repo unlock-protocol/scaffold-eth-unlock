@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { Button, List, Skeleton, Spin } from "antd";
 import { CenterContent, ContentRow, ContentCol, MultiSelect, UnlockPaywall } from "../components";
 import { apolloClient, membershipQuery } from "../helpers/graphQueryData";
-import { gql, useQuery, useLazyQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
 // unlock contract abis
 const abis = require("@unlock-protocol/contracts");
@@ -46,7 +46,7 @@ function Home({ address, userSigner, targetNetwork }) {
       setMemberships(data.memberships);
       setInitLoading(false);
     } else {
-      console.log("q error getting data from the graph", error);
+      console.log("error getting data from the graph", error);
     }
   }, [data, isloading, error]);
 
@@ -59,7 +59,7 @@ function Home({ address, userSigner, targetNetwork }) {
             publicLocks.push(new ethers.Contract(memberships[i].membershipAddress, abis.PublicLockV10.abi, userSigner));
           }
         } catch (e) {
-          console.log("error getting data", e);
+          console.log("error getting Lock contracts data", e);
         }
       }
     };
@@ -88,7 +88,7 @@ function Home({ address, userSigner, targetNetwork }) {
           };
           info();
         } catch (e) {
-          console.log("error getting data", e);
+          console.log("error parsing data from Lock contracts", e);
         }
       }
     };
@@ -141,7 +141,7 @@ function Home({ address, userSigner, targetNetwork }) {
 
   const handleSelect = opt => {
     let chosenTags = [];
-    opt.map(item => chosenTags.push(item.value));
+    opt.map(item => chosenTags.push(item));
     setSelectedTags(chosenTags);
     refetch({ relatedTags_contains: selectedTags });
   };
@@ -150,8 +150,13 @@ function Home({ address, userSigner, targetNetwork }) {
     <CenterContent right={50} left={50}>
       <ContentRow>
         <ContentCol flex={1}>
-          <div style={{ alignSelf: "center" }}>
-            <MultiSelect onChange={handleSelect} />
+          <div style={{ alignSelf: "center", maxWidth: 450, width: "100%" }}>
+            <MultiSelect
+              marginTop={15}
+              placeholder={"Search memberships"}
+              className="mh-multiselect"
+              onChange={handleSelect}
+            />
           </div>
         </ContentCol>
       </ContentRow>

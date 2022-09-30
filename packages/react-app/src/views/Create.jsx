@@ -1,29 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { PlusOutlined, CaretLeftOutlined, KeyOutlined } from "@ant-design/icons";
-import { Input, Card, Button, Typography, Select, Skeleton, Spin } from "antd";
-import { apolloClient, tagQuery } from "../helpers/graphQueryData";
-import { gql } from "@apollo/client";
-import { CenterContent, ContentRow, ContentCol, CreateLock } from "../components";
+import { Input, Card, Button, Typography, Spin } from "antd";
+import { CenterContent, ContentRow, ContentCol, CreateLock, MultiSelect } from "../components";
+
 // unlock contract abis
 const abis = require("@unlock-protocol/contracts");
-
 const { Title } = Typography;
-const { Option } = Select;
-const children = [];
 const iconButtonStyle = {
   width: 65,
   height: 65,
   fontSize: 19,
 };
-
-async function getTagsList() {
-  const { data } = await apolloClient.query({
-    query: gql(tagQuery),
-  });
-  data.tags.map(tag => children.push(<Option key={tag.id}>{tag.id}</Option>));
-}
-getTagsList();
 
 function Create({ writeContracts, userSigner, price, tx }) {
   const [selectedTags, setSelectedTags] = useState();
@@ -91,6 +79,12 @@ function Create({ writeContracts, userSigner, price, tx }) {
   const goBack = () => {
     setIsLoading(false);
     setBroadcastMethod(0);
+  };
+
+  const handleSelect = opt => {
+    let chosenTags = [];
+    opt.map(item => chosenTags.push(item));
+    setSelectedTags(chosenTags);
   };
 
   const createMembershipButton = (
@@ -169,18 +163,21 @@ function Create({ writeContracts, userSigner, price, tx }) {
                 <>
                   <Input
                     disabled
+                    size="large"
                     style={{ textAlign: "left", marginTop: 15 }}
                     placeholder={importedLockData.name}
                     value={importedLockData.name}
                   />
                   <Input
                     disabled
+                    size="large"
                     style={{ textAlign: "left", marginTop: 15 }}
                     placeholder={"Symbol"}
                     value={`Symbol: ${importedLockData.symbol}`}
                   />
                   <Input
                     disabled
+                    size="large"
                     style={{ textAlign: "left", marginTop: 15 }}
                     placeholder={importedLockData.symbol}
                     value={`Holders: ${importedLockData.totalSupply} / ${
@@ -188,21 +185,12 @@ function Create({ writeContracts, userSigner, price, tx }) {
                     }`}
                   />
                   <div style={{ textAlign: "left", marginTop: 15 }}>
-                    <Select
-                      status={selectedTags && selectedTags.length < 1 ? "error" : "success"}
-                      mode="multiple"
-                      allowClear
-                      style={{
-                        width: "100%",
-                        marginTop: 15,
-                      }}
+                    <MultiSelect
+                      size="large"
                       placeholder="Select related tags (Max 5)"
-                      onChange={value => {
-                        setSelectedTags(value);
-                      }}
-                    >
-                      {children}
-                    </Select>
+                      status={selectedTags && selectedTags.length < 1 ? "error" : "success"}
+                      onChange={handleSelect}
+                    />
                   </div>
                   <div style={{ padding: 8, textAlign: "center", marginTop: 25 }}>
                     <Button

@@ -42,3 +42,6 @@
 .ant-scroll-number.ant-badge-dot {
   right: 9px;
 }
+.mh-multiselect {
+    width: 100%;
+}

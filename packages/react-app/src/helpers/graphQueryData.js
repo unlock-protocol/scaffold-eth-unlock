@@ -83,7 +83,7 @@ const broadcasterQuery = `
 //   });
 //   return res.data.challenge.text;
 // };
-export const tagsQuery = gql`
+export const gqlTagsQuery = gql`
   {
     tags {
       id
