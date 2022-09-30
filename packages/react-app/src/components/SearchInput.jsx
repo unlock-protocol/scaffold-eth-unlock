@@ -1,11 +1,11 @@
 import { Select } from "antd";
 import React, { useEffect } from "react";
 import { gql, ApolloClient, InMemoryCache, useQuery } from "@apollo/client";
+import { subgraphURI } from "../helpers/graphQueryData";
 import fetch from "isomorphic-fetch";
 const { Option } = Select;
 const children = [];
 
-let subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon";
 // function graphQLFetcher(graphQLParams) {
 //   // return fetch(props.subgraphUri, {
 //   return fetch(subgraphURI, {

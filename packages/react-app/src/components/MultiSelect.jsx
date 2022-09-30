@@ -2,7 +2,7 @@ import { Select, Spin } from "antd";
 import debounce from "lodash/debounce";
 import React, { useMemo, useRef, useState } from "react";
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
-import { tagQuery, subgraphURI } from "../helpers/graphQueryData";
+import { tagQuery, subgraphURI, apolloClient } from "../helpers/graphQueryData";
 
 // import fetch from "isomorphic-fetch";
 
@@ -41,22 +41,17 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 1000, ...props }) {
   );
 } // Usage of DebounceSelect
 
-// let subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon";
 const client = new ApolloClient({
   uri: subgraphURI,
   cache: new InMemoryCache(),
 });
-// const tagQuery = `
-//   {
-//     tags(first: 25, orderBy: createdAt, orderDirection: asc) {
-//       id
-//       name
-//       creator {
-//         address
-//       }
-//     }
-//   }
-//   `;
+
+(async function () {
+  const { data } = await apolloClient.query({
+    query: gql(tagQuery),
+  });
+  console.log("TAAA", data);
+})();
 
 async function fetchTagList(tagName) {
   console.log("fetching tag", tagName);

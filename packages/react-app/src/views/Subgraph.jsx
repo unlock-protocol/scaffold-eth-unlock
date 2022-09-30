@@ -6,6 +6,7 @@ import "graphiql/graphiql.min.css";
 import fetch from "isomorphic-fetch";
 import React, { useState, useEffect } from "react";
 import { Address } from "../components";
+import { subgraphURI } from "../helpers/graphQueryData";
 
 const highlight = {
   marginLeft: 4,
@@ -20,7 +21,6 @@ const highlight = {
 // Subscriptions (WS): http://localhost:8001/subgraphs/name/scaffold-eth/your-contract
 
 function Subgraph(props) {
-  let subgraphURI = "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon";
   function graphQLFetcher(graphQLParams) {
     // return fetch(props.subgraphUri, {
     return fetch(subgraphURI, {

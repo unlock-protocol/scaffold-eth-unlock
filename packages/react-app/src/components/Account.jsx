@@ -1,12 +1,13 @@
-import { Button, Badge } from "antd";
+import { Button, Badge, Tooltip } from "antd";
 import React, { useState, useEffect } from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
-import { BellOutlined } from "@ant-design/icons";
+import { BellOutlined, AppstoreOutlined } from "@ant-design/icons";
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
 import { EmbedSDK } from "@epnsproject/sdk-uiembed";
 import { createSocketConnection, EVENTS } from "@epnsproject/sdk-socket";
+import { useHistory } from "react-router-dom";
 /** 
   ~ What it does? ~
 
@@ -55,12 +56,13 @@ export default function Account({
   localChainId,
   blockExplorer,
   isContract,
+  injectedProvider,
 }) {
   const { currentTheme } = useThemeSwitcher();
   const [epnsSocket, setEpnsSocket] = useState();
   const [isConnected, setIsConnected] = useState();
   const [feedCount, setFeedCount] = useState();
-
+  const history = useHistory();
   const chainId = 42;
 
   //EPNS Socket connectionObj
@@ -204,11 +206,21 @@ export default function Account({
     <div style={{ display: "flex", alignItems: "center" }}>
       <Badge dot={true} count={feedCount}>
         <BellOutlined
-          style={{ fontSize: 20, cursor: "pointer", color: "#000", marginRight: 6 }}
+          style={{ fontSize: 21, cursor: "pointer", color: "#1ab2ea", marginRight: 6, marginTop: 2 }}
           id={"sdk-trigger-id"}
         />
       </Badge>
       {display}
+      {injectedProvider && (
+        <Tooltip title="Dashboard">
+          <AppstoreOutlined
+            style={{ fontSize: 24, marginLeft: 5, marginTop: 2, color: "#f7bf10" }}
+            onClick={() => {
+              history.push("/dashboard");
+            }}
+          />
+        </Tooltip>
+      )}
       {web3Modal && (
         <Button
           style={{ marginLeft: 8 }}

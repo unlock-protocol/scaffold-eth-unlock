@@ -1,5 +1,5 @@
 import { BigInt, store } from "@graphprotocol/graph-ts"
-
+// import { store } from '@graphprotocol/graph-ts'
 import {
   BroadcastMembership,
   NewTag,
@@ -66,5 +66,10 @@ export function handleBroadcastMembership(event: BroadcastMembership): void {
 export function handleRemoveTag(event: RemoveTag): void {
   // Remove tag
   let tagId = event.params.tag
-  store.remove('Tag', tagId)
+  let tag = Tag.load(tagId)
+  if (tag == null) {
+    return
+  } else {
+    store.remove("Tag", tagId)
+  }
 }
