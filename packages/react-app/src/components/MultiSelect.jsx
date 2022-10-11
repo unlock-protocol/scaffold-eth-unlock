@@ -29,7 +29,9 @@ const MultiSelect = props => {
       {data && data ? data.tags.map(item => <Option key={item.id}>{item.id}</Option>) : null}
     </Select>
   ) : (
-    <Spin />
+    <div style={{ textAlign: "center" }}>
+      <Spin />
+    </div>
   );
 };
 
