@@ -1,4 +1,4 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH-Unlock
 
 > everything you need to build on Ethereum! 🚀
 
@@ -7,20 +7,22 @@
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
 
-# 🏄‍♂️ Quick Start
+# Members Hub
+## 🏄‍♂️ Quick Start
 
 Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/scaffold-eth/scaffold-eth.git
+git clone https://github.com/blahkheart/scaffold-eth-unlock.git
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
-cd scaffold-eth
+cd scaffold-eth-unlock
+git checkout membershub
 yarn install
 yarn chain
 ```
@@ -28,20 +30,35 @@ yarn chain
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
+cd scaffold-eth-unlock
 yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd scaffold-eth-unlock
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+> in a fourth terminal window, 🛰 start your local subgraph:
+
+⛓️ Make sure your local chain is running first: ```yarn chain```
+
+🚮 Clean up previous data, if there is any: ```yarn clean-graph-node```
+
+📡 Spin up a local graph node by running: ```yarn run-graph-node``` (requires Docker)
+
+Create your local subgraph by running: ```yarn graph-create-local``` (only required once!)
+
+🚢 Deploy your local subgraph by running: ```yarn graph-ship-local```
+
+
+🔏 Edit your smart contract `MembersHub.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+
+🖍️ Edit your local subgraph in `packages/subgraph/src`
 
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
