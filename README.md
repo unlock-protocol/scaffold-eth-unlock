@@ -18,7 +18,7 @@ Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](htt
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/wonderwomancode/scaffold-eth-unlock.git
+git clone https://github.com/unlock-protocol/scaffold-eth-unlock.git
 ```
 
 > install and start your 👷‍ Hardhat chain:
