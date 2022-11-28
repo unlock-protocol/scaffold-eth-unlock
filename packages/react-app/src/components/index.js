@@ -23,8 +23,3 @@ export { default as FaucetHint } from "./FaucetHint";
 export { default as NetworkSwitch } from "./NetworkSwitch";
 export { default as MultiAddressInput } from "./MultiAddressInput";
 export { default as TokenSelect } from "./TokenSelect";
-export { default as CreateLock } from "./CreateLock";
-export { default as LockedContent } from "./LockedContent";
-export { default as UnlockPaywall } from "./UnlockPaywall";
-export { default as UnlockVariables } from "./UnlockVariables";
-export { default as LockedNav } from "./LockedNav";
