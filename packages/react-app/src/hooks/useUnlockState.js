@@ -15,13 +15,13 @@ const useUnlockState = (publicLock, address) => {
 
   useEffect(() => {
     const loadFunc = async () => {
-      try {
-        if (publicLock) {
+      if (publicLock) {
+        try {
           const result = await publicLock.getHasValidKey(address);
           sethasValidKey(result);
+        } catch (e) {
+          console.log(e);
         }
-      } catch (e) {
-        console.log(e);
       }
     };
     void loadFunc();

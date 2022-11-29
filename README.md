@@ -1,8 +1,4 @@
-# Scaffold-ETH + Unlock Protocol
-
-Scaffold-ETH gives you everything you need to get started building on Ethereum and we've added some additional tools to help you get started in creating NFTs using Unlock Protocol.
-
-# 🏗 Scaffold-ETH
+# Scaffold-eth-unlock
 
 > everything you need to build on Ethereum! 🚀
 
@@ -11,20 +7,37 @@ Scaffold-ETH gives you everything you need to get started building on Ethereum a
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
 
-# 🏄‍♂️ Quick Start
+# 🏄‍♂️ Action Loogies
+
+Action Loogies are interactive NFTs inspired by [Spells](https://spells.quest), The first ERC5050 interactive NFT. You can slap or cast a spell of Rage, Lust or Immunity on other Loogie NFTs. Action Loogies implement ERC5050 and also leverage Unlock Protocol to restrict access to specific actions to members only. Loogies art are generated onchain and change according to the action received from other loogies.
+
+## How it works
+
+🔏 Mint an NFT
+
+📝 Register NFT to the state contract to initialize your NFT stats
+
+💼 Get approved for action
+
+📱 Start taking action and let the fun begin!
+
+👩‍👩‍👧‍👧 Get a subscription to gain access to members only actions (Optional).
+
+## 🏄‍♂️ Quick Start
 
 Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
+> clone/fork Action Loogies:
 
 ```bash
-git clone https://github.com/unlock-protocol/scaffold-eth-unlock.git
+git clone https://github.com/blahkheart/scaffold-eth-unlock.git
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
 cd scaffold-eth-unlock
+git checkout action-loogies
 yarn install
 yarn chain
 ```
@@ -43,21 +56,13 @@ cd scaffold-eth-unlock
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contracts in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
 📱 Open http://localhost:3000 to see the app
-
-# Unlock Settings
-
-⚙️ Configure Unlock-protocol variables on `settings` tab or `packages/react-app/src/components/UnlockVariables.jsx`
-
-🔧 Modify your Locked Navigation and Locked Content at `/src/components/LockedNav.jsx` and `/src/components/LockedContent.jsx`
-
-🚀 Deploy a new Lock with the Create Lock Component on `Dashboard` 
 
 # 📚 Documentation
 
@@ -80,7 +85,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 
 📕 Read the docs: https://docs.soliditylang.org
 
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
+📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourCollectible.sol` in **Action Loogies**
 
 - [Primitive Data Types](https://solidity-by-example.org/primitives/)
 - [Mappings](https://solidity-by-example.org/mapping/)
@@ -123,7 +128,7 @@ Register as a builder [here](https://speedrunethereum.com) and start on some of 
 
 # 💬 Support Chat
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with Action Loogies!
 
 ---
 

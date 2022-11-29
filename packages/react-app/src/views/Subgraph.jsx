@@ -83,7 +83,7 @@ function Subgraph(props) {
         <a href="https://thegraph.com/docs/about/introduction" target="_blank" rel="noopener noreferrer">
           The Graph
         </a>{" "}
-        with 🏗 scaffold-eth (
+        with Action Loogies(
         <a href="https://youtu.be/T5ylzOTkn-Q" target="_blank" rel="noopener noreferrer">
           learn more
         </a>
@@ -147,7 +147,11 @@ function Subgraph(props) {
           packages/subgraph/src
         </span>
         (learn more about subgraph definition{" "}
-        <a href="https://thegraph.com/docs/define-a-subgraph" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://thegraph.com/docs/en/developer/define-subgraph-hosted/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           here
         </a>
         )
@@ -172,7 +176,7 @@ function Subgraph(props) {
             onClick={() => {
               console.log("newPurpose", newPurpose);
               /* look how you call setPurpose on your contract: */
-              props.tx(props.writeContracts.YourContract.setPurpose(newPurpose));
+              props.tx(props.writeContracts.YourCollectible.setPurpose(newPurpose));
             }}
           >
             Set Purpose

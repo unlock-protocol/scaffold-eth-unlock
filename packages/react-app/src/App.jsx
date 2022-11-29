@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Menu, Row, Card, Spin } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -14,6 +14,7 @@ import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
   Account,
+  Address,
   Contract,
   Faucet,
   GasGauge,
@@ -23,21 +24,20 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
-  LockedNav
 } from "./components";
+import { TwitterOutlined } from "@ant-design/icons";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
+import StackGrid from "react-stack-grid";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home,Dashboard, ExampleUI, Hints, Subgraph } from "./views";
+import { Transactor, Web3ModalSetup, loogieActiveStateHandlers } from "./helpers";
+import { Home, Actions } from "./views";
 import { useStaticJsonRPC } from "./hooks";
-// unlock contract abis
 const abis = require("@unlock-protocol/contracts");
-
 const { ethers } = require("ethers");
 /*
-    Welcome to 🏗 scaffold-eth !
+    Welcome to Action Loogies !
 
     Code:
     https://github.com/scaffold-eth/scaffold-eth
@@ -56,7 +56,8 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -81,9 +82,12 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+  const [actionLockAddress, setActionLockAddress] = useState();
+  const [publicLockContract, setPublicLockContract] = useState();
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
+  const { handleTokenState, handleTokenVibe } = loogieActiveStateHandlers;
 
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
@@ -138,7 +142,7 @@ function App(props) {
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userSigner, gasPrice);
 
-  // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
+  //  Action Loogies is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
@@ -155,9 +159,21 @@ function App(props) {
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
   // EXTERNAL CONTRACT EXAMPLE:
-  //
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
+
+  const [totalSupply, setTotalSupply] = useState();
+  useEffect(() => {
+    const getTotalSupply = async () => {
+      try {
+        let ts = await readContracts.ActionCollectible.totalSupply();
+        setTotalSupply(ts);
+      } catch (e) {
+        console.log("error fetching total supply", e);
+      }
+    };
+    void getTotalSupply();
+  }, [readContracts]);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -169,53 +185,10 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
-
-  //
-  // 🧫 DEBUG 👨🏻‍🔬
-  //
-  useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetContracts
-    ) {
-      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-      console.log("🌎 mainnetProvider", mainnetProvider);
-      console.log("🏠 localChainId", localChainId);
-      console.log("👩‍💼 selected address:", address);
-      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
-      console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
-      console.log("🔐 writeContracts", writeContracts);
-    }
-  }, [
-    mainnetProvider,
-    address,
-    selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
-    readContracts,
-    writeContracts,
-    mainnetContracts,
-    localChainId,
-    myMainnetDAIBalance,
-  ]);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -245,45 +218,105 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
-
-  ////////////////Unlock Protocol///////////////////
-  const unlockData = JSON.parse(window.localStorage.getItem("unlock"));
-  const publicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
+  // set unlock protocol variables
   useEffect(() => {
-    if (unlockData && publicLockData) {
-      const unlockAddress = unlockData.unlockAddress;
-      const publicLockAddress = publicLockData.publicLockAddress;
-      setDeployedUnlockAddress(unlockAddress);
-      setPublicLockAddress(publicLockAddress);
-    }
-  }, []);
-
-  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState();
-  const [publicLockAddress, setPublicLockAddress] = useState();
-  const [publicLock, setPublicLock] = useState();
-  const [unlock, setUnlock] = useState();
-
-  useEffect(() => {
-    const readyUnlock = () => {
-      let unlockContract;
-      let publicLockContract;
+    const readyUnlock = async () => {
       try {
-        if (deployedUnlockAddress) {
-          unlockContract = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner)
-        }
-        if (publicLockAddress) {
-          publicLockContract = new ethers.Contract(publicLockAddress, abis.PublicLockV10.abi, userSigner)
+        const _actionLockAddress = await readContracts.ActionCollectible.actionLock();
+        if (_actionLockAddress !== ethers.constants.AddressZero) {
+          const _publicLockContract = new ethers.Contract(_actionLockAddress, abis.PublicLockV12.abi, userSigner);
+          setActionLockAddress(_actionLockAddress);
+          setPublicLockContract(_publicLockContract);
         }
       } catch (e) {
-        console.log(e);
+        console.log("Unlock error", e);
       }
-      setUnlock(unlockContract);
-      setPublicLock(publicLockContract);
     };
     readyUnlock();
-  }, [address, yourLocalBalance]);
-  ////////////// UNLOCK PROTOCOL: THE END /////////////
+  }, [readContracts, userSigner, address]);
+
+  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
+
+  const [isloadingAssets, setIsLoadingAssets] = useState();
+  const [loadedAssets, setLoadedAssets] = useState();
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      const assetUpdate = [];
+      setIsLoadingAssets(true);
+      for (let tokenIndex = 1; tokenIndex <= totalSupply; ++tokenIndex) {
+        try {
+          console.log("Getting token index " + tokenIndex);
+          const owner = await readContracts.ActionCollectible.ownerOf(tokenIndex);
+          console.log("owner: " + owner);
+          const tokenURI = await readContracts.ActionCollectible.tokenURI(tokenIndex);
+          const loogiesAddress = readContracts.ActionCollectible.address;
+          const tokenStrength = await readContracts.ActionCollectibleState.getStrength(loogiesAddress, tokenIndex);
+          const tokenStats = await readContracts.ActionCollectibleState.getTokenStats(loogiesAddress, tokenIndex);
+          const tokenState = handleTokenState(tokenStats[1]);
+          const tokenVibe = handleTokenVibe(tokenStats[2]);
+          const jsonManifestString = Buffer.from(tokenURI.substring(29), "base64").toString();
+          console.log("jsonManifestString: " + jsonManifestString);
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest: " + jsonManifest);
+            assetUpdate.push({
+              id: tokenIndex,
+              uri: tokenURI,
+              state: tokenState,
+              strength: tokenStrength,
+              vibe: tokenVibe,
+              owner,
+              ...jsonManifest,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+      setLoadedAssets(assetUpdate);
+      if (assetUpdate && assetUpdate.length) setIsLoadingAssets(false);
+    };
+    if (readContracts && readContracts.ActionCollectible) updateYourCollectibles();
+  }, [readContracts, totalSupply]);
+
+  const galleryList = [];
+  for (const a in loadedAssets) {
+    console.log("loadedAssets", a, loadedAssets[a]);
+
+    const cardActions = [];
+
+    cardActions.push(
+      <div className="gallery-card-action" style={{ display: "flex" }}>
+        <span className="token-properties">
+          <span style={{ marginRight: 8, display: "inline-block" }}>owned by: </span>
+          <Address
+            address={loadedAssets[a].owner}
+            ensProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            minimized
+          />
+        </span>
+        <span className="token-properties">Strength: {loadedAssets[a].strength.toNumber()}</span>
+        <span className="token-properties">State: {loadedAssets[a].state}</span>
+        <span className="token-properties">Vibes: {loadedAssets[a].vibe}</span>
+      </div>,
+    );
+
+    galleryList.push(
+      <Card
+        style={{ width: 250 }}
+        key={loadedAssets[a].id}
+        actions={cardActions}
+        title={<div>{loadedAssets[a].name} </div>}
+      >
+        <img style={{ maxWidth: 130 }} src={loadedAssets[a].image} alt="" />
+        <div style={{ opacity: 0.77 }}>{loadedAssets[a].description}</div>
+      </Card>,
+    );
+  }
 
   return (
     <div className="App">
@@ -316,7 +349,7 @@ function App(props) {
           </div>
         </div>
       </Header>
-      {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
+      {yourLocalBalance.lte(ethers.BigNumber.from("0")) && selectedNetwork === "localhost" && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
       )}
       <NetworkDisplay
@@ -327,35 +360,59 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <LockedNav
-        address={address}
-        publicLock={publicLock}
-        location={location}
-      />
+      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
+        <Menu.Item key="/">
+          <Link to="/">My Loogies</Link>
+        </Menu.Item>
+        <Menu.Item key="/actions">
+          <Link to="/actions">Actions</Link>
+        </Menu.Item>
+        <Menu.Item key="/gallery">
+          <Link to="/gallery">Gallery</Link>
+        </Menu.Item>
+        <Menu.Item key="/debug">
+          <Link to="/debug">Smart Contracts</Link>
+        </Menu.Item>
+      </Menu>
 
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
-        </Route>
-        <Route exact path="/dashboard">
-          <Dashboard
-            price={price}
-            unlock={unlock}
-            publicLock={publicLock}
-            targetNetwork={targetNetwork}
+          <Home
+            userSigner={userSigner}
+            injectedProvider={injectedProvider}
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            tx={tx}
+            loadWeb3Modal={loadWeb3Modal}
+            blockExplorer={blockExplorer}
             address={address}
+            actionLockAddress={actionLockAddress}
+            publicLockContract={publicLockContract}
           />
         </Route>
-        <Route exact path="/debug">
+        <Route path="/actions">
+          <Actions readContracts={readContracts} writeContracts={writeContracts} tx={tx} address={address} />
+        </Route>
+        <Route path="/gallery">
+          <div style={{ maxWidth: 1250, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
+            {isloadingAssets ? (
+              <Spin />
+            ) : (
+              <StackGrid columnWidth={250} gutterWidth={16} gutterHeight={16}>
+                {galleryList}
+              </StackGrid>
+            )}
+          </div>
+        </Route>
+        <Route path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
           <Contract
-            name="YourContract"
+            name="ActionCollectibleState"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -363,58 +420,14 @@ function App(props) {
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
           />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/settings">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-            targetNetwork={targetNetwork}
-          />
-        </Route>
-        <Route path="/mainnetdai">
           <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
+            name="ActionCollectible"
+            price={price}
             signer={userSigner}
-            provider={mainnetProvider}
+            provider={localProvider}
             address={address}
-            blockExplorer="https://etherscan.io/"
+            blockExplorer={blockExplorer}
             contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
           />
         </Route>
       </Switch>
@@ -457,6 +470,22 @@ function App(props) {
                 ""
               )
             }
+          </Col>
+        </Row>
+        <Row align="middle">
+          <Col span={8} style={{ textAlign: "center", opacity: 1, marginTop: 5 }}>
+            <Button
+              onClick={() => {
+                window.open("https://twitter.com/dannithomx");
+              }}
+              size="large"
+              shape="round"
+            >
+              <span style={{ marginRight: 8 }} role="img" aria-label="support">
+                <TwitterOutlined style={{ fontSize: "18px", color: "#08c" }} />
+              </span>
+              Follow creator on Twitter
+            </Button>
           </Col>
         </Row>
       </div>
