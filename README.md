@@ -30,14 +30,14 @@ Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](htt
 > clone/fork Action Loogies:
 
 ```bash
-git clone https://github.com/blahkheart/scaffold-eth-unlock.git
+git clone https://github.com/unlock-protocol/scaffold-eth-unlock.git
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
 cd scaffold-eth-unlock
-git checkout action-loogies
+git checkout action-loogies-nft
 yarn install
 yarn chain
 ```
