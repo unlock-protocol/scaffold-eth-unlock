@@ -7,7 +7,7 @@ dataSources:
     network: localhost
     source:
       abi: MembersHub
-      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+      address: "0x214134223C5d72F5e2f92Bd7F40CF4E05b5DaA13"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
