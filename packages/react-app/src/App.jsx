@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row, Card, Spin } from "antd";
+import { Button, Col, Menu, Row, Card, Spin, Input, Tooltip } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -15,6 +15,7 @@ import "./App.css";
 import {
   Account,
   Address,
+  AddressInput,
   Contract,
   Faucet,
   GasGauge,
@@ -25,17 +26,20 @@ import {
   FaucetHint,
   NetworkSwitch,
 } from "./components";
-import { TwitterOutlined } from "@ant-design/icons";
+import { TwitterOutlined, InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 import StackGrid from "react-stack-grid";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Web3ModalSetup, loogieActiveStateHandlers } from "./helpers";
+import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, Actions } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 const abis = require("@unlock-protocol/contracts");
 const { ethers } = require("ethers");
+const nameHash = require("@ensdomains/eth-ens-namehash");
+const { toUtf8Bytes } = require("ethers/lib/utils");
+
 /*
     Welcome to Action Loogies !
 
@@ -87,7 +91,6 @@ function App(props) {
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
-  const { handleTokenState, handleTokenVibe } = loogieActiveStateHandlers;
 
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
@@ -219,104 +222,150 @@ function App(props) {
   }, [loadWeb3Modal]);
 
   // set unlock protocol variables
+  // useEffect(() => {
+  //   const readyUnlock = async () => {
+  //     try {
+  //       const _actionLockAddress = await readContracts.ActionCollectible.actionLock();
+  //       if (_actionLockAddress !== ethers.constants.AddressZero) {
+  //         const _publicLockContract = new ethers.Contract(_actionLockAddress, abis.PublicLockV12.abi, userSigner);
+  //         setActionLockAddress(_actionLockAddress);
+  //         setPublicLockContract(_publicLockContract);
+  //       }
+  //     } catch (e) {
+  //       console.log("Unlock error", e);
+  //     }
+  //   };
+  //   readyUnlock();
+  // }, [readContracts, userSigner, address]);
+
+  // set ENS contracts
+  const ensRegistryABI = require("./contracts/ABI/ENSRegistry.json");
+  const ensRegistryAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
+  const baseRegistrarABI = require("./contracts/ABI/BaseRegistrarImplementation.json");
+  const baseRegistrarAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
+
+  const [ensRegistryContract, setEnsRegistryContract] = useState();
+  const [baseRegistrarContract, setBaseRegistrarContract] = useState();
+  const [isRegistrarApproved, setIsRegistrarApproved] = useState();
+  const [isRegistryApproved, setIsRegistryApproved] = useState();
+  const BigNumber = ethers.BigNumber;
+  const utils = ethers.utils;
+  const [ensName, setEnsName] = useState();
+  const [ensNameHash, setEnsNameHash] = useState();
+  const [tokenId, setTokenId] = useState();
+  const [lockAddress, setLockAddress] = useState();
+  const [amount, setAmount] = useState();
+  const [isLoading, setIsLoading] = useState();
+
   useEffect(() => {
-    const readyUnlock = async () => {
-      try {
-        const _actionLockAddress = await readContracts.ActionCollectible.actionLock();
-        if (_actionLockAddress !== ethers.constants.AddressZero) {
-          const _publicLockContract = new ethers.Contract(_actionLockAddress, abis.PublicLockV12.abi, userSigner);
-          setActionLockAddress(_actionLockAddress);
-          setPublicLockContract(_publicLockContract);
-        }
-      } catch (e) {
-        console.log("Unlock error", e);
-      }
+    const registryContract = new ethers.Contract(ensRegistryAddress, ensRegistryABI, userSigner);
+    const registrarContract = new ethers.Contract(baseRegistrarAddress, baseRegistrarABI, userSigner);
+    setEnsRegistryContract(registryContract);
+    setBaseRegistrarContract(registrarContract);
+  }, [userSigner, address]);
+
+  useEffect(() => {
+    const getApprovalForAll = async () => {
+      // if (tokenId && tokenId !== 0) {
+      // setIsLoading(true)
+      // try {
+      // if (baseRegistrarContract) {
+      //   const owner = await baseRegistrarContract.ownerOf(
+      //     67617551247590971384770287776576145415821677369336652578886498760906728389098n,
+      //   );
+      //   console.log("test ", owner);
+      // }
+
+      //   console.log('owner:', owner)
+      // let registrarApproved = await baseRegistrarContract.isApprovedForAll(
+      //   owner,
+      //   "0x3190E512816e161EA85fbFa30787608F9b49f8Cb",
+      // );
+      // let registryApproved = await ensRegistryContract.isApprovedForAll(
+      //   owner,
+      //   "0x3190E512816e161EA85fbFa30787608F9b49f8Cb",
+      // );
+      // setIsRegistrarApproved(registrarApproved);
+      // setIsRegistryApproved(registryApproved);
+      //   setIsLoading(false)
+      // console.log("test test test");
+      // } catch (e) {
+      //   console.log("error checking approval ", e);
+      // }
+      // } else {
+      //   setIsLoading(true)
+      // }
     };
-    readyUnlock();
-  }, [readContracts, userSigner, address]);
+    getApprovalForAll();
+  }, [ensName, tokenId, baseRegistrarContract]);
+
+  console.log("sss: ", ensRegistryContract, "\n", "xxx: ", baseRegistrarContract);
+  console.log("tokenId:: ",tokenId)
+
+  const approveForAll = async (_operatorAddr, _approved) => {
+    try {
+      let registryTxHash = await ensRegistryContract.setApprovalForAll(_operatorAddr, _approved);
+      let registrarTxHash = await baseRegistrarContract.setApprovalForAll(_operatorAddr, _approved);
+      console.log(`Approved on ENSRegistry with tx hash: ${registryTxHash}`);
+      console.log(`Approved on BaseRegistrar with tx hash: ${registrarTxHash}`);
+    } catch (e) {
+      console.log("error approving ENSYOLO: ", e);
+    }
+  };
+
+  const yoloEns = async () => {
+    try {
+      let txHash = await writeContracts.ENSYOLO.giftENS(ensNameHash, tokenId, lockAddress);
+      console.log(`ENS YOLO tx hash: ${txHash}`);
+    } catch (e) {
+      console.log("error gifting ENS: ", e);
+    }
+  };
+
+  const cancelEnsYolo = async () => {
+    try {
+      let txHash = await writeContracts.ENSYOLO.cancelENSYolo(ensNameHash);
+      console.log(`ENS Claimed with tx hash: ${txHash}`);
+    } catch (e) {
+      console.log("error cancelling ENS: ", e);
+    }
+  };
+
+  const claimEns = async () => {
+    try {
+      let txHash = await writeContracts.ENSYOLO.claimItem(ensNameHash, tokenId);
+      console.log(`ENS Claimed with tx hash: ${txHash}`);
+    } catch (e) {
+      console.log("error Claiming ENS: ", e);
+    }
+  };
+
+  const getTokenIdFromEnsName = ensName => {
+    let normalizedEns = nameHash.normalize(ensName);
+    const [ensLabel] = normalizedEns.split(".eth");
+    const ensNameLabelHash = utils.keccak256(utils.toUtf8Bytes(ensLabel));
+    const tokenId = BigNumber.from(ensNameLabelHash).toString();
+    setTokenId(tokenId);
+    return tokenId;
+  };
+
+  const getNameHashFromEnsName = ensName => {
+    let normalizedEns = nameHash.normalize(ensName);
+    let hash = nameHash.hash(normalizedEns);
+    setEnsNameHash(hash);
+    return hash;
+  };
+
+  useEffect(() => {
+    try {
+      getNameHashFromEnsName(ensName);
+      getTokenIdFromEnsName(ensName);
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  }, [ensName]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
-
-  const [isloadingAssets, setIsLoadingAssets] = useState();
-  const [loadedAssets, setLoadedAssets] = useState();
-  useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const assetUpdate = [];
-      setIsLoadingAssets(true);
-      for (let tokenIndex = 1; tokenIndex <= totalSupply; ++tokenIndex) {
-        try {
-          console.log("Getting token index " + tokenIndex);
-          const owner = await readContracts.ActionCollectible.ownerOf(tokenIndex);
-          console.log("owner: " + owner);
-          const tokenURI = await readContracts.ActionCollectible.tokenURI(tokenIndex);
-          const loogiesAddress = readContracts.ActionCollectible.address;
-          const tokenStrength = await readContracts.ActionCollectibleState.getStrength(loogiesAddress, tokenIndex);
-          const tokenStats = await readContracts.ActionCollectibleState.getTokenStats(loogiesAddress, tokenIndex);
-          const tokenState = handleTokenState(tokenStats[1]);
-          const tokenVibe = handleTokenVibe(tokenStats[2]);
-          const jsonManifestString = Buffer.from(tokenURI.substring(29), "base64").toString();
-          console.log("jsonManifestString: " + jsonManifestString);
-
-          try {
-            const jsonManifest = JSON.parse(jsonManifestString);
-            console.log("jsonManifest: " + jsonManifest);
-            assetUpdate.push({
-              id: tokenIndex,
-              uri: tokenURI,
-              state: tokenState,
-              strength: tokenStrength,
-              vibe: tokenVibe,
-              owner,
-              ...jsonManifest,
-            });
-          } catch (err) {
-            console.log(err);
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
-      setLoadedAssets(assetUpdate);
-      if (assetUpdate && assetUpdate.length) setIsLoadingAssets(false);
-    };
-    if (readContracts && readContracts.ActionCollectible) updateYourCollectibles();
-  }, [readContracts, totalSupply]);
-
-  const galleryList = [];
-  for (const a in loadedAssets) {
-    console.log("loadedAssets", a, loadedAssets[a]);
-
-    const cardActions = [];
-
-    cardActions.push(
-      <div className="gallery-card-action" style={{ display: "flex" }}>
-        <span className="token-properties">
-          <span style={{ marginRight: 8, display: "inline-block" }}>owned by: </span>
-          <Address
-            address={loadedAssets[a].owner}
-            ensProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-            minimized
-          />
-        </span>
-        <span className="token-properties">Strength: {loadedAssets[a].strength.toNumber()}</span>
-        <span className="token-properties">State: {loadedAssets[a].state}</span>
-        <span className="token-properties">Vibes: {loadedAssets[a].vibe}</span>
-      </div>,
-    );
-
-    galleryList.push(
-      <Card
-        style={{ width: 250 }}
-        key={loadedAssets[a].id}
-        actions={cardActions}
-        title={<div>{loadedAssets[a].name} </div>}
-      >
-        <img style={{ maxWidth: 130 }} src={loadedAssets[a].image} alt="" />
-        <div style={{ opacity: 0.77 }}>{loadedAssets[a].description}</div>
-      </Card>,
-    );
-  }
 
   return (
     <div className="App">
@@ -362,13 +411,13 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">My Loogies</Link>
+          <Link to="/">Home</Link>
         </Menu.Item>
-        <Menu.Item key="/actions">
-          <Link to="/actions">Actions</Link>
+        <Menu.Item key="/claim">
+          <Link to="/claim">Claim ENS</Link>
         </Menu.Item>
-        <Menu.Item key="/gallery">
-          <Link to="/gallery">Gallery</Link>
+        <Menu.Item key="/yolo">
+          <Link to="/yolo">YOLO ENS</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Smart Contracts</Link>
@@ -391,18 +440,84 @@ function App(props) {
             publicLockContract={publicLockContract}
           />
         </Route>
-        <Route path="/actions">
+        <Route path="/claim">
           <Actions readContracts={readContracts} writeContracts={writeContracts} tx={tx} address={address} />
         </Route>
-        <Route path="/gallery">
-          <div style={{ maxWidth: 1250, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
-            {isloadingAssets ? (
-              <Spin />
-            ) : (
-              <StackGrid columnWidth={250} gutterWidth={16} gutterHeight={16}>
-                {galleryList}
-              </StackGrid>
-            )}
+        <Route path="/yolo">
+          <div
+            style={{
+              maxWidth: 1250,
+              margin: "auto",
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              marginTop: 32,
+              paddingBottom: 256,
+            }}
+          >
+            <h1> YOLO ENS</h1>
+            <Card
+              style={{
+                maxWidth: 500,
+                width: "100%",
+              }}
+            >
+              <p>Input ENS name</p>
+              <Input
+                placeholder="Enter ENS"
+                value={ensName}
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                suffix={
+                  <Tooltip title="ENS name to gift">
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                }
+                onChange={e => {
+                  let val = e.target.value;
+                  setEnsName(val);
+                }}
+              />
+              <p>Input YOLO ETH amount</p>
+              <Input
+                type="number"
+                placeholder="ETH amount"
+                value={amount ? amount : null}
+                suffix={
+                  <Tooltip title="ETH amount to gift (min: 0.01)">
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                }
+                onChange={e => {
+                  let val = e.target.value;
+                  setAmount(val);
+                }}
+              />
+              <p>Input lock address</p>
+              <AddressInput
+                autoFocus
+                ensProvider={mainnetProvider}
+                placeholder="Enter lock address"
+                value={lockAddress}
+                suffix={
+                  <Tooltip title="Only users with a key to this lock can claim this">
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                }
+                onChange={setLockAddress}
+              />
+              {!isRegistrarApproved || !isRegistryApproved ? (
+                <Button onClick={async() => {
+                  let tx = await baseRegistrarContract.ownerOf(tokenId)
+                  console.log('test', tx)
+                }} loading={isLoading}>Approve</Button>
+              ) : (
+                <Button>YOLO ENS</Button>
+              )}
+              {/* <p>Approve ENSYOLO Contract</p>
+              <Button>Approve</Button>
+              <p>Gift ENS</p>
+              <Button>YOLO ENS</Button> */}
+            </Card>
           </div>
         </Route>
         <Route path="/debug">
@@ -412,7 +527,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
           <Contract
-            name="ActionCollectibleState"
+            name="ENSYOLO"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -420,15 +535,15 @@ function App(props) {
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
           />
-          <Contract
-            name="ActionCollectible"
+          {/* <Contract
+            name="ENSRegistry"
             price={price}
             signer={userSigner}
             provider={localProvider}
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
-          />
+          /> */}
         </Route>
       </Switch>
 
