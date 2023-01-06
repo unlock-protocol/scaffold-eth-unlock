@@ -243,13 +243,13 @@ function App(props) {
   const ensRegistryAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
   const baseRegistrarABI = require("./contracts/ABI/BaseRegistrarImplementation.json");
   const baseRegistrarAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
+  const BigNumber = ethers.BigNumber;
+  const utils = ethers.utils;
 
   const [ensRegistryContract, setEnsRegistryContract] = useState();
   const [baseRegistrarContract, setBaseRegistrarContract] = useState();
   const [isRegistrarApproved, setIsRegistrarApproved] = useState();
   const [isRegistryApproved, setIsRegistryApproved] = useState();
-  const BigNumber = ethers.BigNumber;
-  const utils = ethers.utils;
   const [ensName, setEnsName] = useState();
   const [ensNameHash, setEnsNameHash] = useState();
   const [tokenId, setTokenId] = useState();
@@ -266,48 +266,51 @@ function App(props) {
 
   useEffect(() => {
     const getApprovalForAll = async () => {
-      // if (tokenId && tokenId !== 0) {
-      // setIsLoading(true)
-      // try {
-      // if (baseRegistrarContract) {
-      //   const owner = await baseRegistrarContract.ownerOf(
-      //     67617551247590971384770287776576145415821677369336652578886498760906728389098n,
-      //   );
-      //   console.log("test ", owner);
-      // }
-
-      //   console.log('owner:', owner)
-      // let registrarApproved = await baseRegistrarContract.isApprovedForAll(
-      //   owner,
-      //   "0x3190E512816e161EA85fbFa30787608F9b49f8Cb",
-      // );
-      // let registryApproved = await ensRegistryContract.isApprovedForAll(
-      //   owner,
-      //   "0x3190E512816e161EA85fbFa30787608F9b49f8Cb",
-      // );
-      // setIsRegistrarApproved(registrarApproved);
-      // setIsRegistryApproved(registryApproved);
-      //   setIsLoading(false)
-      // console.log("test test test");
-      // } catch (e) {
-      //   console.log("error checking approval ", e);
-      // }
-      // } else {
-      //   setIsLoading(true)
-      // }
+      if (tokenId && tokenId !== 0) {
+        setIsLoading(true);
+        try {
+          const owner = await baseRegistrarContract.ownerOf(tokenId);
+          console.log("owner:", owner);
+          let registrarApproved = await baseRegistrarContract.isApprovedForAll(
+            owner,
+            "0x3190E512816e161EA85fbFa30787608F9b49f8Cb",
+          );
+          let registryApproved = await ensRegistryContract.isApprovedForAll(
+            owner,
+            "0x3190E512816e161EA85fbFa30787608F9b49f8Cb",
+          );
+          setIsRegistrarApproved(registrarApproved);
+          setIsRegistryApproved(registryApproved);
+          setIsLoading(false);
+        } catch (e) {
+          console.log("error checking approval ", e);
+        }
+      } else {
+        setIsLoading(true);
+      }
     };
     getApprovalForAll();
   }, [ensName, tokenId, baseRegistrarContract]);
 
   console.log("sss: ", ensRegistryContract, "\n", "xxx: ", baseRegistrarContract);
-  console.log("tokenId:: ",tokenId)
+  // console.log("tokenId:: ", isRegistrarApproved);
+  // console.log("tokenId::XX ", isRegistryApproved);
 
   const approveForAll = async (_operatorAddr, _approved) => {
     try {
-      let registryTxHash = await ensRegistryContract.setApprovalForAll(_operatorAddr, _approved);
-      let registrarTxHash = await baseRegistrarContract.setApprovalForAll(_operatorAddr, _approved);
-      console.log(`Approved on ENSRegistry with tx hash: ${registryTxHash}`);
-      console.log(`Approved on BaseRegistrar with tx hash: ${registrarTxHash}`);
+      let registrarTxHash;
+      let registryTxHash;
+      if (!isRegistrarApproved) {
+        registrarTxHash = await tx(baseRegistrarContract.setApprovalForAll(_operatorAddr, _approved));
+        console.log(`Approved on BaseRegistrar with tx hash: ${registrarTxHash}`);
+        setIsRegistrarApproved(_approved)
+      }
+
+      if (!isRegistryApproved) {
+        registryTxHash = await tx(ensRegistryContract.setApprovalForAll(_operatorAddr, _approved));
+        console.log(`Approved on ENSRegistry with tx hash: ${registryTxHash}`);
+        setIsRegistryApproved(_approved)
+      }
     } catch (e) {
       console.log("error approving ENSYOLO: ", e);
     }
@@ -315,7 +318,7 @@ function App(props) {
 
   const yoloEns = async () => {
     try {
-      let txHash = await writeContracts.ENSYOLO.giftENS(ensNameHash, tokenId, lockAddress);
+      let txHash = await tx(writeContracts.ENSYOLO.giftENS(ensNameHash, tokenId, lockAddress, {value: utils.parseEther(amount.toString())}));
       console.log(`ENS YOLO tx hash: ${txHash}`);
     } catch (e) {
       console.log("error gifting ENS: ", e);
@@ -324,7 +327,7 @@ function App(props) {
 
   const cancelEnsYolo = async () => {
     try {
-      let txHash = await writeContracts.ENSYOLO.cancelENSYolo(ensNameHash);
+      let txHash = await tx(writeContracts.ENSYOLO.cancelENSYolo(ensNameHash));
       console.log(`ENS Claimed with tx hash: ${txHash}`);
     } catch (e) {
       console.log("error cancelling ENS: ", e);
@@ -333,7 +336,7 @@ function App(props) {
 
   const claimEns = async () => {
     try {
-      let txHash = await writeContracts.ENSYOLO.claimItem(ensNameHash, tokenId);
+      let txHash = await tx(writeContracts.ENSYOLO.claimItem(ensNameHash, tokenId));
       console.log(`ENS Claimed with tx hash: ${txHash}`);
     } catch (e) {
       console.log("error Claiming ENS: ", e);
@@ -506,17 +509,57 @@ function App(props) {
                 onChange={setLockAddress}
               />
               {!isRegistrarApproved || !isRegistryApproved ? (
-                <Button onClick={async() => {
-                  let tx = await baseRegistrarContract.ownerOf(tokenId)
-                  console.log('test', tx)
-                }} loading={isLoading}>Approve</Button>
+                <Button
+                  onClick={async () => {
+                    let tx = await approveForAll("0x3190e512816e161ea85fbfa30787608f9b49f8cb", true);
+                    console.log("approveForAll txn: ", tx);
+                  }}
+                  loading={isLoading}
+                >
+                  Approve
+                </Button>
               ) : (
-                <Button>YOLO ENS</Button>
+                <Button
+                  onClick={async () => {
+                    const txResult = await yoloEns();
+                    console.log("ENS YOLO ", txResult);
+                  }}
+                >
+                  YOLO ENS
+                </Button>
               )}
-              {/* <p>Approve ENSYOLO Contract</p>
-              <Button>Approve</Button>
-              <p>Gift ENS</p>
-              <Button>YOLO ENS</Button> */}
+            </Card>
+            <h2 style={{marginTop: 30}}>Cancel ENS YOLO</h2>
+            <Card
+              style={{
+                maxWidth: 500,
+                width: "100%",
+              }}
+            >
+              <p>Input ENS name</p>
+              <Input
+                placeholder="Enter ENS"
+                // value={ensNameToCancel}
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                suffix={
+                  <Tooltip title="ENS name to cancel">
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                }
+                onChange={e => {
+                  let val = e.target.value;
+                  // setEnsNameToCancel(val);
+                }}
+              />
+
+                <Button
+                  onClick={async () => {
+                    const txResult = await yoloEns();
+                    console.log("ENS YOLO ", txResult);
+                  }}
+                >
+                  Cancel ENS YOLO
+                </Button>
             </Card>
           </div>
         </Route>
