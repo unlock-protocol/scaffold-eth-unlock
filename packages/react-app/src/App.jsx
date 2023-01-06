@@ -251,6 +251,7 @@ function App(props) {
   const [isRegistrarApproved, setIsRegistrarApproved] = useState();
   const [isRegistryApproved, setIsRegistryApproved] = useState();
   const [ensName, setEnsName] = useState();
+  const [ensNameToCancel, setEnsNameToCancel] = useState();
   const [ensNameHash, setEnsNameHash] = useState();
   const [tokenId, setTokenId] = useState();
   const [lockAddress, setLockAddress] = useState();
@@ -325,7 +326,7 @@ function App(props) {
     }
   };
 
-  const cancelEnsYolo = async () => {
+  const cancelEnsYolo = async ensNameHash => {
     try {
       let txHash = await tx(writeContracts.ENSYOLO.cancelENSYolo(ensNameHash));
       console.log(`ENS Claimed with tx hash: ${txHash}`);
@@ -358,6 +359,10 @@ function App(props) {
     setEnsNameHash(hash);
     return hash;
   };
+
+  const lookUpEnsYolo = async ensNameHash => {
+    const result = readContracts.ENSYOLO.getGifted()
+  }
 
   useEffect(() => {
     try {
@@ -529,7 +534,7 @@ function App(props) {
                 </Button>
               )}
             </Card>
-            <h2 style={{marginTop: 30}}>Cancel ENS YOLO</h2>
+            <h2 style={{ marginTop: 30 }}>Cancel ENS YOLO</h2>
             <Card
               style={{
                 maxWidth: 500,
@@ -539,7 +544,7 @@ function App(props) {
               <p>Input ENS name</p>
               <Input
                 placeholder="Enter ENS"
-                // value={ensNameToCancel}
+                value={ensNameToCancel}
                 prefix={<UserOutlined className="site-form-item-icon" />}
                 suffix={
                   <Tooltip title="ENS name to cancel">
@@ -548,18 +553,25 @@ function App(props) {
                 }
                 onChange={e => {
                   let val = e.target.value;
-                  // setEnsNameToCancel(val);
+                  setEnsNameToCancel(val);
                 }}
               />
+              {/* <div>
+                <p>{eyolo.id}</p>
+                <p>{eyolo.controller}</p>
+                <p>{eyolo.value}</p>
+                <p>{eyolo.claim}</p>
+              </div> */}
 
-                <Button
-                  onClick={async () => {
-                    const txResult = await yoloEns();
-                    console.log("ENS YOLO ", txResult);
-                  }}
-                >
-                  Cancel ENS YOLO
-                </Button>
+              <Button
+                onClick={async () => {
+                  let ensNameHashToCancel = getNameHashFromEnsName(ensNameToCancel)
+                  const txResult = await cancelEnsYolo(ensNameHashToCancel);
+                  console.log("ENS YOLO ", txResult);
+                }}
+              >
+                Cancel ENS YOLO
+              </Button>
             </Card>
           </div>
         </Route>
