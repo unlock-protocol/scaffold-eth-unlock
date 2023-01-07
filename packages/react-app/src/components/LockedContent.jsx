@@ -3,9 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import UnlockPaywall from "./UnlockPaywall";
 import { CreateLock, UnlockVariables } from ".";
-import  {useUnlockState} from "../hooks";
-
-
+import { useUnlockState } from "../hooks";
 
 /*
   ~ What it does? ~
@@ -23,7 +21,6 @@ import  {useUnlockState} from "../hooks";
   - targetNetwork={targetNetwork} passes the current app network to the <UnlockPaywall /> to determine the network to connect to
 */
 
-
 const LockedContent = ({ publicLock, price, unlock, address, targetNetwork }) => {
   const hasValidKey = useUnlockState(publicLock, address);
 
@@ -32,9 +29,8 @@ const LockedContent = ({ publicLock, price, unlock, address, targetNetwork }) =>
       <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
         <Card title="Preview Content">
           <div style={{ padding: 8 }}>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-            debitis nisi quos. Placeat quos alias harum accusantium soluta,
-            fugiat error nemo, illo dicta illum labore hic aliquid aspernatur?
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. debitis nisi quos. Placeat quos alias harum
+            accusantium soluta, fugiat error nemo, illo dicta illum labore hic aliquid aspernatur?
             <UnlockPaywall
               shape={"round"}
               size={"large"}
@@ -51,18 +47,11 @@ const LockedContent = ({ publicLock, price, unlock, address, targetNetwork }) =>
   const lockedContent = (
     <>
       <div style={{ padding: 8, marginTop: 32, maxWidth: 592, margin: "auto" }}>
-          <Card title="Locked Content">
-            <div style={{ padding: 8 }}>
-              YOU NOW HAVE ACCESS TO THE LOCKED CONTENT
-          </div>
-          <UnlockVariables
-            targetNetwork={targetNetwork}
-          />
-          <CreateLock
-            price={price}
-            unlock={unlock}
-          />  
-          </Card>
+        <Card title="Locked Content">
+          <div style={{ padding: 8 }}>YOU NOW HAVE ACCESS TO THE LOCKED CONTENT</div>
+          <UnlockVariables targetNetwork={targetNetwork} />
+          <CreateLock price={price} unlock={unlock} />
+        </Card>
       </div>
     </>
   );
@@ -70,12 +59,7 @@ const LockedContent = ({ publicLock, price, unlock, address, targetNetwork }) =>
   return (
     <>
       <Row>
-        <Col span={24}>
-          { hasValidKey && hasValidKey !== false
-            ? lockedContent
-            : previewContent
-          }
-        </Col>
+        <Col span={24}>{hasValidKey && hasValidKey !== false ? lockedContent : previewContent}</Col>
       </Row>
     </>
   );

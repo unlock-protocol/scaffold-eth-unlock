@@ -1,15 +1,31 @@
-type Purpose @entity {
+type Tag @entity {
   id: ID!
-  sender: Sender!
-  purpose: String!
+  name: String!
+  creator: TagCreator!
+  memberships: [Membership!]! @derivedFrom(field: "relatedTags")
   createdAt: BigInt!
   transactionHash: String!
 }
 
-type Sender @entity {
+type TagCreator @entity {
   id: ID!
   address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
+  tagsCount: BigInt!
+  tagz: [Tag!] @derivedFrom(field: "creator")
+}
+
+type Membership @entity {
+  id: ID!
+  membershipAddress: Bytes!
+  creator: Broadcaster!
+  relatedTags: [Tag!]!
   createdAt: BigInt!
-  purposeCount: BigInt!
+  transactionHash: String!
+}
+
+type Broadcaster @entity {
+  id: ID!
+  address: Bytes!
+  memberships: [Membership!] @derivedFrom(field: "creator")
+  membershipsCount: BigInt!
 }

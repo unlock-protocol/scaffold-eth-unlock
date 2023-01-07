@@ -1,7 +1,6 @@
 import { Button } from "antd";
 import React, { useState, useEffect } from "react";
-import { Paywall } from '@unlock-protocol/paywall';
-
+import { Paywall } from "@unlock-protocol/paywall";
 
 /*
   ~ What it does? ~
@@ -33,28 +32,28 @@ const UnlockPaywall = ({ shape, size, publicLock, displayText, targetNetwork }) 
         const name = await publicLock.name();
         setLockName(name);
       }
-    }
+    };
     getLockName();
   }, [publicLock]);
 
   //You can add more locks by entering the lock info into the locks object
   const locks = {
     [lockAddress]: {
-      "network": targetNetwork.chainId,
-      "name": lockName,
+      network: targetNetwork.chainId,
+      name: lockName,
     },
   };
 
   const paywallConfig = {
-    "network": targetNetwork.chainId,
-    "pessimistic": true,
-    "locks": locks,
-    "icon": "https://unlock-protocol.com/static/images/svg/unlock-word-mark.svg",
-    "callToAction": {
-      "default": "Please join the DG membership!"
+    network: targetNetwork.chainId,
+    pessimistic: true,
+    locks: locks,
+    icon: "https://unlock-protocol.com/static/images/svg/unlock-word-mark.svg",
+    callToAction: {
+      default: "Please join the DG membership!",
     },
-    "referrer": "0xCA7632327567796e51920F6b16373e92c7823854", // You can replace with your own address or leave this to support DreadGang :) it's up to you!!!
-    "persistentCheckout": false,
+    referrer: "0xCA7632327567796e51920F6b16373e92c7823854", // You can replace with your own address or leave this to support DreadGang :) it's up to you!!!
+    persistentCheckout: false,
     // ,
     //   "metadataInputs": [
     //     {

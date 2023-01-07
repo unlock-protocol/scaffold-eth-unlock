@@ -1,25 +1,30 @@
-specVersion: 0.0.4
+specVersion: 0.0.2
 schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
+    name: MembersHub
     network: localhost
     source:
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
-      abi: YourContract
-      startBlock: 1
+      abi: MembersHub
+      address: "0x214134223C5d72F5e2f92Bd7F40CF4E05b5DaA13"
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Purpose
-        - Sender
+        - Tag
+        - Membership
+        - TagCreator
+        - Broadcaster
       abis:
-        - name: YourContract
-          file: ./abis/localhost_YourContract.json
+        - name: MembersHub
+          file: ./abis/localhost_MembersHub.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: NewTag(string,indexed address)
+          handler: handleNewTag
+        - event: BroadcastMembership(indexed address,address,string[])
+          handler: handleBroadcastMembership
+        - event: RemoveTag(address,string)
+          handler: handleRemoveTag
       file: ./src/mapping.ts

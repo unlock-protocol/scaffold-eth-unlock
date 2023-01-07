@@ -23,19 +23,21 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
-  LockedNav
+  LockedNav,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home,Dashboard, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, Dashboard, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
-// unlock contract abis
-const abis = require("@unlock-protocol/contracts");
+// import { apolloClient } from "./helpers/lens/apollo-client";
+// import { gql } from "@apollo/client";
+// import { ChakraProvider } from '@chakra-ui/react'
 
 const { ethers } = require("ethers");
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -56,7 +58,9 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const initialNetwork = NETWORKS.polygon; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const initialNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -76,7 +80,7 @@ const providers = [
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = [initialNetwork.name, "mainnet", "rinkeby"];
+  const networkOptions = [initialNetwork.name, "mainnet", "goerli"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -84,7 +88,6 @@ function App(props) {
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
-
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
 
@@ -150,6 +153,7 @@ function App(props) {
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
+  console.log("READCONTRACTS", readContracts);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -170,7 +174,7 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  // const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -247,47 +251,8 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  ////////////////Unlock Protocol///////////////////
-  const unlockData = JSON.parse(window.localStorage.getItem("unlock"));
-  const publicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
-  useEffect(() => {
-    if (unlockData && publicLockData) {
-      const unlockAddress = unlockData.unlockAddress;
-      const publicLockAddress = publicLockData.publicLockAddress;
-      setDeployedUnlockAddress(unlockAddress);
-      setPublicLockAddress(publicLockAddress);
-    }
-  }, []);
-
-  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState();
-  const [publicLockAddress, setPublicLockAddress] = useState();
-  const [publicLock, setPublicLock] = useState();
-  const [unlock, setUnlock] = useState();
-
-  useEffect(() => {
-    const readyUnlock = () => {
-      let unlockContract;
-      let publicLockContract;
-      try {
-        if (deployedUnlockAddress) {
-          unlockContract = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner)
-        }
-        if (publicLockAddress) {
-          publicLockContract = new ethers.Contract(publicLockAddress, abis.PublicLockV10.abi, userSigner)
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      setUnlock(unlockContract);
-      setPublicLock(publicLockContract);
-    };
-    readyUnlock();
-  }, [address, yourLocalBalance]);
-  ////////////// UNLOCK PROTOCOL: THE END /////////////
-
   return (
     <div className="App">
-      {/* ✏️ Edit the header and change the title to your project name */}
       <Header>
         {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
         <div style={{ position: "relative", display: "flex", flexDirection: "column" }}>
@@ -306,12 +271,14 @@ function App(props) {
               address={address}
               localProvider={localProvider}
               userSigner={userSigner}
+              localChainId={localChainId}
               mainnetProvider={mainnetProvider}
               price={price}
               web3Modal={web3Modal}
               loadWeb3Modal={loadWeb3Modal}
               logoutOfWeb3Modal={logoutOfWeb3Modal}
               blockExplorer={blockExplorer}
+              injectedProvider={injectedProvider}
             />
           </div>
         </div>
@@ -327,94 +294,32 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <LockedNav
-        address={address}
-        publicLock={publicLock}
-        location={location}
-      />
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
-        </Route>
-        <Route exact path="/dashboard">
-          <Dashboard
-            price={price}
-            unlock={unlock}
-            publicLock={publicLock}
-            targetNetwork={targetNetwork}
+          <Home
             address={address}
+            web3Modal={web3Modal}
+            injectedProvider={injectedProvider}
+            loadWeb3Modal={loadWeb3Modal}
+            userSigner={userSigner}
           />
         </Route>
-        <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
-          <Contract
-            name="YourContract"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/settings">
+        <Route path="/dashboard">
           <ExampleUI
             address={address}
             userSigner={userSigner}
             mainnetProvider={mainnetProvider}
             localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
+            localChainId={localChainId}
             writeContracts={writeContracts}
             readContracts={readContracts}
-            purpose={purpose}
-            targetNetwork={targetNetwork}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
             contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
+            blockExplorer={blockExplorer}
+            targetNetwork={targetNetwork}
+            injectedProvider={injectedProvider}
+            name={"MembersHub"}
             tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
           />
         </Route>
       </Switch>

@@ -4,8 +4,9 @@ import "antd/dist/antd.css";
 import GraphiQL from "graphiql";
 import "graphiql/graphiql.min.css";
 import fetch from "isomorphic-fetch";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Address } from "../components";
+import { subgraphURI } from "../helpers/graphQueryData";
 
 const highlight = {
   marginLeft: 4,
@@ -15,9 +16,14 @@ const highlight = {
   fontWeight: "bolder",
 };
 
+// Subgraph endpoints:
+// Queries (HTTP):     "https://api.thegraph.com/subgraphs/name/blahkheart/members-hub-polygon"
+// Subscriptions (WS): http://localhost:8001/subgraphs/name/scaffold-eth/your-contract
+
 function Subgraph(props) {
   function graphQLFetcher(graphQLParams) {
-    return fetch(props.subgraphUri, {
+    // return fetch(props.subgraphUri, {
+    return fetch(subgraphURI, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(graphQLParams),
@@ -26,34 +32,42 @@ function Subgraph(props) {
 
   const EXAMPLE_GRAPHQL = `
   {
-    purposes(first: 25, orderBy: createdAt, orderDirection: desc) {
+    tags(first: 25, orderBy: createdAt, orderDirection: desc) {
       id
-      purpose
       createdAt
-      sender {
-        id
+      creator {
+        address
       }
     }
-    senders {
+    tagCreators {
       id
       address
-      purposeCount
     }
   }
   `;
   const EXAMPLE_GQL = gql(EXAMPLE_GRAPHQL);
   const { loading, data } = useQuery(EXAMPLE_GQL, { pollInterval: 2500 });
 
+  useEffect(() => {
+    const test = async () => {
+      console.log("test test test", data);
+    };
+    test();
+  }, [data]);
   const purposeColumns = [
     {
-      title: "Purpose",
-      dataIndex: "purpose",
-      key: "purpose",
+      // title: "Purpose",
+      // dataIndex: "purpose",
+      // key: "purpose",
+      title: "Tag",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: "Sender",
+      title: "Creator",
       key: "id",
-      render: record => <Address value={record.sender.id} ensProvider={props.mainnetProvider} fontSize={16} />,
+      // render: record => <Address value={record.sender.id} ensProvider={props.mainnetProvider} fontSize={16} />,
+      render: record => <Address value={record.creator.address} ensProvider={props.mainnetProvider} fontSize={16} />,
     },
     {
       title: "createdAt",
@@ -147,7 +161,11 @@ function Subgraph(props) {
           packages/subgraph/src
         </span>
         (learn more about subgraph definition{" "}
-        <a href="https://thegraph.com/docs/define-a-subgraph" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://thegraph.com/docs/en/developer/define-subgraph-hosted/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           here
         </a>
         )
@@ -172,16 +190,19 @@ function Subgraph(props) {
             onClick={() => {
               console.log("newPurpose", newPurpose);
               /* look how you call setPurpose on your contract: */
-              props.tx(props.writeContracts.YourContract.setPurpose(newPurpose));
+              // props.tx(props.writeContracts.YourContract.setPurpose(newPurpose));
+              props.tx(props.writeContracts.MembersHub.addTag(newPurpose));
             }}
           >
-            Set Purpose
+            {/* Set Purpose */}
+            Add Tag
           </Button>
         </div>
 
         {data ? (
-          <Table dataSource={data.purposes} columns={purposeColumns} rowKey="id" />
+          <Table dataSource={data.tags} columns={purposeColumns} rowKey="id" />
         ) : (
+          // <Table dataSource={data.purposes} columns={purposeColumns} rowKey="id" />
           <Typography>{loading ? "Loading..." : deployWarning}</Typography>
         )}
 

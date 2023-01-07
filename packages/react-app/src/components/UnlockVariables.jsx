@@ -16,12 +16,11 @@ import { useHistory } from "react-router-dom";
   - Save them to local storage
 */
 
-
 const UnlockVariables = ({ targetNetwork }) => {
   const routeHistory = useHistory();
   const [isLoading, setIsLoading] = useState(false);
-  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState();// unlock rinkeby address is set as the default
-  const [publicLockAddress, setPublicLockAddress] = useState();//DreadGang presale whitelist lock on rinkeby is set as default publicLock address
+  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState(); // unlock rinkeby address is set as the default
+  const [publicLockAddress, setPublicLockAddress] = useState(); //DreadGang presale whitelist lock on rinkeby is set as default publicLock address
 
   const saveToLocalStorage = () => {
     const unlockData = {
@@ -35,14 +34,14 @@ const UnlockVariables = ({ targetNetwork }) => {
     const currentPublicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
 
     !currentUnlockData ||
-    currentUnlockData.unlockAddress && unlockData.unlockAddress ||
-    !currentUnlockData.unlockAddress && unlockData.unlockAddress 
+    (currentUnlockData.unlockAddress && unlockData.unlockAddress) ||
+    (!currentUnlockData.unlockAddress && unlockData.unlockAddress)
       ? window.localStorage.setItem("unlock", JSON.stringify(unlockData))
       : window.localStorage.setItem("unlock", JSON.stringify(currentUnlockData));
-     
+
     !currentPublicLockData ||
-    currentPublicLockData.publicLockAddress && publicLockData.publicLockAddress ||
-    !currentPublicLockData.publicLockAddress && publicLockData.publicLockAddress
+    (currentPublicLockData.publicLockAddress && publicLockData.publicLockAddress) ||
+    (!currentPublicLockData.publicLockAddress && publicLockData.publicLockAddress)
       ? window.localStorage.setItem("publicLock", JSON.stringify(publicLockData))
       : window.localStorage.setItem("publicLock", JSON.stringify(currentPublicLockData));
   };

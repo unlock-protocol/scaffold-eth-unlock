@@ -1,4 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;700&display=swap');
 .App {
+  font-family: Montserrat;
+  /* padding-left: calc(100vw - 100%); */
+}
+
+.home {
   text-align: center;
-  padding-left: calc(100vw - 100%);
+}
+
+#components-layout-demo-top-side-2 .logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ant-row-rtl #components-layout-demo-top-side-2 .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
+}
+
+.site-layout-background {
+  background: #fff;
+}
+
+.mh-dashboard-content{ 
+  max-height: 800px;
+  padding: 20px 50px 50px 50px;
+  overflow-y: auto;
+}
+
+.demo-loadmore-list {
+  min-height: 250px;
+}
+
+.site-tag-plus {
+  background: #fff;
+  border-style: dashed;
+}
+.ant-scroll-number.ant-badge-dot {
+  right: 9px;
+}
+.mh-multiselect {
+    width: 100%;
 }
