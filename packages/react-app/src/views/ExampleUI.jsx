@@ -39,7 +39,6 @@ export default function ExampleUI({
   useEffect(() => {
     if (injectedProvider) {
       setIsLoading(false);
-      // history.push("/");
     }
   }, [injectedProvider]);
 

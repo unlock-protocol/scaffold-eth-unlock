@@ -1,8 +1,8 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+export const INFURA_ID = "a964fc7376e74cad8433b01e5f2e4849";
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
+export const ETHERSCAN_KEY = "M9E8Y5TE76XXJVK6Z8B2MFB9EXNF58US57";
 
 // BLOCKNATIVE ID FOR Notify.js:
 export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
@@ -61,13 +61,13 @@ export const NETWORKS = {
     rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
   },
   xdai: {
-    name: "xdai",
+    name: "gnosis",
     color: "#48a9a6",
     chainId: 100,
     price: 1,
     gasPrice: 1000000000,
-    rpcUrl: "https://dai.poa.network",
-    faucet: "https://xdai-faucet.top/",
+    rpcUrl: "https://rpc.gnosischain.com",
+    faucet: "https://gnosisfaucet.com/",
     blockExplorer: "https://blockscout.com/poa/xdai/",
   },
   polygon: {

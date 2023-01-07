@@ -23,13 +23,14 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
+  LockedNav,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, Dashboard, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 // import { apolloClient } from "./helpers/lens/apollo-client";
 // import { gql } from "@apollo/client";
@@ -320,27 +321,7 @@ function App(props) {
             name={"MembersHub"}
             tx={tx}
           />
-          {/* </ExampleUI> */}
         </Route>
-        {/* <Route exact path="/debug">
-              <Contract
-                name="YourContract"
-                price={price}
-                signer={userSigner}
-                provider={localProvider}
-                address={address}
-                blockExplorer={blockExplorer}
-                contractConfig={contractConfig}
-              />
-            </Route> */}
-        {/* <Route path="/hints">
-              <Hints
-                address={address}
-                yourLocalBalance={yourLocalBalance}
-                mainnetProvider={mainnetProvider}
-                price={price}
-              />
-            </Route> */}
       </Switch>
 
       <ThemeSwitch />
