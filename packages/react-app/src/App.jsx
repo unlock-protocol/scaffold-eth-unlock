@@ -239,9 +239,9 @@ function App(props) {
   // }, [readContracts, userSigner, address]);
 
   // set ENS contracts
-  const ensRegistryABI = require("./contracts/ABI/ENSRegistry.json");
+  const ensRegistryABI = require("./contracts/imported/ABI/ENSRegistry.json");
   const ensRegistryAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-  const baseRegistrarABI = require("./contracts/ABI/BaseRegistrarImplementation.json");
+  const baseRegistrarABI = require("./contracts/imported/ABI/BaseRegistrarImplementation.json");
   const baseRegistrarAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
   const BigNumber = ethers.BigNumber;
   const utils = ethers.utils;
@@ -294,8 +294,6 @@ function App(props) {
   }, [ensName, tokenId, baseRegistrarContract]);
 
   console.log("sss: ", ensRegistryContract, "\n", "xxx: ", baseRegistrarContract);
-  // console.log("tokenId:: ", isRegistrarApproved);
-  // console.log("tokenId::XX ", isRegistryApproved);
 
   const approveForAll = async (_operatorAddr, _approved) => {
     try {
@@ -304,13 +302,13 @@ function App(props) {
       if (!isRegistrarApproved) {
         registrarTxHash = await tx(baseRegistrarContract.setApprovalForAll(_operatorAddr, _approved));
         console.log(`Approved on BaseRegistrar with tx hash: ${registrarTxHash}`);
-        setIsRegistrarApproved(_approved)
+        setIsRegistrarApproved(_approved);
       }
 
       if (!isRegistryApproved) {
         registryTxHash = await tx(ensRegistryContract.setApprovalForAll(_operatorAddr, _approved));
         console.log(`Approved on ENSRegistry with tx hash: ${registryTxHash}`);
-        setIsRegistryApproved(_approved)
+        setIsRegistryApproved(_approved);
       }
     } catch (e) {
       console.log("error approving ENSYOLO: ", e);
@@ -319,7 +317,11 @@ function App(props) {
 
   const yoloEns = async () => {
     try {
-      let txHash = await tx(writeContracts.ENSYOLO.giftENS(ensNameHash, tokenId, lockAddress, {value: utils.parseEther(amount.toString())}));
+      let txHash = await tx(
+        writeContracts.ENSYOLO.giftENS(ensNameHash, tokenId, lockAddress, {
+          value: utils.parseEther(amount.toString()),
+        }),
+      );
       console.log(`ENS YOLO tx hash: ${txHash}`);
     } catch (e) {
       console.log("error gifting ENS: ", e);
@@ -361,8 +363,8 @@ function App(props) {
   };
 
   const lookUpEnsYolo = async ensNameHash => {
-    const result = readContracts.ENSYOLO.getGifted()
-  }
+    const result = readContracts.ENSYOLO.getGifted();
+  };
 
   useEffect(() => {
     try {
@@ -449,7 +451,13 @@ function App(props) {
           />
         </Route>
         <Route path="/claim">
-          <Actions readContracts={readContracts} writeContracts={writeContracts} tx={tx} address={address} />
+          <Actions
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            tx={tx}
+            claimEns={claimEns}
+            getNameHashFromEnsName={getNameHashFromEnsName}
+          />
         </Route>
         <Route path="/yolo">
           <div
@@ -565,7 +573,7 @@ function App(props) {
 
               <Button
                 onClick={async () => {
-                  let ensNameHashToCancel = getNameHashFromEnsName(ensNameToCancel)
+                  let ensNameHashToCancel = getNameHashFromEnsName(ensNameToCancel);
                   const txResult = await cancelEnsYolo(ensNameHashToCancel);
                   console.log("ENS YOLO ", txResult);
                 }}

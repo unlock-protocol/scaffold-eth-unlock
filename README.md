@@ -7,21 +7,21 @@
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
 
-# 🏄‍♂️ Action Loogies
+# 🏄‍♂️ ENSYOLO
 
-Action Loogies are interactive NFTs inspired by [Spells](https://spells.quest), The first ERC5050 interactive NFT. You can slap or cast a spell of Rage, Lust or Immunity on other Loogie NFTs. Action Loogies implement ERC5050 and also leverage Unlock Protocol to restrict access to specific actions to members only. Loogies art are generated onchain and change according to the action received from other loogies.
+Description
 
 ## How it works
 
-🔏 Mint an NFT
+🔏 Deploy a lock smart contract
 
-📝 Register NFT to the state contract to initialize your NFT stats
+📝 Get a .eth ENS name and head over to YOLO ENS tab and provide the requested info 
 
-💼 Get approved for action
+💼 
 
-📱 Start taking action and let the fun begin!
+📱 
 
-👩‍👩‍👧‍👧 Get a subscription to gain access to members only actions (Optional).
+👩‍👩‍👧‍👧 
 
 ## 🏄‍♂️ Quick Start
 
