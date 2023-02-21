@@ -14,8 +14,11 @@ import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
   Account,
-  Address,
-  AddressInput,
+  // Address,
+  // AddressInput,
+  YoloEns,
+  ClaimEns,
+  CancelYolo,
   Contract,
   Faucet,
   GasGauge,
@@ -26,19 +29,19 @@ import {
   FaucetHint,
   NetworkSwitch,
 } from "./components";
-import { TwitterOutlined, InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
+import { TwitterOutlined } from "@ant-design/icons";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
-import StackGrid from "react-stack-grid";
+// import StackGrid from "react-stack-grid";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, Actions } from "./views";
+import { Home } from "./views";
 import { useStaticJsonRPC } from "./hooks";
-const abis = require("@unlock-protocol/contracts");
+// const abis = require("@unlock-protocol/contracts");
 const { ethers } = require("ethers");
 const nameHash = require("@ensdomains/eth-ens-namehash");
-const { toUtf8Bytes } = require("ethers/lib/utils");
+// const { toUtf8Bytes } = require("ethers/lib/utils");
 
 /*
     Welcome to Action Loogies !
@@ -60,8 +63,8 @@ const { toUtf8Bytes } = require("ethers/lib/utils");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-// const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -74,20 +77,20 @@ const web3Modal = Web3ModalSetup();
 // 🛰 providers
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
-  "https://rpc.scaffoldeth.io:48544",
+  `https://eth-mainnet.g.alchemy.com/v2/DBHlwdwP4V7w9M0nt_0waEjaO3a1tXDV`,
+  // "https://rpc.scaffoldeth.io:48544",
 ];
 
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = [initialNetwork.name, "mainnet", "rinkeby"];
+  const networkOptions = [initialNetwork.name, "mainnet", "goerli"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
-  const [actionLockAddress, setActionLockAddress] = useState();
-  const [publicLockContract, setPublicLockContract] = useState();
+  // const [actionLockAddress, setActionLockAddress] = useState();
+  // const [publicLockContract, setPublicLockContract] = useState();
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
@@ -165,19 +168,6 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
-  const [totalSupply, setTotalSupply] = useState();
-  useEffect(() => {
-    const getTotalSupply = async () => {
-      try {
-        let ts = await readContracts.ActionCollectible.totalSupply();
-        setTotalSupply(ts);
-      } catch (e) {
-        console.log("error fetching total supply", e);
-      }
-    };
-    void getTotalSupply();
-  }, [readContracts]);
-
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
@@ -221,23 +211,6 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
-  // set unlock protocol variables
-  // useEffect(() => {
-  //   const readyUnlock = async () => {
-  //     try {
-  //       const _actionLockAddress = await readContracts.ActionCollectible.actionLock();
-  //       if (_actionLockAddress !== ethers.constants.AddressZero) {
-  //         const _publicLockContract = new ethers.Contract(_actionLockAddress, abis.PublicLockV12.abi, userSigner);
-  //         setActionLockAddress(_actionLockAddress);
-  //         setPublicLockContract(_publicLockContract);
-  //       }
-  //     } catch (e) {
-  //       console.log("Unlock error", e);
-  //     }
-  //   };
-  //   readyUnlock();
-  // }, [readContracts, userSigner, address]);
-
   // set ENS contracts
   const ensRegistryABI = require("./contracts/imported/ABI/ENSRegistry.json");
   const ensRegistryAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
@@ -248,132 +221,39 @@ function App(props) {
 
   const [ensRegistryContract, setEnsRegistryContract] = useState();
   const [baseRegistrarContract, setBaseRegistrarContract] = useState();
-  const [isRegistrarApproved, setIsRegistrarApproved] = useState();
-  const [isRegistryApproved, setIsRegistryApproved] = useState();
-  const [ensName, setEnsName] = useState();
-  const [ensNameToCancel, setEnsNameToCancel] = useState();
-  const [ensNameHash, setEnsNameHash] = useState();
-  const [tokenId, setTokenId] = useState();
-  const [lockAddress, setLockAddress] = useState();
-  const [amount, setAmount] = useState();
-  const [isLoading, setIsLoading] = useState();
 
   useEffect(() => {
-    const registryContract = new ethers.Contract(ensRegistryAddress, ensRegistryABI, userSigner);
-    const registrarContract = new ethers.Contract(baseRegistrarAddress, baseRegistrarABI, userSigner);
-    setEnsRegistryContract(registryContract);
-    setBaseRegistrarContract(registrarContract);
+    try {
+      const registryContract = new ethers.Contract(ensRegistryAddress, ensRegistryABI, userSigner);
+      const registrarContract = new ethers.Contract(baseRegistrarAddress, baseRegistrarABI, userSigner);
+      setEnsRegistryContract(registryContract);
+      setBaseRegistrarContract(registrarContract);
+    } catch (e) {
+      console.log(e);
+    }
   }, [userSigner, address]);
 
-  useEffect(() => {
-    const getApprovalForAll = async () => {
-      if (tokenId && tokenId !== 0) {
-        setIsLoading(true);
-        try {
-          const owner = await baseRegistrarContract.ownerOf(tokenId);
-          console.log("owner:", owner);
-          let registrarApproved = await baseRegistrarContract.isApprovedForAll(
-            owner,
-            "0x3190E512816e161EA85fbFa30787608F9b49f8Cb",
-          );
-          let registryApproved = await ensRegistryContract.isApprovedForAll(
-            owner,
-            "0x3190E512816e161EA85fbFa30787608F9b49f8Cb",
-          );
-          setIsRegistrarApproved(registrarApproved);
-          setIsRegistryApproved(registryApproved);
-          setIsLoading(false);
-        } catch (e) {
-          console.log("error checking approval ", e);
-        }
-      } else {
-        setIsLoading(true);
-      }
-    };
-    getApprovalForAll();
-  }, [ensName, tokenId, baseRegistrarContract]);
-
-  console.log("sss: ", ensRegistryContract, "\n", "xxx: ", baseRegistrarContract);
-
-  const approveForAll = async (_operatorAddr, _approved) => {
-    try {
-      let registrarTxHash;
-      let registryTxHash;
-      if (!isRegistrarApproved) {
-        registrarTxHash = await tx(baseRegistrarContract.setApprovalForAll(_operatorAddr, _approved));
-        console.log(`Approved on BaseRegistrar with tx hash: ${registrarTxHash}`);
-        setIsRegistrarApproved(_approved);
-      }
-
-      if (!isRegistryApproved) {
-        registryTxHash = await tx(ensRegistryContract.setApprovalForAll(_operatorAddr, _approved));
-        console.log(`Approved on ENSRegistry with tx hash: ${registryTxHash}`);
-        setIsRegistryApproved(_approved);
-      }
-    } catch (e) {
-      console.log("error approving ENSYOLO: ", e);
-    }
-  };
-
-  const yoloEns = async () => {
-    try {
-      let txHash = await tx(
-        writeContracts.ENSYOLO.giftENS(ensNameHash, tokenId, lockAddress, {
-          value: utils.parseEther(amount.toString()),
-        }),
-      );
-      console.log(`ENS YOLO tx hash: ${txHash}`);
-    } catch (e) {
-      console.log("error gifting ENS: ", e);
-    }
-  };
-
-  const cancelEnsYolo = async ensNameHash => {
-    try {
-      let txHash = await tx(writeContracts.ENSYOLO.cancelENSYolo(ensNameHash));
-      console.log(`ENS Claimed with tx hash: ${txHash}`);
-    } catch (e) {
-      console.log("error cancelling ENS: ", e);
-    }
-  };
-
-  const claimEns = async () => {
-    try {
-      let txHash = await tx(writeContracts.ENSYOLO.claimItem(ensNameHash, tokenId));
-      console.log(`ENS Claimed with tx hash: ${txHash}`);
-    } catch (e) {
-      console.log("error Claiming ENS: ", e);
-    }
-  };
-
   const getTokenIdFromEnsName = ensName => {
-    let normalizedEns = nameHash.normalize(ensName);
-    const [ensLabel] = normalizedEns.split(".eth");
-    const ensNameLabelHash = utils.keccak256(utils.toUtf8Bytes(ensLabel));
-    const tokenId = BigNumber.from(ensNameLabelHash).toString();
-    setTokenId(tokenId);
-    return tokenId;
+    try {
+      let normalizedEns = nameHash.normalize(ensName);
+      const [ensLabel] = normalizedEns.split(".eth");
+      const ensNameLabelHash = utils.keccak256(utils.toUtf8Bytes(ensLabel));
+      const tokenId = BigNumber.from(ensNameLabelHash).toString();
+      return tokenId;
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const getNameHashFromEnsName = ensName => {
-    let normalizedEns = nameHash.normalize(ensName);
-    let hash = nameHash.hash(normalizedEns);
-    setEnsNameHash(hash);
-    return hash;
-  };
-
-  const lookUpEnsYolo = async ensNameHash => {
-    const result = readContracts.ENSYOLO.getGifted();
-  };
-
-  useEffect(() => {
     try {
-      getNameHashFromEnsName(ensName);
-      getTokenIdFromEnsName(ensName);
+      let normalizedEns = nameHash.normalize(ensName);
+      let hash = nameHash.hash(normalizedEns);
+      return hash;
     } catch (e) {
-      console.log("error: ", e);
+      console.log(e);
     }
-  }, [ensName]);
+  };
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
@@ -423,11 +303,14 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">Home</Link>
         </Menu.Item>
+        <Menu.Item key="/yolo">
+          <Link to="/yolo">YOLO ENS</Link>
+        </Menu.Item>
         <Menu.Item key="/claim">
           <Link to="/claim">Claim ENS</Link>
         </Menu.Item>
-        <Menu.Item key="/yolo">
-          <Link to="/yolo">YOLO ENS</Link>
+        <Menu.Item key="/cancel">
+          <Link to="/cancel">Cancel YOLO</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Smart Contracts</Link>
@@ -437,150 +320,66 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home
-            userSigner={userSigner}
-            injectedProvider={injectedProvider}
-            readContracts={readContracts}
-            writeContracts={writeContracts}
-            tx={tx}
-            loadWeb3Modal={loadWeb3Modal}
-            blockExplorer={blockExplorer}
-            address={address}
-            actionLockAddress={actionLockAddress}
-            publicLockContract={publicLockContract}
-          />
-        </Route>
-        <Route path="/claim">
-          <Actions
-            readContracts={readContracts}
-            writeContracts={writeContracts}
-            tx={tx}
-            claimEns={claimEns}
-            getNameHashFromEnsName={getNameHashFromEnsName}
-          />
+          <Home />
         </Route>
         <Route path="/yolo">
-          <div
-            style={{
-              maxWidth: 1250,
-              margin: "auto",
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "column",
-              marginTop: 32,
-              paddingBottom: 256,
-            }}
-          >
-            <h1> YOLO ENS</h1>
-            <Card
-              style={{
-                maxWidth: 500,
-                width: "100%",
-              }}
-            >
-              <p>Input ENS name</p>
-              <Input
-                placeholder="Enter ENS"
-                value={ensName}
-                prefix={<UserOutlined className="site-form-item-icon" />}
-                suffix={
-                  <Tooltip title="ENS name to gift">
-                    <InfoCircleOutlined />
-                  </Tooltip>
-                }
-                onChange={e => {
-                  let val = e.target.value;
-                  setEnsName(val);
-                }}
-              />
-              <p>Input YOLO ETH amount</p>
-              <Input
-                type="number"
-                placeholder="ETH amount"
-                value={amount ? amount : null}
-                suffix={
-                  <Tooltip title="ETH amount to gift (min: 0.01)">
-                    <InfoCircleOutlined />
-                  </Tooltip>
-                }
-                onChange={e => {
-                  let val = e.target.value;
-                  setAmount(val);
-                }}
-              />
-              <p>Input lock address</p>
-              <AddressInput
-                autoFocus
-                ensProvider={mainnetProvider}
-                placeholder="Enter lock address"
-                value={lockAddress}
-                suffix={
-                  <Tooltip title="Only users with a key to this lock can claim this">
-                    <InfoCircleOutlined />
-                  </Tooltip>
-                }
-                onChange={setLockAddress}
-              />
-              {!isRegistrarApproved || !isRegistryApproved ? (
-                <Button
-                  onClick={async () => {
-                    let tx = await approveForAll("0x3190e512816e161ea85fbfa30787608f9b49f8cb", true);
-                    console.log("approveForAll txn: ", tx);
-                  }}
-                  loading={isLoading}
-                >
-                  Approve
-                </Button>
-              ) : (
-                <Button
-                  onClick={async () => {
-                    const txResult = await yoloEns();
-                    console.log("ENS YOLO ", txResult);
-                  }}
-                >
-                  YOLO ENS
-                </Button>
-              )}
-            </Card>
-            <h2 style={{ marginTop: 30 }}>Cancel ENS YOLO</h2>
-            <Card
-              style={{
-                maxWidth: 500,
-                width: "100%",
-              }}
-            >
-              <p>Input ENS name</p>
-              <Input
-                placeholder="Enter ENS"
-                value={ensNameToCancel}
-                prefix={<UserOutlined className="site-form-item-icon" />}
-                suffix={
-                  <Tooltip title="ENS name to cancel">
-                    <InfoCircleOutlined />
-                  </Tooltip>
-                }
-                onChange={e => {
-                  let val = e.target.value;
-                  setEnsNameToCancel(val);
-                }}
-              />
-              {/* <div>
-                <p>{eyolo.id}</p>
-                <p>{eyolo.controller}</p>
-                <p>{eyolo.value}</p>
-                <p>{eyolo.claim}</p>
-              </div> */}
-
-              <Button
-                onClick={async () => {
-                  let ensNameHashToCancel = getNameHashFromEnsName(ensNameToCancel);
-                  const txResult = await cancelEnsYolo(ensNameHashToCancel);
-                  console.log("ENS YOLO ", txResult);
-                }}
-              >
-                Cancel ENS YOLO
-              </Button>
-            </Card>
+          <div>
+            <h1 style={{ marginTop: 30 }}> YOLO ENS</h1>
+            <YoloEns
+              maxWidth={1250}
+              margin={"auto"}
+              display={"flex"}
+              alignItems={"center"}
+              flexDirection={"column"}
+              marginTop={32}
+              paddingBottom={256}
+              mainnetProvider={mainnetProvider}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              ensRegistryContract={ensRegistryContract}
+              baseRegistrarContract={baseRegistrarContract}
+              getTokenIdFromEnsName={getTokenIdFromEnsName}
+              getNameHashFromEnsName={getNameHashFromEnsName}
+            />
+          </div>
+        </Route>
+        <Route path="/claim">
+          <div>
+            <h1 style={{ marginTop: 30 }}>Claim ENS</h1>
+            <ClaimEns
+              maxWidth={1250}
+              margin={"auto"}
+              display={"flex"}
+              alignItems={"center"}
+              flexDirection={"column"}
+              marginTop={32}
+              paddingBottom={256}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              getNameHashFromEnsName={getNameHashFromEnsName}
+              getTokenIdFromEnsName={getTokenIdFromEnsName}
+            />
+          </div>
+        </Route>
+        <Route path="/cancel">
+          <div>
+            <h2 style={{ marginTop: 30 }}>Cancel YOLO</h2>
+            <CancelYolo
+              maxWidth={1250}
+              margin={"auto"}
+              display={"flex"}
+              alignItems={"center"}
+              flexDirection={"column"}
+              marginTop={32}
+              paddingBottom={256}
+              mainnetProvider={mainnetProvider}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              getNameHashFromEnsName={getNameHashFromEnsName}
+            />
           </div>
         </Route>
         <Route path="/debug">
@@ -598,15 +397,6 @@ function App(props) {
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
           />
-          {/* <Contract
-            name="ENSRegistry"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          /> */}
         </Route>
       </Switch>
 

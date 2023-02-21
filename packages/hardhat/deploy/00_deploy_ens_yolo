@@ -16,24 +16,26 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
+  const ENSRegistry = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"; // goerli
+  const ENSBaseRegistrar = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"; // goerli
 
-  await deploy("ActionCollectible", {
+  await deploy("ENSYOLO", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [ ENSRegistry, ENSBaseRegistrar ],
     log: true,
     waitConfirmations: 5,
   });
   // Getting previously deployed loogies contract
-  const actionCollectible = await ethers.getContract(
-    "ActionCollectible",
+  const ensYolo = await ethers.getContract(
+    "ENSYOLO",
     deployer
   );
-  // transferring loogies ownership
-  const tx = await actionCollectible.transferOwnership(
+  // transferring ownership
+  const tx = await ensYolo.transferOwnership(
     "0xCA7632327567796e51920F6b16373e92c7823854"
   );
-  console.log(`Transferring Loogies ownership with Txn: ${tx.hash} `);
+  console.log(`Transferring ENSYOLO ownership with Txn: ${tx.hash} `);
   /*  await ActionCollectible.setPurpose("Hello");
   
     To take ownership of yourContract using the ownable library uncomment next line and add the 
@@ -83,4 +85,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   //   console.error(error);
   // }
 };
-module.exports.tags = ["ActionCollectible"];
+module.exports.tags = ["ENSYOLO"];

@@ -1,13 +1,13 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "8e2d4cd0d25d4e75ac2f2ab969f77009";
+export const INFURA_ID = "a964fc7376e74cad8433b01e5f2e4849";
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "585fc04a93b24cce94232d54e2193bf8";
+export const ETHERSCAN_KEY = "HEXGDHZ56KF28E8WHMC6RRK8FUAP7ESZZ6";
 
 // BLOCKNATIVE ID FOR Notify.js:
 export const BLOCKNATIVE_DAPPID = "44552e6b-944a-4fce-ba4c-1116816f6efe";
 
-export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
+export const ALCHEMY_KEY = "AXcnbIsK9dDjBVp7fzlWaLthniYK0Gzo";
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
@@ -27,30 +27,6 @@ export const NETWORKS = {
     chainId: 1,
     rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
     blockExplorer: "https://etherscan.io/",
-  },
-  kovan: {
-    name: "kovan",
-    color: "#7003DD",
-    chainId: 42,
-    rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
-    blockExplorer: "https://kovan.etherscan.io/",
-    faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
-  },
-  rinkeby: {
-    name: "rinkeby",
-    color: "#e0d068",
-    chainId: 4,
-    rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
-    faucet: "https://faucet.rinkeby.io/",
-    blockExplorer: "https://rinkeby.etherscan.io/",
-  },
-  ropsten: {
-    name: "ropsten",
-    color: "#F60D09",
-    chainId: 3,
-    faucet: "https://faucet.ropsten.be/",
-    blockExplorer: "https://ropsten.etherscan.io/",
-    rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
   },
   goerli: {
     name: "goerli",

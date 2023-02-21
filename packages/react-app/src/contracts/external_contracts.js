@@ -1368,13 +1368,13 @@ module.exports = {
         abi: ERC20ABI,
       },
       ENSRegistry: {
-        address: "",
+        address: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e", //goerli
         abi: ENSREGISTRY,
       },
       BaseRegistrarImplementation: {
-        address: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+        address: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85", //goerli
         abi: BASEREGISTRARIMPLEMENTATION,
-      }
+      },
     },
   },
 };
