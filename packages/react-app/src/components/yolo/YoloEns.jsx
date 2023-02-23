@@ -5,21 +5,23 @@ import { AddressInput } from "../";
 const ethers = require("ethers");
 
 /**
-  ~ What it does? ~
-
-    Enables users...
-
   ~ How can I use? ~
 
   <YoloEns
-    provider={userProvider}
-    address={address}
-    ensProvider={mainnetProvider}
+    readContractr={readContract}
+    writeContracts={writeContracts}
+    getNameHashFromEnsName={getNameHashFromEnsName}
+    getTokenIdFromEnsName={getTokenIdFromEnsName}
+    tx={tx}
+    maxWidth={someNumber}
+    margin={"auto"}
+    display={"flex"},
+    flexDirection={"column"}
+    alignItems={"center"}
+    marginTop={someNumber}
+    paddingBottom={someNumber} 
   />
 
-  ~ Features ~
-
-  - Provide provider={userProvider} to display a wallet
 **/
 
 const YoloEns = function ({
@@ -142,7 +144,6 @@ const YoloEns = function ({
             setEnsName(val);
             setTokenId(_tokenId);
             setEnsNameHash(_ensNamehash);
-            // console.log("testtest tokenId", tokenId);
           }}
         />
         <p>Input YOLO ETH amount</p>
@@ -157,7 +158,6 @@ const YoloEns = function ({
           }
           onChange={e => {
             let val = e.target.value;
-            // console.log("testtest Amnt", amount);
             setAmount(val);
           }}
         />

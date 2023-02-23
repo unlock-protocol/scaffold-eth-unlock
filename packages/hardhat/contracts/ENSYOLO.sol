@@ -116,9 +116,10 @@ contract ENSYOLO is ReentrancyGuard, Ownable {
     returns (uint256)
   {
       require(msg.value >= price, "NOT ENOUGH");
-      require(isENS(_nameHash), "Non existent node");
-      require(ENSContract.owner(_nameHash) == msg.sender || ENSBaseRegistrar.ownerOf(_tokenId) == msg.sender, "Not owner");
-      require(IPublicLock(payable(_lockAddress)).isLockManager(msg.sender), "Not Manager");
+      require(isENS(_nameHash), "Non existent ENS node");
+      require(ENSContract.owner(_nameHash) == msg.sender, "ENSRegistry: Not owner");
+      require(ENSBaseRegistrar.ownerOf(_tokenId) == msg.sender, "BaseRegistrarImplementation: Not owner");
+      require(IPublicLock(payable(_lockAddress)).isLockManager(msg.sender), "Not lock Manager");
       require(gifted[_nameHash].claimed == true || gifted[_nameHash].id == 0, "Active ENS YOLO" );
 
       uint id = _tokenIds.current();
@@ -161,12 +162,11 @@ contract ENSYOLO is ReentrancyGuard, Ownable {
     EYOLO memory ensYolo = gifted[_nameHash]; 
     ensYolo.controller = msg.sender;
     ensYolo.claimed = true;
+    ensYolo.value = 0;
     gifted[_nameHash] = ensYolo;
-    // _transferENS(_nameHash, _recepient, _tokenId);
+    _transferENS(_nameHash, _recepient, _tokenId);
     (bool yolo,) = payable(msg.sender).call{ value: _amount }("");
     require(yolo, "Failed to YOLO ETH");
-    ensYolo.value = 0;
-
     emit ENSYoloClaimed(gifted[_nameHash].id, msg.sender, gifted[_nameHash].nameHash, gifted[_nameHash].value);
     return gifted[_nameHash].claimed;
   }

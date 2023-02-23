@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-const { ethers } = require("ethers");
+// const { ethers } = require("ethers");
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use

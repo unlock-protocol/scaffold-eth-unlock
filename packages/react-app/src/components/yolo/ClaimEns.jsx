@@ -4,21 +4,23 @@ import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 const ethers = require("ethers");
 
 /**
-  ~ What it does? ~
-
-    Enables users...
-
   ~ How can I use? ~
 
-  <YoloEns
-    provider={userProvider}
-    address={address}
-    ensProvider={mainnetProvider}
+  <ClaimEns
+    readContractr={readContract}
+    writeContracts={writeContracts}
+    getNameHashFromEnsName={getNameHashFromEnsName}
+    getTokenIdFromEnsName={getTokenIdFromEnsName}
+    tx={tx}
+    maxWidth={someNumber}
+    margin={"auto"}
+    display={"flex"},
+    flexDirection={"column"}
+    alignItems={"center"}
+    marginTop={someNumber}
+    paddingBottom={someNumber}
   />
 
-  ~ Features ~
-
-  - Provide provider={userProvider} to display a wallet
 **/
 
 const ClaimEns = function ({
@@ -49,9 +51,7 @@ const ClaimEns = function ({
       console.log(e);
     }
   }, [ensName]);
-// console.log("testtest CLaim: tokenID", tokenId);
-// console.log("testtest CLaim: NameHash", ensNameHash);
-// console.log("testtest CLaim: WRITECON", writeContracts);
+
   useEffect(() => {
     const getEnsYoloStatus = async () => {
       if (ensNameHash && ensNameHash.length) {

@@ -3,21 +3,23 @@ import React, { useState, useEffect } from "react";
 import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 const ethers = require("ethers");
 /**
-  ~ What it does? ~
-
-    Enables users...
-
   ~ How can I use? ~
 
-  <YoloEns
-    provider={userProvider}
-    address={address}
-    ensProvider={mainnetProvider}
+  <CancelYolo
+    readContractr={readContract}
+    writeContracts={writeContracts}
+    getNameHashFromEnsName={getNameHashFromEnsName}
+    getTokenIdFromEnsName={getTokenIdFromEnsName}
+    tx={tx}
+    maxWidth={someNumber}
+    margin={"auto"}
+    display={"flex"},
+    flexDirection={"column"}
+    alignItems={"center"}
+    marginTop={someNumber}
+    paddingBottom={someNumber} 
   />
 
-  ~ Features ~
-
-  - Provide provider={userProvider} to display a wallet
 **/
 
 const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFromEnsName, ...props }) {
@@ -47,8 +49,6 @@ const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFro
     };
     getEnsYoloStatus();
   }, [ensNameToCancel, ensNameHash]);
-
-  console.log("testtestENSYOLO", ensYolo);
 
   const cancelEnsYolo = async ensNameHash => {
     try {

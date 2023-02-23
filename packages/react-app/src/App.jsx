@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row, Card, Spin, Input, Tooltip } from "antd";
+import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -14,8 +14,6 @@ import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
   Account,
-  // Address,
-  // AddressInput,
   YoloEns,
   ClaimEns,
   CancelYolo,
@@ -32,16 +30,15 @@ import {
 import { TwitterOutlined } from "@ant-design/icons";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
-// import StackGrid from "react-stack-grid";
+
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home } from "./views";
 import { useStaticJsonRPC } from "./hooks";
-// const abis = require("@unlock-protocol/contracts");
 const { ethers } = require("ethers");
 const nameHash = require("@ensdomains/eth-ens-namehash");
-// const { toUtf8Bytes } = require("ethers/lib/utils");
+
 
 /*
     Welcome to Action Loogies !
@@ -89,8 +86,7 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
-  // const [actionLockAddress, setActionLockAddress] = useState();
-  // const [publicLockContract, setPublicLockContract] = useState();
+
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
