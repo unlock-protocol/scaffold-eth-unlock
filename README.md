@@ -7,7 +7,7 @@
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
 
-# 🏄‍♂️ ENSYOLO
+# 🏄‍♂️ ENS.YOLO
 
 ## Description
 ENS.YOLO is a fun experiment at onboarding new people to web3. To get started purchase an ENS NFT. Approve ENS.YOLO contract for transactions on both of ENS smart contracts (Registry and Registrar) and yolo some ETH which will be received by the person who claims the ens. Airdrop them a key so they are the only ones able to claim it.
