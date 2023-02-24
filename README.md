@@ -10,18 +10,20 @@
 # 🏄‍♂️ ENSYOLO
 
 Description
+ENS.YOLO is a fun experiment at onboarding new people to web3. To get started purchase an ENS NFT. Approve ENS.YOLO contract and send some ETH which will be received by the person who claims the ens. Airdrop them a key so they are the only ones able to claim it.
+ENS.YOLO integrates the Unlock Protocol, which enables the possibility of users gamifying the claim process and creating different experiences for their friends(or community) such as treasure hunts, contests, etc.
 
 ## How it works
 
-🔏 Deploy a lock smart contract
+🔏 Deploy a free lock smart contract using [Unlock](https://app.unlock-protocol.com)
 
 📝 Get a .eth ENS name and head over to YOLO ENS tab and provide the requested info 
 
-💼 
+💼 Approve ENS.YOLO smart contract for transactions on ENSRegistry and BaseRegistrarImplementation smart contracts (2 Approve transactions)
 
-📱 
+📱 Airdrop key(s) to recepient(s). In case of multiple keys, the first user with a valid claim key to `claim` gets the ENS and the accompanying ETH. 
 
-👩‍👩‍👧‍👧 
+👩‍👩‍👧‍👧 Creators can Cancel YOLO anytime provided it has not been claimed.
 
 ## 🏄‍♂️ Quick Start
 
@@ -37,7 +39,7 @@ git clone https://github.com/unlock-protocol/scaffold-eth-unlock.git
 
 ```bash
 cd scaffold-eth-unlock
-git checkout action-loogies-nft
+git checkout ensyolo
 yarn install
 yarn chain
 ```
