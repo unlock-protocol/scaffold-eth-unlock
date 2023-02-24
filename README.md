@@ -17,7 +17,7 @@ ENS.YOLO integrates the Unlock Protocol, which enables the possibility of users 
 
 🔏 Deploy a free lock smart contract using [Unlock](https://app.unlock-protocol.com)
 
-📝 Get a .eth ENS name and head over to YOLO ENS tab and provide the requested info 
+📝 Get a `.eth` ENS name and head over to YOLO ENS tab and provide the requested info 
 
 💼 Approve ENS.YOLO smart contract for transactions on ENSRegistry and BaseRegistrarImplementation smart contracts (2 Approve transactions)
 
