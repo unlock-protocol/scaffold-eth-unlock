@@ -11,6 +11,7 @@
 
 ## Description
 ENS.YOLO is a fun experiment at onboarding new people to web3. To get started purchase an ENS NFT. Approve ENS.YOLO contract for transactions on both of ENS smart contracts (Registry and Registrar) and yolo some ETH which will be received by the person who claims the ens. Airdrop them a key so they are the only ones able to claim it.
+
 ENS.YOLO integrates the Unlock Protocol, which enables the possibility of users gamifying the claim process and creating different experiences for their friends(or community) such as treasure hunts, contests, etc.
 
 ## How it works
@@ -61,6 +62,8 @@ yarn deploy
 🔏 Edit your smart contracts in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+
+🛠 Edit your componets `YoloEns.jsx, ClaimEns.jsx, CancelEns.jsx` in `packages/react-app/src/components/yolo`
 
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
