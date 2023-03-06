@@ -2,11 +2,14 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 
+import "./interfaces/ISimpleBridge.sol";
 import "./interfaces/ENS.sol";
 import "./interfaces/IPublicLockV10.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 abstract contract ENSBaseRegistrarImplementation {
   function safeTransferFrom(address from, address recepient, uint256 tokenId)virtual external;
@@ -14,18 +17,24 @@ abstract contract ENSBaseRegistrarImplementation {
   function ownerOf(uint256 tokenId)virtual external view returns(address);
 }
 
-contract ENSYOLO is ReentrancyGuard, Ownable {
+interface IWETH {
+    function deposit() external payable;
+
+    function approve(address guy, uint256 wad) external returns (bool);
+}
+
+contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
+  // address WETH = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6 // Goerli
   // address ENSRegistry  = 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e; //goerli
   // address ENSBaseRegistrarAddress = 0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85; //goerli
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
   ENS public ENSContract;
   ENSBaseRegistrarImplementation public ENSBaseRegistrar;
-
+  IConnext public connext;
+  IPublicLock public membershipLock;
   address payable public constant buidlguidl = payable(0x97843608a00e2bbc75ab0C1911387E002565DEDE); // buidlguidl.eth
-
   uint256 public price = 0.01 ether;
-
   uint256 public donations = 0;
 
   event ENSYoloClaimed(uint256 indexed id, address recepient, bytes32 nameHash, uint256 value);
@@ -42,12 +51,18 @@ contract ENSYOLO is ReentrancyGuard, Ownable {
   }
 
   mapping(bytes32 => EYOLO) gifted;
-  // mapping(address => EYOLO[]) all
   
-    constructor(ENS _ENSRegistryAddress, ENSBaseRegistrarImplementation _ENSBaseRegistrarAddress ) { 
+  constructor(
+    ENS _ENSRegistryAddress,
+    ENSBaseRegistrarImplementation _ENSBaseRegistrarAddress,
+    address _connext,
+    address payable _membership
+  ) {
     _tokenIds.increment();
     ENSContract = _ENSRegistryAddress;
     ENSBaseRegistrar = _ENSBaseRegistrarAddress;
+    connext = IConnext(_connext);
+    membershipLock = IPublicLock(_membership);
   }
 
   /**
@@ -61,6 +76,20 @@ contract ENSYOLO is ReentrancyGuard, Ownable {
     require(ENSBaseRegistrar.isApprovedForAll(_owner, address(this)), "ENSYOLO: Not approved - BaseRegistrarImplementation");
     _;
   }
+
+    /**
+     * @dev Modifier ensures caller (except owner) has a valid membership on the membership lock smart contract.
+     * @dev Throws if not caller does not have a valid membership on `membershipLock`
+     */
+    modifier onlyMember() {
+        if (msg.sender != owner()) {
+            require(
+                membershipLock.getHasValidKey(msg.sender) == true,
+                "members only"
+            );
+        }
+        _;
+    }
 
   function getGifted(bytes32 _nameHash)public view returns(EYOLO memory _gifted) {
     _gifted = gifted[_nameHash];
@@ -170,6 +199,125 @@ contract ENSYOLO is ReentrancyGuard, Ownable {
     emit ENSYoloClaimed(gifted[_nameHash].id, msg.sender, gifted[_nameHash].nameHash, gifted[_nameHash].value);
     return gifted[_nameHash].claimed;
   }
+
+    /**
+     * @notice Transfers ERC20 tokens from one chain to another.
+     * @param token Address of the token on this domain.
+     * @param amount The amount to transfer.
+     * @param recipient The destination address (e.g. a wallet).
+     * @param destinationDomain The destination domain ID.
+     * @param slippage The maximum amount of slippage the user will accept in BPS(0 - 10000 eg 30 equals 0.3% slippage).
+     * @param relayerFee The fee offered to relayers.
+     */
+    function xTransfer(
+        address token,
+        uint256 amount,
+        address recipient,
+        uint32 destinationDomain,
+        uint256 slippage,
+        uint256 relayerFee
+    ) external payable onlyMember {
+        _xTransfer(
+            token,
+            amount,
+            recipient,
+            destinationDomain,
+            slippage,
+            relayerFee
+        );
+    }
+
+    /**
+     * @notice Transfers ETH from one chain to another.
+     * @param destinationUnwrapper Address of Connext WETH unwrapper on the destination chain.
+     * @param weth Address of WETH on origin chain.
+     * @param amount The amount to transfer.
+     * @param recipient The destination address (e.g. a wallet).
+     * @param destinationDomain The destination domain ID.
+     * @param slippage The maximum amount of slippage the user will accept in BPS(0 - 10000 eg 30 equals 0.3% slippage).
+     * @param relayerFee The fee offered to relayers.
+     */
+    function xTransferEth(
+        address destinationUnwrapper,
+        address weth,
+        uint256 amount,
+        address recipient,
+        uint32 destinationDomain,
+        uint256 slippage,
+        uint256 relayerFee
+    ) external payable onlyMember {
+        _xTransferEth(
+            destinationUnwrapper,
+            weth,
+            amount,
+            recipient,
+            destinationDomain,
+            slippage,
+            relayerFee
+        );
+    }
+
+    function _xTransfer(
+      address token,
+      uint256 amount,
+      address recipient,
+      uint32 destinationDomain,
+      uint256 slippage,
+      uint256 relayerFee
+    ) internal {
+        IERC20 _token = IERC20(token);
+
+        require(
+            _token.allowance(msg.sender, address(this)) >= amount,
+            "User must approve amount"
+        );
+
+        // User sends funds to this contract
+        _token.transferFrom(msg.sender, address(this), amount);
+
+        // This contract approves transfer to Connext
+        _token.approve(address(connext), amount);
+
+        connext.xcall{value: relayerFee}(
+            destinationDomain, // _destination: Domain ID of the destination chain
+            recipient, // _to: address receiving the funds on the destination
+            token, // _asset: address of the token contract
+            msg.sender, // _delegate: address that can revert or forceLocal on destination
+            amount, // _amount: amount of tokens to transfer
+            slippage, // _slippage: the maximum amount of slippage the user will accept in BPS (e.g. 30 = 0.3%)
+            bytes("") // _callData: empty bytes because we're only sending funds
+        );
+    }
+
+    function _xTransferEth(
+        address destinationUnwrapper,
+        address weth,
+        uint256 amount,
+        address recipient,
+        uint32 destinationDomain,
+        uint256 slippage,
+        uint256 relayerFee
+    ) internal {
+        // Wrap ETH into WETH to send with the xcall
+        IWETH(weth).deposit{value: amount}();
+
+        // This contract approves transfer to Connext
+        IWETH(weth).approve(address(connext), amount);
+
+        // Encode the recipient address for calldata
+        bytes memory callData = abi.encode(recipient);
+
+        // xcall the Unwrapper contract to unwrap WETH into ETH on destination
+        connext.xcall{value: relayerFee}(
+            destinationDomain, // _destination: Domain ID of the destination chain
+            destinationUnwrapper, // _to: Unwrapper contract
+            weth, // _asset: address of the WETH contract
+            msg.sender, // _delegate: address that can revert or forceLocal on destination
+            amount, // _amount: amount of tokens to transfer
+            slippage, // _slippage: the maximum amount of slippage the user will accept in BPS (e.g. 30 = 0.3%)
+            callData // _callData: calldata with encoded recipient address
+        );
+    }
 
   receive() payable external {
     uint amount = msg.value;

@@ -18,11 +18,13 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
   const ENSRegistry = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"; // goerli
   const ENSBaseRegistrar = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"; // goerli
+  const connext = "0xFCa08024A6D4bCc87275b1E4A1E22B71fAD7f649"; // goerli
+  const membershipLock = "0xa4406E1E7722DB81c6Cc14DE4df149F9094e5573"; // goerli
 
   await deploy("ENSYOLO", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: [ ENSRegistry, ENSBaseRegistrar ],
+    args: [ ENSRegistry, ENSBaseRegistrar, connext, membershipLock ],
     log: true,
     waitConfirmations: 5,
   });

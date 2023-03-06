@@ -11,10 +11,12 @@
     "eslint-plugin-prettier": "^3.4.0"
   },
   "dependencies": {
+    "@connext/nxtp-contracts": "^0.2.1-rc.16",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-etherscan": "^3.0.1",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
     "@openzeppelin/contracts": "^4.4.2",
+    "@openzeppelin/contracts-upgradeable": "^4.8.2",
     "@tenderly/hardhat-tenderly": "^1.0.10",
     "base64-sol": "1.0.1",
     "chai": "^4.2.0",
