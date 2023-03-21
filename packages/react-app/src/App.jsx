@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Row } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -14,10 +14,6 @@ import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
   Account,
-  YoloEns,
-  ClaimEns,
-  CancelYolo,
-  Contract,
   Faucet,
   GasGauge,
   Header,
@@ -34,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home } from "./views";
+import { Home, Dashboard } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 const { ethers } = require("ethers");
 const nameHash = require("@ensdomains/eth-ens-namehash");
@@ -60,8 +56,8 @@ const nameHash = require("@ensdomains/eth-ens-namehash");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-// const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+// const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -296,104 +292,13 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 20 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/yolo">
-          <Link to="/yolo">YOLO ENS</Link>
-        </Menu.Item>
-        <Menu.Item key="/claim">
-          <Link to="/claim">Claim ENS</Link>
-        </Menu.Item>
-        <Menu.Item key="/cancel">
-          <Link to="/cancel">Cancel YOLO</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Smart Contracts</Link>
-        </Menu.Item>
-      </Menu>
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home />
+          <Home injectedProvider={injectedProvider} loadWeb3Modal={loadWeb3Modal} />
         </Route>
-        <Route path="/yolo">
-          <div>
-            <h1 style={{ marginTop: 30 }}> YOLO ENS</h1>
-            <YoloEns
-              maxWidth={1250}
-              margin={"auto"}
-              display={"flex"}
-              alignItems={"center"}
-              flexDirection={"column"}
-              marginTop={32}
-              paddingBottom={256}
-              mainnetProvider={mainnetProvider}
-              readContracts={readContracts}
-              writeContracts={writeContracts}
-              tx={tx}
-              ensRegistryContract={ensRegistryContract}
-              baseRegistrarContract={baseRegistrarContract}
-              getTokenIdFromEnsName={getTokenIdFromEnsName}
-              getNameHashFromEnsName={getNameHashFromEnsName}
-            />
-          </div>
-        </Route>
-        <Route path="/claim">
-          <div>
-            <h1 style={{ marginTop: 30 }}>Claim ENS</h1>
-            <ClaimEns
-              maxWidth={1250}
-              margin={"auto"}
-              display={"flex"}
-              alignItems={"center"}
-              flexDirection={"column"}
-              marginTop={32}
-              paddingBottom={256}
-              readContracts={readContracts}
-              writeContracts={writeContracts}
-              tx={tx}
-              getNameHashFromEnsName={getNameHashFromEnsName}
-              getTokenIdFromEnsName={getTokenIdFromEnsName}
-            />
-          </div>
-        </Route>
-        <Route path="/cancel">
-          <div>
-            <h2 style={{ marginTop: 30 }}>Cancel YOLO</h2>
-            <CancelYolo
-              maxWidth={1250}
-              margin={"auto"}
-              display={"flex"}
-              alignItems={"center"}
-              flexDirection={"column"}
-              marginTop={32}
-              paddingBottom={256}
-              mainnetProvider={mainnetProvider}
-              readContracts={readContracts}
-              writeContracts={writeContracts}
-              tx={tx}
-              getNameHashFromEnsName={getNameHashFromEnsName}
-            />
-          </div>
-        </Route>
-        <Route path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-          <Contract
-            name="ENSYOLO"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
+        <Route path="/dashboard">
+          <Dashboard injectedProvider={injectedProvider} loadWeb3Modal={loadWeb3Modal} />
         </Route>
       </Switch>
 

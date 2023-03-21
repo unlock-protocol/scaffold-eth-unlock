@@ -54,6 +54,7 @@ const YoloEns = function ({
       console.log(e);
     }
   }, [readContracts]);
+  
   useEffect(() => {
     const getApprovalForAll = async () => {
       if (tokenId && tokenId !== 0) {
