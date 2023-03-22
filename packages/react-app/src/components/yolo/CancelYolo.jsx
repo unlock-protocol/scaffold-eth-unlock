@@ -81,6 +81,7 @@ const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFro
         <Input
           placeholder="Enter ENS"
           value={ensNameToCancel}
+          size="large"
           prefix={<UserOutlined className="site-form-item-icon" />}
           suffix={
             <Tooltip title="ENS name to cancel">
