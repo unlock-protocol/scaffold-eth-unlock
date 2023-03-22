@@ -29,32 +29,79 @@ const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFro
   const [isGifted, setIsGifted] = useState();
   const [isEns, setIsEns] = useState();
   const [ensNameToCancel, setEnsNameToCancel] = useState();
+  const [isLoading, setIsLoading] = useState();
+
+  const getIsEns = async () => {
+    if (ensNameToCancel && ensNameToCancel.length) {
+      try {
+        const _isEns = await readContracts.ENSYOLO.isENS(ensNameHash);
+        setIsEns(_isEns);
+        console.log("test-isEns:", _isEns);
+      } catch (e) {
+        console.log(`error getting isEns::: ${e}`);
+      }
+    }
+  };
+
+  const getIsGifted = async () => {
+    if (ensNameToCancel && ensNameToCancel.length) {
+      try {
+        const _isGifted = await readContracts.ENSYOLO.isGifted(ensNameHash);
+        setIsGifted(_isGifted);
+        console.log("test-IsGifted-INSIDER:", _isGifted);
+      } catch (e) {
+        console.log(`error getting IsGifted::: ${e}`);
+      }
+    }
+  };
+
+  const getIsClaimed = async () => {
+    if (ensNameHash) {
+      try {
+        const _yoloItem = await readContracts.ENSYOLO.getGifted(ensNameHash);
+        const _isClaimed = _yoloItem?.claimed;
+        setIsClaimed(_isClaimed);
+        console.log("test-IsClaimed=INSIDER:", _isClaimed);
+      } catch (e) {
+        console.log(`error getting IsClaimed::: ${e}`);
+      }
+    }
+  };
+
+  const setYoloItem = async () => {
+    if (ensNameHash && ensNameHash.length) {
+      try {
+        const _yoloItem = await readContracts.ENSYOLO.getGifted(ensNameHash);
+        console.log("test-YOLOITEM:", _yoloItem);
+
+        setEnsYolo(_yoloItem);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
 
   useEffect(() => {
-    const getEnsYoloStatus = async () => {
-      if (ensNameToCancel && ensNameHash.length) {
-        try {
-          const _isEns = await readContracts.ENSYOLO.isENS(ensNameHash);
-          const _isGifted = await readContracts.ENSYOLO.isGifted(ensNameHash);
-          const _isClaimed = await readContracts.ENSYOLO.getGifted(ensNameHash).claimed;
-          const _giftedEns = await readContracts.ENSYOLO.getGifted(ensNameHash);
-          setIsEns(_isEns);
-          setIsGifted(_isGifted);
-          setIsClaimed(_isClaimed);
-          setEnsYolo(_giftedEns);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    };
-    getEnsYoloStatus();
-  }, [ensNameToCancel, ensNameHash]);
+    setIsLoading(true);
+    getIsEns();
+  }, [ensNameToCancel]);
+
+  useEffect(() => {
+    getIsGifted();
+    getIsClaimed();
+    setYoloItem();
+    setTimeout(setIsLoading(false), 3000);
+  }, [ensNameToCancel, isClaimed, isEns]);
 
   const cancelEnsYolo = async ensNameHash => {
     try {
+      setIsLoading(true);
       let txHash = await tx(writeContracts.ENSYOLO.cancelENSYolo(ensNameHash));
+      await txHash.wait();
+      setIsLoading(false);
       console.log(`ENS Claimed with tx hash: ${txHash}`);
     } catch (e) {
+      setIsLoading(false);
       console.log("error cancelling ENS: ", e);
     }
   };
@@ -77,9 +124,8 @@ const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFro
           width: "100%",
         }}
       >
-        <p>Input ENS name</p>
         <Input
-          placeholder="Enter ENS"
+          placeholder="Enter ENS name"
           value={ensNameToCancel}
           size="large"
           prefix={<UserOutlined className="site-form-item-icon" />}
@@ -95,6 +141,8 @@ const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFro
             setEnsNameToCancel(val);
           }}
         />
+        <div style={{ marginBottom: 15 }}></div>
+
         {isEns && ensYolo && ensYolo.length ? (
           <div>
             <ul className="ens-yolo-info">
@@ -115,6 +163,7 @@ const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFro
                 Lock: <span>{ensYolo[5]}</span>
               </li>
             </ul>
+            <div style={{ marginBottom: 20 }}></div>
           </div>
         ) : null}
         <Button
@@ -123,9 +172,14 @@ const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFro
             const txResult = await cancelEnsYolo(ensNameHashToCancel);
             console.log("ENS YOLO ", txResult);
           }}
-          disabled={ensNameToCancel && !isGifted}
+          loading={isLoading}
+          disabled={!ensNameToCancel || !isGifted || isClaimed}
         >
-          Cancel ENS YOLO
+          {ensYolo && ensYolo.id > 0 && isGifted && !isClaimed
+            ? "Cancel ENS YOLO"
+            : ensYolo && ensYolo.id > 0 && isGifted && isClaimed
+            ? "Claimed"
+            : "Not Gifted"}
         </Button>
       </Card>
     </div>
