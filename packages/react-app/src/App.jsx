@@ -71,7 +71,7 @@ const web3Modal = Web3ModalSetup();
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
   `https://eth-mainnet.g.alchemy.com/v2/DBHlwdwP4V7w9M0nt_0waEjaO3a1tXDV`,
-  // "https://rpc.scaffoldeth.io:48544",
+  "https://rpc.scaffoldeth.io:48544",
 ];
 
 function App(props) {
@@ -171,10 +171,6 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -205,48 +201,48 @@ function App(props) {
   }, [loadWeb3Modal]);
 
   // set ENS contracts
-  const ensRegistryABI = require("./contracts/imported/ABI/ENSRegistry.json");
-  const ensRegistryAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-  const baseRegistrarABI = require("./contracts/imported/ABI/BaseRegistrarImplementation.json");
-  const baseRegistrarAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
-  const BigNumber = ethers.BigNumber;
-  const utils = ethers.utils;
+  // const ensRegistryABI = require("./contracts/imported/ABI/ENSRegistry.json");
+  // const ensRegistryAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
+  // const baseRegistrarABI = require("./contracts/imported/ABI/BaseRegistrarImplementation.json");
+  // const baseRegistrarAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
+  // const BigNumber = ethers.BigNumber;
+  // const utils = ethers.utils;
 
-  const [ensRegistryContract, setEnsRegistryContract] = useState();
-  const [baseRegistrarContract, setBaseRegistrarContract] = useState();
+  // const [ensRegistryContract, setEnsRegistryContract] = useState();
+  // const [baseRegistrarContract, setBaseRegistrarContract] = useState();
 
-  useEffect(() => {
-    try {
-      const registryContract = new ethers.Contract(ensRegistryAddress, ensRegistryABI, userSigner);
-      const registrarContract = new ethers.Contract(baseRegistrarAddress, baseRegistrarABI, userSigner);
-      setEnsRegistryContract(registryContract);
-      setBaseRegistrarContract(registrarContract);
-    } catch (e) {
-      console.log(e);
-    }
-  }, [userSigner, address]);
+  // useEffect(() => {
+  //   try {
+  //     const registryContract = new ethers.Contract(ensRegistryAddress, ensRegistryABI, userSigner);
+  //     const registrarContract = new ethers.Contract(baseRegistrarAddress, baseRegistrarABI, userSigner);
+  //     setEnsRegistryContract(registryContract);
+  //     setBaseRegistrarContract(registrarContract);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }, [userSigner, address]);
 
-  const getTokenIdFromEnsName = ensName => {
-    try {
-      let normalizedEns = nameHash.normalize(ensName);
-      const [ensLabel] = normalizedEns.split(".eth");
-      const ensNameLabelHash = utils.keccak256(utils.toUtf8Bytes(ensLabel));
-      const tokenId = BigNumber.from(ensNameLabelHash).toString();
-      return tokenId;
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const getTokenIdFromEnsName = ensName => {
+  //   try {
+  //     let normalizedEns = nameHash.normalize(ensName);
+  //     const [ensLabel] = normalizedEns.split(".eth");
+  //     const ensNameLabelHash = utils.keccak256(utils.toUtf8Bytes(ensLabel));
+  //     const tokenId = BigNumber.from(ensNameLabelHash).toString();
+  //     return tokenId;
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
-  const getNameHashFromEnsName = ensName => {
-    try {
-      let normalizedEns = nameHash.normalize(ensName);
-      let hash = nameHash.hash(normalizedEns);
-      return hash;
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const getNameHashFromEnsName = ensName => {
+  //   try {
+  //     let normalizedEns = nameHash.normalize(ensName);
+  //     let hash = nameHash.hash(normalizedEns);
+  //     return hash;
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
@@ -298,7 +294,16 @@ function App(props) {
           <Home injectedProvider={injectedProvider} loadWeb3Modal={loadWeb3Modal} />
         </Route>
         <Route path="/dashboard">
-          <Dashboard injectedProvider={injectedProvider} loadWeb3Modal={loadWeb3Modal} />
+          <Dashboard
+            tx={tx}
+            address={address}
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            userSigner={userSigner}
+            injectedProvider={injectedProvider}
+            loadWeb3Modal={loadWeb3Modal}
+            mainnetProvider={mainnetProvider}
+          />
         </Route>
       </Switch>
 

@@ -1,29 +1,60 @@
-import React, { useEffect, useState } from "react";
-import { QuestionCircleOutlined } from "@ant-design/icons";
-// import { Link } from "react-router-dom";
-// import { Col, Divider, Row, Space, Image, Button } from "antd";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Image } from "antd";
 import { CenterContent, ContentRow, ContentCol } from "../components";
-// import { useHistory } from "react-router-dom";
+import { hintImg1, ensYolo } from "../img";
 
 function Hints() {
-
   return (
-    <div className="home">
-      <CenterContent left={320} right={320}>
+    <div className="hints">
+      <CenterContent left={300} right={300}>
         <div style={{ margin: 32 }}>
-          <ContentRow margin={"0 0 250px 0"}>
-            <ContentCol>
+          <ContentRow margin={"0 0 80px 0"}>
+            <ContentCol flex={3} textAlign={"left"}>
               <h1 style={{ fontSize: 50, fontWeight: 700, margin: "42px 0px 65px" }}>
-                How It <span style={{ color: "#FFB44F" }}>Works</span>
+                How It <span style={{ color: "#5e17eb" }}>Works</span>
               </h1>
-              <p style={{ fontSize: 21, fontWeight: 400, margin: "0 0px 25px 0" }}>
-                eXperince web3 the fun way through social sharing and education
+              <p>🗒️ Purchase an ENS name or use an existing one however, you must be the owner and controller.</p>
+              <p>
+                🗒️ Create a free lock smart contract{" "}
+                <a target="_blank" rel="noreferrer" href="https://app.unlock-protocol.com/locks">
+                  here
+                </a>{" "}
+                or use an existing one if you already have one.
               </p>
-              <p style={{ marginBottom: 85, padding: "20px 50px 20px 50px", fontWeight: 300, fontSize: 16 }}>
-                ENS is a decentralized domain name system built on the Ethereum blockchain. ENS provides a user-friendly
-                way to assign human-readable names to Ethereum addresses, making it easier for people to send and
-                receive payments, participate in decentralized applications, and interact with the blockchain ecosystem.
+              <p>🗒️ Copy the lock's address.</p>
+              <p>
+                🗒️ Head over to <Link to="/dashboard/yolo">YOLO</Link> tab and enter the ENS name, ETH amount you want
+                attached to the ENS name and the lock address.
               </p>
+              <p>🗒️ Approve ENS YOLO to make transactions on the ENS contracts on your behalf.</p>
+              <p>
+                🗒️ Hit the YOLO ENS button, wait for the wallet confirmation pop up, review and confirm the transaction
+              </p>
+              <p>That's it!!! You did it 🎉 🎉 🎉</p>
+            </ContentCol>
+            <ContentCol flex={2}>
+              <Image preview={false} width={400} src={hintImg1} />
+            </ContentCol>
+          </ContentRow>
+          <ContentRow padding={"0 0 250px 0"}>
+            <ContentCol padding={"0 0 0 50px"} flex={2}>
+              <Image preview={false} width={200} src={ensYolo} />
+            </ContentCol>
+            <ContentCol padding={"0 0 0 50px"} flex={2} textAlign={"left"}>
+              <h2 style={{ fontSize: 30, fontWeight: 700, margin: "42px 0px 65px" }}>
+                What <span style={{ color: "#FFB44F" }}>Next?</span>
+              </h2>
+              <p>
+                🧑‍✈️ Airdrop a key for the lock smart contract to whoever you want to claim it or create a{" "}
+                <Link to="/dashboard/quest">QUEST</Link> for others to contest for the key.
+              </p>
+              <p>🎁 When they claim it, the ENS name and ETH is transferred to the user</p>
+              <p>
+                📑 Wanna change something? Not to worry, you can <Link to="dashboard/cancel">CANCEL</Link> YOLO if it's
+                unclaimed.
+              </p>
+              <p>That's about it for now! 🎇 Have fun with it 🚀🚀</p>
             </ContentCol>
           </ContentRow>
         </div>
