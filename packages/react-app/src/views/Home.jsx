@@ -21,7 +21,7 @@ function Home({ loadWeb3Modal, injectedProvider }) {
 
   return (
     <div className="home">
-      <CenterContent left={320} right={320}>
+      <CenterContent>
         <div style={{ margin: 32 }}>
           <ContentRow margin={"0 0 250px 0"}>
             <ContentCol>
@@ -40,12 +40,12 @@ function Home({ loadWeb3Modal, injectedProvider }) {
             </ContentCol>
           </ContentRow>
           <ContentRow margin={"0 0 250px 0"}>
-            <ContentCol flex={2}>
+            <ContentCol colLg={4}>
               <Image preview={false} width={200} src={ethImg} />
             </ContentCol>
-            <ContentCol textAlign={"left"} padding={"0 0 0 100px"} flex={3}>
+            {/* <ContentCol textAlign={"left"} padding={"0 0 0 100px"} flex={3}> */}
+            <ContentCol colLg={8} textLg={"start"}>
               <div>
-                {/* <div style={{ textAlign: "left", paddingLeft: 50 }}> */}
                 <h3 style={{ fontSize: 19 }}>What is ENS YOLO</h3>
                 <p style={{ color: "#b1a8a8", fontSize: 14 }}>
                   ENS.YOLO is a fun experiment to onboard new users to web3. With ENS YOLO users who own or purchases an
@@ -65,8 +65,9 @@ function Home({ loadWeb3Modal, injectedProvider }) {
               </div>
             </ContentCol>
           </ContentRow>
-          <ContentRow margin={"30px 0 250px 0"}>
-            <ContentCol textAlign={"left"} padding={"0 135px 0 0"} flex={3}>
+          <ContentRow reverseCol={true} margin={"30px 0 250px 0"}>
+            {/* <ContentCol textAlign={"left"} padding={"0 135px 0 0"} flex={3}> */}
+            <ContentCol colLg={8} textLg={"start"}>
               <h3 style={{ fontSize: 19 }}>Why ENS YOLO?</h3>
 
               <div>
@@ -88,13 +89,13 @@ function Home({ loadWeb3Modal, injectedProvider }) {
                 </Button>
               </div>
             </ContentCol>
-            <ContentCol flex={2}>
+            <ContentCol mb={5} mbLg={0} colLg={4}>
               <Image preview={false} width={200} src={searchImg} />
             </ContentCol>
           </ContentRow>
           <ContentRow>
             <ContentCol>
-              <span style={{ fontSize: 75, marginBottom: 40 }}>💡</span>
+              <span style={{ display: "inline-block", fontSize: 75, marginBottom: 40 }}>💡</span>
               <div style={{ padding: "0 100px 250px 100px" }}>
                 <h3 style={{ color: "#b1a8a8", fontSize: 14 }}>
                   ENS YOLO encourages social sharing, users get to show off their newly acquired ENS names on their

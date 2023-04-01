@@ -7,7 +7,7 @@ import { hintImg1, ensYolo } from "../img";
 function Hints() {
   return (
     <div className="hints">
-      <CenterContent left={300} right={300}>
+      <CenterContent>
         <div style={{ margin: 32 }}>
           <ContentRow margin={"0 0 80px 0"}>
             <ContentCol flex={3} textAlign={"left"}>

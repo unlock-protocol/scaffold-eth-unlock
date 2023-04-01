@@ -11,7 +11,7 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
-import "./App.css";
+// import "./App.css";
 import {
   Account,
   Faucet,
@@ -33,8 +33,7 @@ import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, Dashboard } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 const { ethers } = require("ethers");
-const nameHash = require("@ensdomains/eth-ens-namehash");
-
+// const nameHash = require("@ensdomains/eth-ens-namehash");
 
 /*
     Welcome to Action Loogies !
@@ -58,6 +57,21 @@ const nameHash = require("@ensdomains/eth-ens-namehash");
 /// 📡 What chain are your contracts deployed to?
 // const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+
+// helper function to "Get" from IPFS
+// you usually go content.toString() after this...
+// const getFromIPFS = async hashToGet => {
+//   for await (const file of ipfs.get(hashToGet)) {
+//     console.log(file.path);
+//     if (!file.content) continue;
+//     const content = new BufferList();
+//     for await (const chunk of file.content) {
+//       content.append(chunk);
+//     }
+//     console.log(content);
+//     return content;
+//   }
+// };
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -199,50 +213,6 @@ function App(props) {
       loadWeb3Modal();
     }
   }, [loadWeb3Modal]);
-
-  // set ENS contracts
-  // const ensRegistryABI = require("./contracts/imported/ABI/ENSRegistry.json");
-  // const ensRegistryAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-  // const baseRegistrarABI = require("./contracts/imported/ABI/BaseRegistrarImplementation.json");
-  // const baseRegistrarAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
-  // const BigNumber = ethers.BigNumber;
-  // const utils = ethers.utils;
-
-  // const [ensRegistryContract, setEnsRegistryContract] = useState();
-  // const [baseRegistrarContract, setBaseRegistrarContract] = useState();
-
-  // useEffect(() => {
-  //   try {
-  //     const registryContract = new ethers.Contract(ensRegistryAddress, ensRegistryABI, userSigner);
-  //     const registrarContract = new ethers.Contract(baseRegistrarAddress, baseRegistrarABI, userSigner);
-  //     setEnsRegistryContract(registryContract);
-  //     setBaseRegistrarContract(registrarContract);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }, [userSigner, address]);
-
-  // const getTokenIdFromEnsName = ensName => {
-  //   try {
-  //     let normalizedEns = nameHash.normalize(ensName);
-  //     const [ensLabel] = normalizedEns.split(".eth");
-  //     const ensNameLabelHash = utils.keccak256(utils.toUtf8Bytes(ensLabel));
-  //     const tokenId = BigNumber.from(ensNameLabelHash).toString();
-  //     return tokenId;
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const getNameHashFromEnsName = ensName => {
-  //   try {
-  //     let normalizedEns = nameHash.normalize(ensName);
-  //     let hash = nameHash.hash(normalizedEns);
-  //     return hash;
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 

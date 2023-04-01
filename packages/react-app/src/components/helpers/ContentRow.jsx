@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-function ContentRow({ margin, padding, ...props }) {
+function ContentRow({ reverseCol, margin, padding, ...props }) {
   return (
-    <div className="mh-row" style={{ display: "flex", alignItems: "center", margin: margin, padding: padding }}>
+    <div
+      className={`row ${reverseCol ? "flex-wrap-reverse" : ""} justify-content-md-center`}
+      style={{ display: "flex", alignItems: "center", margin: margin, padding: padding }}
+    >
       {props.children}
     </div>
   );

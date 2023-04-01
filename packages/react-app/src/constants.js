@@ -1,5 +1,5 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "a964fc7376e74cad8433b01e5f2e4849";
+export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
 export const ETHERSCAN_KEY = "HEXGDHZ56KF28E8WHMC6RRK8FUAP7ESZZ6";
@@ -8,6 +8,9 @@ export const ETHERSCAN_KEY = "HEXGDHZ56KF28E8WHMC6RRK8FUAP7ESZZ6";
 export const BLOCKNATIVE_DAPPID = "44552e6b-944a-4fce-ba4c-1116816f6efe";
 
 export const ALCHEMY_KEY = "AXcnbIsK9dDjBVp7fzlWaLthniYK0Gzo";
+
+export const INFURA_IPFS_ID = "2NmZVGBetKuKub2qzNjBD7a7Q97";
+export const INFURA_IPFS_SECRET = "4e1ebc7e018549460a84d06126f2bd4b";
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`

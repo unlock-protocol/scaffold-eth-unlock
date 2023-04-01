@@ -44,32 +44,3 @@ span.token-properties:not(:last-of-type) {
   color: #6a6a6a;
   font-weight: 400;
 }
-
-.active-loogie-color span::before {
-  display: inline-block;
-  content: "";
-  width: 20px;
-  height: 11px;
-  margin-right: 3px;
-}
-
-.active-loogie-color span {
-  /* display: inline-block; */
-  margin-right: 5px;
-}
-
-.slapped::before {
-  background-color: #75010f;
-}
-
-.lust::before {
-  background-color: #0f33a0;
-}
-
-.rage::before {
-  background-color: #f5070b;
-}
-
-.dead::before {
-  background-color: #fafaed;
-}

@@ -128,6 +128,8 @@ const YoloEns = function ({
     } catch (e) {
       setIsLoading(false);
       console.log("error approving ENSYOLO:::", e.code);
+    } finally {
+      setIsLoading(false)
     }
   };
 

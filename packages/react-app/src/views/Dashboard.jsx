@@ -4,7 +4,7 @@ import { Menu, Spin, Button } from "antd";
 import { CenterContent, ContentRow, ContentCol } from "../components";
 import { Link, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { Hints } from ".";
-import { YoloEns, ClaimEns, CancelYolo } from "../components/";
+import { YoloEns, ClaimEns, CancelYolo, Quest } from "../components/";
 const ethers = require("ethers");
 
 export default function ExampleUI({
@@ -169,10 +169,23 @@ export default function ExampleUI({
             </div>
           </Route>
           <Route path="/dashboard/quest">
-            <p className="text">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non atque amet aperiam? Eum error nisi dolorem
-              vitae, ipsam esse tempora hic sint illo corrupti, minus laborum magnam voluptatem suscipit inventore.
-            </p>
+            <div>
+              <h2 style={{ marginTop: 30 }}>QUEST</h2>
+              <Quest
+                maxWidth={1250}
+                margin={"auto"}
+                display={"flex"}
+                alignItems={"center"}
+                flexDirection={"column"}
+                marginTop={32}
+                paddingBottom={256}
+                mainnetProvider={mainnetProvider}
+                readContracts={readContracts}
+                writeContracts={writeContracts}
+                tx={tx}
+                getNameHashFromEnsName={getNameHashFromEnsName}
+              />
+            </div>
           </Route>
           <Route path="/dashboard">
             <div>

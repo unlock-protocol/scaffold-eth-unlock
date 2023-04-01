@@ -1,0 +1,31 @@
+
+/* @media screen and (max-width: 992px) {
+    .home .mh-content {
+        margin-right: 30px !important;
+        margin-left: 30px !important;
+    }
+} */
+
+ /* @media screen and (max-width: 850px) {
+
+  .home .mh-content {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+} */
+
+/*
+  @media screen and (max-width: 576px) {
+  .ant-list-rtl .ant-list-item-action {
+    margin-right: 22px;
+    margin-left: 0;
+  }
+
+  .ant-list-rtl.ant-list-vertical .ant-list-item-extra {
+    margin: auto auto 16px;
+  }
+
+  @media (min-width: 576px) {}
+  @media (min-width: 768px) {}
+  
+} */
