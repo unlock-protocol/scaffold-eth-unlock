@@ -85,7 +85,7 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
 
     struct Quest {
         bytes32 ensNameHash;
-        bytes32 description;
+        bytes description;
         address creator;
         address lock;
         address nftContract;
@@ -117,18 +117,18 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
      * @dev Throws if not approved by caller on either contract
      * @param _tokenId specifies the ENS name to be queried.
      */
-    modifier isAuthorised(uint _tokenId) {
-        address _owner = ENSBaseRegistrar.ownerOf(_tokenId);
-        require(
-            ENSContract.isApprovedForAll(_owner, address(this)),
-            "ENSYOLO: Not approved - ENSRegistry"
-        );
-        require(
-            ENSBaseRegistrar.isApprovedForAll(_owner, address(this)),
-            "ENSYOLO: Not approved - BaseRegistrarImplementation"
-        );
-        _;
-    }
+    // modifier isAuthorised(uint _tokenId) {
+    //     address _owner = ENSBaseRegistrar.ownerOf(_tokenId);
+    //     require(
+    //         ENSContract.isApprovedForAll(_owner, address(this)),
+    //         "ENSYOLO: Not approved - ENSRegistry"
+    //     );
+    //     require(
+    //         ENSBaseRegistrar.isApprovedForAll(_owner, address(this)),
+    //         "ENSYOLO: Not approved - BaseRegistrarImplementation"
+    //     );
+    //     _;
+    // }
 
     /**
      * @dev Modifier ensures caller (except owner) has a valid membership on the membership lock smart contract.
@@ -204,17 +204,18 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
         bytes32 _nameHash,
         uint _tokenId,
         address _lockAddress
-    ) public payable isAuthorised(_tokenId) returns (uint256) {
+    // ) public payable isAuthorised(_tokenId) returns (uint256) {
+    ) public payable returns (uint256) {
         require(msg.value >= price, "NOT ENOUGH");
-        require(isENS(_nameHash), "Non existent ENS node");
-        require(
-            ENSContract.owner(_nameHash) == msg.sender,
-            "ENSRegistry: Not owner"
-        );
-        require(
-            ENSBaseRegistrar.ownerOf(_tokenId) == msg.sender,
-            "BaseRegistrarImplementation: Not owner"
-        );
+        // require(isENS(_nameHash), "Non existent ENS node");
+        // require(
+        //     ENSContract.owner(_nameHash) == msg.sender,
+        //     "ENSRegistry: Not owner"
+        // );
+        // require(
+        //     ENSBaseRegistrar.ownerOf(_tokenId) == msg.sender,
+        //     "BaseRegistrarImplementation: Not owner"
+        // );
         require(
             IPublicLock(payable(_lockAddress)).isLockManager(msg.sender),
             "Not lock Manager"
@@ -265,20 +266,15 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
             "Caller not controller"
         );
         require(gifted[_nameHash].claimed == false, "Already claimed");
-        if (quests[_nameHash].isCompleted)
-            require(
-                block.timestamp > quests[_nameHash].claimExpiration,
-                "Quest Completed: Claim Expiry Not Due"
-            );
+        // check that quest is not completed 
+        require(!quests[_nameHash].isCompleted, "Quest Completed");
         Quest memory quest = quests[_nameHash];
         quest.isActive = false;
         // update quests mapping with quest
         quests[_nameHash] = quest;
         // update all quests array
         _updateQuest(_nameHash, quest);
-        (bool s, ) = payable(msg.sender).call{value: gifted[_nameHash].value}(
-            ""
-        );
+        (bool s, ) = payable(msg.sender).call{value: gifted[_nameHash].value}("");
         require(s, "Failed to send ETH");
         delete gifted[_nameHash];
         emit ENSYoloCancelled(_nameHash);
@@ -287,7 +283,8 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
     function claimItem(
         bytes32 _nameHash,
         uint _tokenId
-    ) public payable isAuthorised(_tokenId) nonReentrant returns (bool) {
+    // ) public payable isAuthorised(_tokenId) nonReentrant returns (bool) {
+    ) public payable nonReentrant returns (bool) {
         address _recepient = msg.sender;
         require(gifted[_nameHash].id > 0, "Not gifted");
         require(
@@ -317,7 +314,7 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
         return gifted[_nameHash].claimed;
     }
 
-    function createQuest(bytes32 _ensNameHash, string calldata _description, address _nftContract, uint256 _claimExpiration) onlyMember external {
+    function createQuest(bytes32 _ensNameHash, bytes memory _description, address _nftContract, uint256 _claimExpiration) external {
         address _lockAddress = gifted[_ensNameHash].lock;
         // check that ens is gifted
         require(gifted[_ensNameHash].id > 0,"Not gifted");
@@ -338,12 +335,10 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
         // check that quest is not completed
         require(!quests[_ensNameHash].isCompleted, "Completed quest");
 
-        // convert description to bytes32
-        bytes32 _desc = bytes32(keccak256(abi.encodePacked(_description)));
         // update quest mapping
         Quest memory quest = Quest(
             _ensNameHash,
-            _desc,
+            _description,
             msg.sender,
             _lockAddress,
             _nftContract,
@@ -399,17 +394,14 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
         require(quests[_ensNameHash].isActive, "Not active quest");
         // check that yolo is not claimed
         require(gifted[_ensNameHash].claimed == false, "Already claimed");
-        // check that quest completed status if completed check blck timestampe > claim expi 
-        if(quests[_ensNameHash].isCompleted)
-          require(block.timestamp > quests[_ensNameHash].claimExpiration, "Quest Completed: Claim Expiry Not Due");
+        // check that quest is not completed 
+        require(!quests[_ensNameHash].isCompleted, "Quest Completed");
         // check that caller is creator
         require(quests[_ensNameHash].creator == msg.sender, "Not Creator");
 
         Quest memory quest = quests[_ensNameHash];
         // update quest active status
         quest.isActive = false;
-        // update completed status of quest
-        quest.isCompleted = false;
         // update quests mapping with quest
         quests[_ensNameHash] = quest;
         // update all quests array

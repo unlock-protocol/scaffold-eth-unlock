@@ -2,10 +2,11 @@
 // import { AddressInput } from "../";
 import { Button, Spin, Tooltip, Card, DatePicker, Form, Input, List, Modal } from "antd";
 import React, { useState, useEffect } from "react";
-import moment from "moment";
+// import moment from "moment";
 import { Buffer } from "buffer";
 import { create } from "ipfs-http-client";
 import { INFURA_IPFS_SECRET, INFURA_IPFS_ID } from "../../constants";
+import { read } from "fs";
 
 const ethers = require("ethers");
 const auth = "Basic " + Buffer.from(INFURA_IPFS_ID + ":" + INFURA_IPFS_SECRET).toString("base64");
@@ -18,24 +19,16 @@ const client = create({
   },
 });
 
-
-
 /**
   ~ How can I use? ~
 
-  <YoloEns
+  <Quest
     readContractr={readContract}
     writeContracts={writeContracts}
     getNameHashFromEnsName={getNameHashFromEnsName}
-    getTokenIdFromEnsName={getTokenIdFromEnsName}
     tx={tx}
-    maxWidth={someNumber}
-    margin={"auto"}
-    display={"flex"},
-    flexDirection={"column"}
-    alignItems={"center"}
-    marginTop={someNumber}
-    paddingBottom={someNumber} 
+    address={address}
+    mainnetProvider={mainnetProvider}
   />
 
 **/
@@ -63,26 +56,56 @@ const Quest = function ({
   const [form] = Form.useForm();
 
   useEffect(() => {
-    const loadQuests = async () => {
-      try {
-        let exp = 1742760637000;
-        setClaimExpiry(exp);
-        const _allQuests = await readContracts?.ENSYOLO.getAllQuests();
-        console.log("test-q", _allQuests);
-
-        setQuests(_allQuests);
-      } catch (e) {
-        console.log(e);
+    const updateQuests = async () => {
+      const questsUpdate = [];
+      if (readContracts && readContracts.ENSYOLO) {
+        await readContracts.ENSYOLO.getAllQuests().then(val => {
+          val.map(item => {
+            try {
+              let { ensNameHash, creator, description, isActive, isCompleted, lock, nftContract, winner } = item;
+              const newQuest = {
+                ensNameHash,
+                creator,
+                description,
+                isActive,
+                isCompleted,
+                lock,
+                nftContract,
+                winner,
+              };
+              questsUpdate.push(newQuest);
+            } catch (e) {
+              console.log(e);
+            }
+            setQuests(questsUpdate);
+          });
+        });
       }
     };
-    loadQuests();
-  }, [readContracts, quests]);
+    updateQuests();
+  }, [readContracts]);
+  console.log("test-quest", quests);
+  // useEffect(() => {
+  //   const loadQuests = async () => {
+  //     try {
+  //       // let myArr = []
+  //       const _allQuests = await readContracts?.ENSYOLO.getAllQuests();
+  //       // _allQuests?.map(arr => myArr.push(arr))
+  //       setQuests(_allQuests);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+  //   loadQuests();
+  //   console.log("test-q", quests);
+  // }, [readContracts, quests]);
 
-  const createQuest = async ({ ensNameHash, nftDescription, nftContractAddress, claimExpiry }) => {
+  // const createQuest = async ({ ensNameHash, questDescription, nftContractAddress, claimExpiry }) => {
+  const createQuest = async (ensNameHash, questDescription, nftContractAddress, claimExpiry) => {
     try {
       setCreating(true);
       const tnx = await tx(
-        writeContracts.ENSYOLO.createQuest(ensNameHash, nftDescription, nftContractAddress, claimExpiry),
+        writeContracts.ENSYOLO.createQuest(ensNameHash, questDescription, nftContractAddress, claimExpiry),
       );
       await tnx.wait();
     } catch (e) {
@@ -113,40 +136,32 @@ const Quest = function ({
     }
   };
 
-  const handleDescription = descBytes32 => {
-    const descString = utils.parseBytes32String(descBytes32);
+  const convertBytesToIpfsHash = descBytes => {
+    const descString = utils.toUtf8String(descBytes);
+    console.log("test-desc-string", descString);
     return descString;
   };
-  const handleSubmit = async values => {
-    // try {
-    //   setLoading(true);
-    //   // Upload the description to IPFS and get the content hash
-    //   const ipfsResponse = await ipfs.add(values.description);
-    //   const contentHash = ipfsResponse.cid.toString();
-    //   // Call the smart contract to add a new task
-    //   const tx = await contract.addTask(contentHash);
-    //   message.success("Task added successfully!");
-    //   form.resetFields();
-    // } catch (error) {
-    //   console.error(error);
-    //   message.error("Error adding task!");
-    // } finally {
-    //   setLoading(false);
-    // }
+
+  const convertIpfsHashToBytes = hash => {
+    let hexBytes = utils.hexlify(utils.toUtf8Bytes(hash));
+    console.log("test-desc-hex", hexBytes);
+    return hexBytes;
   };
+
+  // convertIpfsHashToBytes("QmS6ygYNVdm4DzMeLHqqWAuEgmTktMnW2GJjXNJ2FAEtcz");
 
   const addToIpfs = async str => {
     try {
       const { cid, path } = await client.add(str);
       console.log("ipfs-add::cid", cid);
       console.log("ipfs-add::path", path);
-      return cid;
+      return path;
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleFetchFromIpfs = async hashToGet => {
+  const fetchFromIpfs = async hashToGet => {
     try {
       // Fetch the content from IPFS
       const ipfsResponse = client.cat(hashToGet);
@@ -156,11 +171,40 @@ const Quest = function ({
         // chunks of data are returned as a Uint8Array, convert it back to a string
         data += decoder.decode(chunk, { ipfsResponse: true });
       }
-      console.log("test-ipfs-retrieve::", data);
+      console.log("ipfs-retrieve::", data);
+      return data;
     } catch (error) {
-      console.error("test-ipfs-error::", error);
+      console.error("ipfs-retrieve-error::", error);
     }
   };
+
+  // const loadQuests = async () => {
+  //   const quests = await readContracts?.ENSYOLO.getAllQuests(); // fetchQuests returns a Promise object
+  //   return (
+  //     <List
+  //       dataSource={quests}
+  //       renderItem={quest => (
+  //         <List.Item
+  //           actions={[
+  //             <Button key="complete" onClick={() => completeQuest(quest.ensNameHash)}>
+  //               Complete
+  //             </Button>,
+  //             <Button key="cancel" onClick={() => cancelQuest(quest.ensNameHash)}>
+  //               Cancel
+  //             </Button>,
+  //           ]}
+  //         >
+  //           <List.Item.Meta
+  //             // title={<p>{handleDescription(quest.ensNameHash)}</p>}
+  //             description={fetchFromIpfs(convertBytesToIpfsHash(quest.description))}
+  //           />
+  //           <div>{`Created by ${quest.creator}`}</div>
+  //         </List.Item>
+  //       )}
+  //     />
+  //   );
+  // }
+
   ///////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////
 
@@ -186,58 +230,67 @@ const Quest = function ({
           loading={creating}
           type="primary"
           onClick={() => {
-            handleFetchFromIpfs();
             setVisible(true);
           }}
         >
           Create Quest
         </Button>
-        {/* <List
-          dataSource={quests}
-          renderItem={quest => (
-            <List.Item
-              actions={[
-                <Button key="complete" onClick={() => completeQuest(quest.ensNameHash)}>
-                  Complete
-                </Button>,
-                <Button isLoading={canceling} key="cancel" onClick={() => cancelQuest(quest.ensNameHash)}>
-                  Cancel
-                </Button>,
-              ]}
-            >
-              <List.Item.Meta
-                title={<p>{handleDescription(quest.ensNameHash)}</p>}
-                description={handleDescription(quest.description)}
-              />
-              <div>{`Created by ${quest.creator}`}</div>
-            </List.Item>
-          )}
-        /> */}
+        {quests && quests.length
+          ? // <List
+            //   dataSource={quests}
+            //   renderItem={quest => (
+            //     <List.Item
+            //       actions={[
+            //         <Button key="complete" onClick={() => completeQuest(quest.ensNameHash)}>
+            //           Complete
+            //         </Button>,
+            //         <Button key="cancel" onClick={() => cancelQuest(quest.ensNameHash)}>
+            //           Cancel
+            //         </Button>,
+            //       ]}
+            //     >
+            //       <List.Item.Meta
+            //         // title={<p>{handleDescription(quest.ensNameHash)}</p>}
+            //         description={fetchFromIpfs(convertBytesToIpfsHash(quest.description))}
+            //       />
+            //       <div>{`Created by ${quest.creator}`}</div>
+            //     </List.Item>
+            //   )}
+            // />
+            quests.map(item => {
+              return <div>{convertBytesToIpfsHash(item.description)}</div>;
+            })
+          : null}
+        {/* {loadQuests} */}
         <Modal
           title="Create Quest"
           visible={visible}
           onCancel={() => setVisible(false)}
-          onOk={() => {
-            form.validateFields().then(values => {
-              console.log("VALUES", values);
-              let createQuestParams = {};
-              const { ensName, nftContractAddress, description } = values;
+          onOk={async () => {
+            let createQuestParams = {};
+            let values = await form.validateFields();
+            const { ensName, nftContractAddress, description } = values;
+            setDescription(description);
+            // setClaimExpiry(_now);
+            // console.log("testNOW", _now);
+            addToIpfs(description).then(val => {
+              let _now = 1651282667;
               const _ensNameHash = getNameHashFromEnsName(ensName);
-              console.log("values-nh", _ensNameHash);
-              console.log("values-desc", description);
-              console.log("values-naddr", nftContractAddress);
+              let questDescriptionBytes = convertIpfsHashToBytes(val);
               createQuestParams = {
                 ensNameHash: _ensNameHash,
-                nftDescription: description,
+                questDescription: questDescriptionBytes,
                 nftContractAddress,
-                claimExpiry,
+                claimExpiry: _now,
               };
-              console.log("VALUES-CREATEPARAMS", createQuestParams);
 
+              console.log("testVALUES-CREATEPARAMS", createQuestParams);
+              createQuest(_ensNameHash, questDescriptionBytes, nftContractAddress, _now);
               form.resetFields();
-              createQuest(createQuestParams);
               setVisible(false);
             });
+
+            //   // let hash = await handleContentHash();
           }}
         >
           <Form form={form} layout="vertical">
@@ -269,7 +322,11 @@ const Quest = function ({
             >
               <Input />
             </Form.Item>
-            {/* <Form.Item label="Claim Expiration" name="claimExpiration">
+            {/* <Form.Item
+              rules={[{ required: true, message: "Please choose a claim expiration date" }]}
+              label="Claim Expiration"
+              name="claimExpiration"
+            >
               <DatePicker />
             </Form.Item> */}
             {/* <Form.Item

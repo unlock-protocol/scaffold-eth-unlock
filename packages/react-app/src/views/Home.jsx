@@ -22,7 +22,7 @@ function Home({ loadWeb3Modal, injectedProvider }) {
   return (
     <div className="home">
       <CenterContent>
-        <div style={{ margin: 32 }}>
+        <div >
           <ContentRow margin={"0 0 250px 0"}>
             <ContentCol>
               <h1 style={{ fontSize: 50, fontWeight: 700, margin: "82px 0px 85px" }}>

@@ -11,7 +11,6 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
-// import "./App.css";
 import {
   Account,
   Faucet,
@@ -36,7 +35,7 @@ const { ethers } = require("ethers");
 // const nameHash = require("@ensdomains/eth-ens-namehash");
 
 /*
-    Welcome to Action Loogies !
+    Welcome to ENS YOLO!
 
     Code:
     https://github.com/scaffold-eth/scaffold-eth
@@ -56,22 +55,7 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 // const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-
-// helper function to "Get" from IPFS
-// you usually go content.toString() after this...
-// const getFromIPFS = async hashToGet => {
-//   for await (const file of ipfs.get(hashToGet)) {
-//     console.log(file.path);
-//     if (!file.content) continue;
-//     const content = new BufferList();
-//     for await (const chunk of file.content) {
-//       content.append(chunk);
-//     }
-//     console.log(content);
-//     return content;
-//   }
-// };
+const initialNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;

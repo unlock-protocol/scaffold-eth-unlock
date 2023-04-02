@@ -129,7 +129,7 @@ const YoloEns = function ({
       setIsLoading(false);
       console.log("error approving ENSYOLO:::", e.code);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -141,19 +141,21 @@ const YoloEns = function ({
           value: utils.parseEther(amount.toString()),
         }),
       );
-      if (txHash) setIsLoading(false);
+      await txHash.wait();
       console.log(`ENS YOLO tx hash: ${txHash}`);
     } catch (e) {
-      console.log("error gifting ENS:::", e.code);
-      if (e.code === "ERR_TX_REJECTED") {
-        setIsLoading(false);
-        console.log("Transaction declined by user");
-      } else {
-        console.error(e);
-      }
+      console.log("error gifting ENS:::", e);
+      // if (e.code === "ERR_TX_REJECTED") {
+      //   setIsLoading(false);
+      //   console.log("Transaction declined by user");
+      // } else {
+      //   console.error(e);
+      // }
 
-      // console.log("error gifting ENS: ", e.code);
-      // setIsLoading(false);
+      // // console.log("error gifting ENS: ", e.code);
+      // // setIsLoading(false);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -243,7 +245,7 @@ const YoloEns = function ({
           }}
         />
         <div style={{ marginBottom: 20 }}></div>
-        {ensName && tokenId && tokenId !== 0 && address !== ensOwner ? (
+        {/* {ensName && tokenId && tokenId !== 0 && address !== ensOwner ? (
           <Button loading={isLoading} disabled>
             NOT OWNER
           </Button>
@@ -271,7 +273,17 @@ const YoloEns = function ({
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Spin />
           </div>
-        )}
+        )} */}
+
+        <Button
+          // loading={isLoading}
+          onClick={async () => {
+            const txResult = await yoloEns();
+            console.log("YOLO Tnx", txResult);
+          }}
+        >
+          YOLO ENS
+        </Button>
       </Card>
     </div>
   );

@@ -9,8 +9,8 @@ function Hints() {
     <div className="hints">
       <CenterContent>
         <div style={{ margin: 32 }}>
-          <ContentRow margin={"0 0 80px 0"}>
-            <ContentCol flex={3} textAlign={"left"}>
+          <ContentRow reverseCol={true} margin={"0 0 80px 0"}>
+            <ContentCol colLg={8} textLg={"start"}>
               <h1 style={{ fontSize: 50, fontWeight: 700, margin: "42px 0px 65px" }}>
                 How It <span style={{ color: "#5e17eb" }}>Works</span>
               </h1>
@@ -33,15 +33,15 @@ function Hints() {
               </p>
               <p>That's it!!! You did it 🎉 🎉 🎉</p>
             </ContentCol>
-            <ContentCol flex={2}>
-              <Image preview={false} width={400} src={hintImg1} />
+            <ContentCol colLg={4}>
+              <Image preview={false} className="img-fluid" src={hintImg1} />
             </ContentCol>
           </ContentRow>
           <ContentRow padding={"0 0 250px 0"}>
-            <ContentCol padding={"0 0 0 50px"} flex={2}>
+            <ContentCol colLg={4}>
               <Image preview={false} width={200} src={ensYolo} />
             </ContentCol>
-            <ContentCol padding={"0 0 0 50px"} flex={2} textAlign={"left"}>
+            <ContentCol colLg={8} textLg={"start"}>
               <h2 style={{ fontSize: 30, fontWeight: 700, margin: "42px 0px 65px" }}>
                 What <span style={{ color: "#FFB44F" }}>Next?</span>
               </h2>
