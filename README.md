@@ -30,7 +30,7 @@ ENS.YOLO integrates the Unlock Protocol, which enables the possibility of users 
 
 Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork Action Loogies:
+> clone/fork ENS YOLO:
 
 ```bash
 git clone https://github.com/unlock-protocol/scaffold-eth-unlock.git
@@ -90,7 +90,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 
 📕 Read the docs: https://docs.soliditylang.org
 
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourCollectible.sol` in **Action Loogies**
+📚 Go through each topic from [solidity by example](https://solidity-by-example.org) 
 
 - [Primitive Data Types](https://solidity-by-example.org/primitives/)
 - [Mappings](https://solidity-by-example.org/mapping/)
@@ -133,7 +133,7 @@ Register as a builder [here](https://speedrunethereum.com) and start on some of 
 
 # 💬 Support Chat
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with Action Loogies!
+Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with ENS YOLO!
 
 ---
 

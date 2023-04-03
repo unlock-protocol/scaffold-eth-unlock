@@ -28,9 +28,9 @@ export default function ExampleUI({
   let history = useHistory();
   const location = useLocation();
   // set ENS contracts
-  const ensRegistryABI = require("../contracts/imported/ABI/ENSRegistry.json");
+  const ensRegistryABI = require("../contracts/imported/abis/ENSRegistry.json");
   const ensRegistryAddress = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-  const baseRegistrarABI = require("../contracts/imported/ABI/BaseRegistrarImplementation.json");
+  const baseRegistrarABI = require("../contracts/imported/abis/BaseRegistrarImplementation.json");
   const baseRegistrarAddress = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
   const BigNumber = ethers.BigNumber;
   const utils = ethers.utils;
