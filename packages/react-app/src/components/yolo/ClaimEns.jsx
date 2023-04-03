@@ -116,96 +116,16 @@ const ClaimEns = function ({
     setTimeout(setIsLoading(false), 3000);
   }, [ensName, isClaimed, isEns]);
 
-  // useEffect(() => {
-  //   const setNamehashAndTokenId = () => {
-  //     try {
-  //       // setIsLoading(true)
-  //       if (ensName && ensName.length) {
-  //         let nameHash = getNameHashFromEnsName(ensName);
-  //         let _tokenId = getTokenIdFromEnsName(ensName);
-  //         setEnsNameHash(nameHash);
-  //         setTokenId(_tokenId);
-  //       }
-  //       // setIsLoading(false);
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   };
-  //   setNamehashAndTokenId();
-  // }, [ensName]);
-
-  // useEffect(() => {
-  //   const getIsEns = async () => {
-  //     if (ensName && ensName.length) {
-  //       try {
-  //         const _isEns = await readContracts.ENSYOLO.isENS(ensNameHash);
-  //         setIsEns(_isEns);
-  //         console.log("test-isEns:", _isEns);
-  //       } catch (e) {
-  //         console.log(`error getting isEns::: ${e}`);
-  //       }
-  //     }
-  //   };
-  //   getIsEns();
-  // }, [ensName, ensNameHash, readContracts.ENSYOLO]);
-
-  // useEffect(() => {
-  //   const getIsGifted = async () => {
-  //     if (ensName && ensName.length) {
-  //       try {
-  //         const _isGifted = await readContracts.ENSYOLO.isGifted(ensNameHash);
-  //         setIsGifted(_isGifted);
-  //         console.log("test-IsGifted-INSIDER:", _isGifted);
-  //       } catch (e) {
-  //         console.log(`error getting IsGifted::: ${e}`);
-  //       }
-  //     }
-  //   };
-  //   getIsGifted();
-  // }, [ensName, ensNameHash, readContracts.ENSYOLO]);
-
-  // useEffect(() => {
-  //   const getIsClaimed = async () => {
-  //     if (ensNameHash) {
-  //       try {
-  //         const _yoloItem = await readContracts.ENSYOLO.getGifted(ensNameHash);
-  //         const _isClaimed = _yoloItem?.claimed;
-  //         // _yoloItem ? setIsClaimed(_isClaimed) : setIsClaimed(false);
-  //         setIsClaimed(_isClaimed);
-  //         console.log("test-IsClaimed=INSIDER:", _isClaimed);
-  //       } catch (e) {
-  //         console.log(`error getting IsClaimed::: ${e}`);
-  //       }
-  //     }
-  //   };
-  //   getIsClaimed();
-  // }, [ensName, ensNameHash, readContracts.ENSYOLO]);
-
-  // useEffect(() => {
-  //   const setYoloItem = async () => {
-  //     if (ensNameHash && ensNameHash.length) {
-  //       try {
-  //         const _yoloItem = await readContracts.ENSYOLO.getGifted(ensNameHash);
-  //         console.log("test-YOLOITEM:", _yoloItem);
-
-  //         setEnsYoloItem(_yoloItem);
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-  //     }
-  //   };
-  //   setYoloItem();
-  // }, [ensName, ensNameHash, readContracts.ENSYOLO]);
-
   const claimEns = async (_nameHash, _tokenId) => {
     try {
       setIsLoading(true);
       let txnResult = await tx(writeContracts.ENSYOLO.claimItem(_nameHash, _tokenId));
       await txnResult.wait();
-      setIsLoading(false);
       return txnResult;
     } catch (e) {
       console.log(e);
+    } finally {
+      setIsLoading(false);
     }
   };
   console.log("test-IsClaimed:", isClaimed);
@@ -228,7 +148,7 @@ const ClaimEns = function ({
           width: "100%",
         }}
       >
-        {/* <p>Input ENS name</p> */}
+
         <Input
           placeholder="Enter ENS name"
           value={ensName}

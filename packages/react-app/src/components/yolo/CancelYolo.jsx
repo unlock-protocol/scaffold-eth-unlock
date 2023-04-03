@@ -98,11 +98,11 @@ const CancelYolo = function ({ tx, writeContracts, readContracts, getNameHashFro
       setIsLoading(true);
       let txHash = await tx(writeContracts.ENSYOLO.cancelENSYolo(ensNameHash));
       await txHash.wait();
-      setIsLoading(false);
       console.log(`ENS Claimed with tx hash: ${txHash}`);
     } catch (e) {
-      setIsLoading(false);
       console.log("error cancelling ENS: ", e);
+    } finally {
+      setIsLoading(false);
     }
   };
 

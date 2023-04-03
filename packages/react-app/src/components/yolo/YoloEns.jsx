@@ -1,7 +1,7 @@
 import { Button, Spin, Tooltip, Card, Input } from "antd";
 import React, { useState, useEffect } from "react";
 import { InfoCircleOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
-import { AddressInput } from "../";
+// import { AddressInput } from "../";
 const ethers = require("ethers");
 
 /**
@@ -99,14 +99,14 @@ const YoloEns = function ({
     getApprovalForAll();
   }, [ensName, ensOwner, tokenId, baseRegistrarContract, ensRegistryContract, readContracts, isOwner, ensYoloAddress]);
 
-  console.log("test", baseRegistrarContract);
-  console.log("test-Registry", isRegistrarApproved);
-  console.log("test-Registrar", isRegistryApproved);
-  console.log("test-isOwner", isOwner);
-  console.log("test-isloading", isLoading);
-  console.log("test-owner:", ensOwner);
-  console.log("test-owner-true:", ensOwner === address);
-  console.log("test-address:", address);
+  // console.log("test", baseRegistrarContract);
+  // console.log("test-Registry", isRegistrarApproved);
+  // console.log("test-Registrar", isRegistryApproved);
+  // console.log("test-isOwner", isOwner);
+  // console.log("test-isloading", isLoading);
+  // console.log("test-owner:", ensOwner);
+  // console.log("test-owner-true:", ensOwner === address);
+  // console.log("test-address:", address);
 
   const approveForAll = async (_operatorAddr, _approved) => {
     try {
@@ -145,15 +145,6 @@ const YoloEns = function ({
       console.log(`ENS YOLO tx hash: ${txHash}`);
     } catch (e) {
       console.log("error gifting ENS:::", e);
-      // if (e.code === "ERR_TX_REJECTED") {
-      //   setIsLoading(false);
-      //   console.log("Transaction declined by user");
-      // } else {
-      //   console.error(e);
-      // }
-
-      // // console.log("error gifting ENS: ", e.code);
-      // // setIsLoading(false);
     } finally {
       setIsLoading(false)
     }
@@ -216,19 +207,6 @@ const YoloEns = function ({
         />
         <div style={{ marginBottom: 15 }}></div>
 
-        {/* <AddressInput
-          autoFocus
-          size="large"
-          ensProvider={mainnetProvider}
-          placeholder="Enter lock address"
-          value={lockAddress ? lockAddress : ""}
-          suffix={
-            <Tooltip title="Only users with a key to this lock can claim this">
-              <InfoCircleOutlined />
-            </Tooltip>
-          }
-          onChange={setLockAddress}
-        /> */}
         <Input
           placeholder="Enter lock address"
           value={lockAddress ? lockAddress : ""}
@@ -245,7 +223,7 @@ const YoloEns = function ({
           }}
         />
         <div style={{ marginBottom: 20 }}></div>
-        {/* {ensName && tokenId && tokenId !== 0 && address !== ensOwner ? (
+        {ensName && tokenId && tokenId !== 0 && address !== ensOwner ? (
           <Button loading={isLoading} disabled>
             NOT OWNER
           </Button>
@@ -273,17 +251,17 @@ const YoloEns = function ({
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Spin />
           </div>
-        )} */}
+        )}
 
-        <Button
-          // loading={isLoading}
+        {/* <Button
+          loading={isLoading}
           onClick={async () => {
             const txResult = await yoloEns();
             console.log("YOLO Tnx", txResult);
           }}
         >
           YOLO ENS
-        </Button>
+        </Button> */}
       </Card>
     </div>
   );
