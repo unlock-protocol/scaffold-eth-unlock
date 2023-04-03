@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Menu, Spin, Button } from "antd";
-// import { SyncOutlined, LaptopOutlined, NotificationOutlined, UserOutlined, SettingOutlined } from "@ant-design/icons";
 import { CenterContent, ContentRow, ContentCol } from "../components";
 import { Link, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { Hints } from ".";
@@ -8,13 +7,6 @@ import { YoloEns, ClaimEns, CancelYolo, Quest } from "../components/";
 const ethers = require("ethers");
 
 export default function ExampleUI({
-  // blockExplorer,
-  // localProvider,
-  // localChainId,
-  // contractConfig,
-  // name,
-  // targetNetwork,
-  // ...props
   mainnetProvider,
   address,
   userSigner,
@@ -22,7 +14,7 @@ export default function ExampleUI({
   writeContracts,
   injectedProvider,
   loadWeb3Modal,
-  tx
+  tx,
 }) {
   const [isLoading, setIsLoading] = useState(true);
   let history = useHistory();
@@ -101,9 +93,9 @@ export default function ExampleUI({
           <Menu.Item key="/dashboard/cancel">
             <Link to="/dashboard/cancel">CANCEL</Link>
           </Menu.Item>
-          <Menu.Item key="/dashboard/quest">
+          {/* <Menu.Item key="/dashboard/quest">
             <Link to="/dashboard/quest">QUEST</Link>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
 
         <Switch>
@@ -172,6 +164,9 @@ export default function ExampleUI({
             <div>
               <h2 style={{ marginTop: 30 }}>QUEST</h2>
               <Quest
+                address={address}
+                userSigner={userSigner}
+                ensRegistryContract={ensRegistryContract}
                 maxWidth={1250}
                 margin={"auto"}
                 display={"flex"}
