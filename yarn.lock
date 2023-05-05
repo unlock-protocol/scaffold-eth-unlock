@@ -4824,10 +4824,10 @@
   resolved "https://registry.yarnpkg.com/@unlock-protocol/contracts/-/contracts-0.0.8.tgz#389f2af3adc3cbb84a1492edaccb4627b569c51b"
   integrity sha512-T9Ap+Q5xuqFA3+GkP3pUu7nZyOoPFg+oxGztIMb1sAjIq9gRo5+60uXFdgi1iSGlO6tOh8Q0w40atAon5gxMEQ==
 
-"@unlock-protocol/paywall@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@unlock-protocol/paywall/-/paywall-0.1.0.tgz#ff11465c226c08b64834ff4286d185a693a52d14"
-  integrity sha512-GDquBUaWl+YOWgpt0hdCXWj8UTTHdW5XtMGyFUGQaQZwxnnebCv+U2z5SDvedS+A7Xi9++LDd0jDpW7vywNDUw==
+"@unlock-protocol/paywall@^0.4.0":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@unlock-protocol/paywall/-/paywall-0.4.1.tgz#67915fbc8f51cbc510ebaec12baf4bde09055a68"
+  integrity sha512-YglQ3cA6meede6vCLRfERzjXgIJSE3QxXYI2tIst9YUTDusg+rCRuiuuVjjgORm2OQKDEK5GbSvPN1RrSkOq8Q==
   dependencies:
     postmate "1.5.2"
 
