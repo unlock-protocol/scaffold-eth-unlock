@@ -1,0 +1,46 @@
+.App {
+  text-align: center;
+  padding-left: calc(100vw - 100%);
+}
+
+.actions-form-group {
+  margin-bottom: 20px;
+}
+
+.action-controls h3 {
+  margin-bottom: 25px;
+}
+
+.gallery-card-action {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 30px;
+}
+
+.gallery-card-action .token-properties {
+  display: inline-flex;
+}
+
+span.token-properties:not(:last-of-type) {
+  margin-right: 10px;
+}
+
+.how-to-play h3 {
+  margin-top: 20px;
+}
+
+.how-to-play b {
+  display: inline-block;
+  margin-top: 15px;
+}
+
+.how-to-play li {
+  font-weight: 500;
+  color: #000;
+}
+
+.how-to-play li p {
+  margin: 0;
+  color: #6a6a6a;
+  font-weight: 400;
+}

@@ -1,13 +1,16 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "a964fc7376e74cad8433b01e5f2e4849";
+export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "M9E8Y5TE76XXJVK6Z8B2MFB9EXNF58US57";
+export const ETHERSCAN_KEY = "HEXGDHZ56KF28E8WHMC6RRK8FUAP7ESZZ6";
 
 // BLOCKNATIVE ID FOR Notify.js:
-export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
+export const BLOCKNATIVE_DAPPID = "44552e6b-944a-4fce-ba4c-1116816f6efe";
 
-export const ALCHEMY_KEY = "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
+export const ALCHEMY_KEY = "AXcnbIsK9dDjBVp7fzlWaLthniYK0Gzo";
+
+export const INFURA_IPFS_ID = "2NmZVGBetKuKub2qzNjBD7a7Q97";
+export const INFURA_IPFS_SECRET = "4e1ebc7e018549460a84d06126f2bd4b";
 
 const localRpcUrl = process.env.REACT_APP_CODESPACES
   ? `https://${window.location.hostname.replace("3000", "8545")}`
@@ -27,30 +30,6 @@ export const NETWORKS = {
     chainId: 1,
     rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
     blockExplorer: "https://etherscan.io/",
-  },
-  kovan: {
-    name: "kovan",
-    color: "#7003DD",
-    chainId: 42,
-    rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
-    blockExplorer: "https://kovan.etherscan.io/",
-    faucet: "https://gitter.im/kovan-testnet/faucet", // https://faucet.kovan.network/
-  },
-  rinkeby: {
-    name: "rinkeby",
-    color: "#e0d068",
-    chainId: 4,
-    rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
-    faucet: "https://faucet.rinkeby.io/",
-    blockExplorer: "https://rinkeby.etherscan.io/",
-  },
-  ropsten: {
-    name: "ropsten",
-    color: "#F60D09",
-    chainId: 3,
-    faucet: "https://faucet.ropsten.be/",
-    blockExplorer: "https://ropsten.etherscan.io/",
-    rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
   },
   goerli: {
     name: "goerli",
@@ -118,6 +97,27 @@ export const NETWORKS = {
     chainId: 10,
     blockExplorer: "https://optimistic.etherscan.io/",
     rpcUrl: `https://mainnet.optimism.io`,
+  },
+  rinkebyArbitrum: {
+    name: "rinkebyArbitrum",
+    color: "#28a0f0",
+    chainId: 421611,
+    blockExplorer: "https://testnet.arbiscan.io/",
+    rpcUrl: "https://rinkeby.arbitrum.io/rpc",
+  },
+  arbitrum: {
+    name: "arbitrum",
+    color: "#28a0f0",
+    chainId: 42161,
+    blockExplorer: "https://arbiscan.io/",
+    rpcUrl: "https://arb1.arbitrum.io/rpc",
+  },
+  devnetArbitrum: {
+    name: "devnetArbitrum",
+    color: "#28a0f0",
+    chainId: 421612,
+    blockExplorer: "https://nitro-devnet-explorer.arbitrum.io/",
+    rpcUrl: "https://nitro-devnet.arbitrum.io/rpc",
   },
   localAvalanche: {
     name: "localAvalanche",

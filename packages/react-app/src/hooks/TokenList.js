@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
   ~ How can I use? ~
 
-  const tokenList = useTokenList(); <- default returns the Unsiwap tokens
+  const tokenList = useTokenList(); <- default returns the Uniswap tokens
   const tokenList = useTokenList("https://gateway.ipfs.io/ipns/tokens.uniswap.org");
 
   ~ Features ~

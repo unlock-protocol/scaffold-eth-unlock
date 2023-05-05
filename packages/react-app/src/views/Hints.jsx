@@ -1,271 +1,66 @@
-import { Select } from "antd";
-import React, { useState } from "react";
-import { utils } from "ethers";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Image } from "antd";
+import { CenterContent, ContentRow, ContentCol } from "../components";
+import { hintImg1, ensYolo } from "../img";
 
-import { useTokenList } from "eth-hooks/dapps/dex";
-import { Address, AddressInput } from "../components";
-
-const { Option } = Select;
-
-export default function Hints({ yourLocalBalance, mainnetProvider, price, address }) {
-  // Get a list of tokens from a tokenlist -> see tokenlists.org!
-  const [selectedToken, setSelectedToken] = useState("Pick a token!");
-  const listOfTokens = useTokenList(
-    "https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json",
-  );
-
+function Hints() {
   return (
-    <div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>👷</span>
-        Edit your <b>contract</b> in
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/contracts
-        </span>
-      </div>
-
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🛰</span>
-        <b>compile/deploy</b> with
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run deploy
-        </span>
-      </div>
-
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🚀</span>
-        Your <b>contract artifacts</b> are automatically injected into your frontend at
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/react-app/src/contracts/
-        </span>
-      </div>
-
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🎛</span>
-        Edit your <b>frontend</b> in
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/reactapp/src/App.js
-        </span>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>🔭</span>
-        explore the
-        <span
-          className="highlight"
-          style={{
-            marginLeft: 4,
-            marginRight: 4,
-            /* backgroundColor: "#f9f9f9", */
-            padding: 4,
-            borderRadius: 4,
-            fontWeight: "bolder",
-          }}
-        >
-          🖇 hooks
-        </span>
-        and
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          📦 components
-        </span>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        for example, the
-        <span
-          className="highlight"
-          style={{ margin: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          useBalance()
-        </span>{" "}
-        hook keeps track of your balance: <b>{utils.formatEther(yourLocalBalance || 0)}</b>
-      </div>
-
-      <div style={{ margin: 8 }}>
-        <div>
-          <b>useTokenList()</b> can get you an array of tokens from{" "}
-          <a href="https://tokenlists.org" target="_blank" rel="noopener noreferrer">
-            tokenlists.org!
-          </a>
+    <div className="hints">
+      <CenterContent>
+        <div style={{ margin: 32 }}>
+          <ContentRow reverseCol={true} margin={"0 0 80px 0"}>
+            <ContentCol colLg={8} textLg={"start"}>
+              <h1 style={{ fontSize: 50, fontWeight: 700, margin: "42px 0px 65px" }}>
+                How It <span style={{ color: "#5e17eb" }}>Works</span>
+              </h1>
+              <p>🗒️ Purchase an ENS name or use an existing one however, you must be the owner and controller.</p>
+              <p>
+                🗒️ Create a free lock smart contract{" "}
+                <a target="_blank" rel="noreferrer" href="https://app.unlock-protocol.com/locks">
+                  here
+                </a>{" "}
+                or use an existing one if you already have one.
+              </p>
+              <p>🗒️ Copy the lock's address.</p>
+              <p>
+                🗒️ Head over to <Link to="/dashboard/yolo">YOLO</Link> tab and enter the ENS name, ETH amount you want
+                attached to the ENS name and the lock address.
+              </p>
+              <p>🗒️ Approve ENS YOLO to make transactions on the ENS contracts on your behalf.</p>
+              <p>
+                🗒️ Hit the YOLO ENS button, wait for the wallet confirmation pop up, review and confirm the transaction
+              </p>
+              <p>That's it!!! You did it 🎉 🎉 🎉</p>
+            </ContentCol>
+            <ContentCol colLg={4}>
+              <Image preview={false} className="img-fluid" src={hintImg1} />
+            </ContentCol>
+          </ContentRow>
+          <ContentRow padding={"0 0 250px 0"}>
+            <ContentCol colLg={4}>
+              <Image preview={false} width={200} src={ensYolo} />
+            </ContentCol>
+            <ContentCol colLg={8} textLg={"start"}>
+              <h2 style={{ fontSize: 30, fontWeight: 700, margin: "42px 0px 65px" }}>
+                What <span style={{ color: "#FFB44F" }}>Next?</span>
+              </h2>
+              <p>
+                🧑‍✈️ Airdrop a key for the lock smart contract to whoever you want to claim it or create a{" "}
+                <Link to="/dashboard/quest">QUEST</Link> for others to contest for the key.
+              </p>
+              <p>🎁 When they claim it, the ENS name and ETH is transferred to the user</p>
+              <p>
+                📑 Wanna change something? Not to worry, you can <Link to="dashboard/cancel">CANCEL</Link> YOLO if it's
+                unclaimed.
+              </p>
+              <p>That's about it for now! 🎇 Have fun with it 🚀🚀</p>
+            </ContentCol>
+          </ContentRow>
         </div>
-        <Select
-          showSearch
-          value={selectedToken}
-          onChange={value => {
-            console.log(`selected ${value}`);
-            setSelectedToken(value);
-          }}
-          filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          optionFilterProp="children"
-        >
-          {listOfTokens.map(token => (
-            <Option key={token.address + "_" + token.symbol} value={token.symbol}>
-              {token.symbol}
-            </Option>
-          ))}
-        </Select>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        as you build your app you&apos;ll need web3 specific components like an
-        <span
-          className="highlight"
-          style={{ margin: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          {"<AddressInput/>"}
-        </span>
-        component:
-        <div style={{ width: 350, padding: 16, margin: "auto" }}>
-          <AddressInput ensProvider={mainnetProvider} />
-        </div>
-        <div>(try putting in your address, an ens address, or scanning a QR code)</div>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        this balance could be multiplied by
-        <span
-          className="highlight"
-          style={{ margin: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          price
-        </span>{" "}
-        that is loaded with the
-        <span
-          className="highlight"
-          style={{ margin: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          usePrice
-        </span>{" "}
-        hook with the current value: <b>${price}</b>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>💧</span>
-        use the <b>faucet</b> to send funds to
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          <Address address={address} minimized /> {address}
-        </span>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>📡</span>
-        deploy to a testnet or mainnet by editing
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/hardhat.config.js
-        </span>
-        and running
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run deploy
-        </span>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>🔑</span>
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run generate
-        </span>
-        will create a deployer account in
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat
-        </span>
-        <div style={{ marginTop: 8 }}>
-          (use{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f1f1f1", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn run account
-          </span>{" "}
-          to display deployer address and balance)
-        </div>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>⚙️</span>
-        build your app with
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run build
-        </span>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>🚢</span>
-        ship it!
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run surge
-        </span>
-        or
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run s3
-        </span>
-        or
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run ipfs
-        </span>
-      </div>
-
-      <div style={{ marginTop: 32 }}>
-        <span style={{ marginRight: 8 }}>💬</span>
-        for support, join this
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          <a target="_blank" rel="noopener noreferrer" href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA">
-            Telegram Chat
-          </a>
-        </span>
-      </div>
-      <div style={{ padding: 128 }}>
-        🛠 Check out your browser&apos;s developer console for more... (inspect console) 🚀
-      </div>
+      </CenterContent>
     </div>
   );
 }
+
+export default Hints;

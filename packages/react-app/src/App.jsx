@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Row } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -11,10 +11,8 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
-import "./App.css";
 import {
   Account,
-  Contract,
   Faucet,
   GasGauge,
   Header,
@@ -23,21 +21,21 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
-  LockedNav
 } from "./components";
+import { TwitterOutlined } from "@ant-design/icons";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
+
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home,Dashboard, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, Dashboard } from "./views";
 import { useStaticJsonRPC } from "./hooks";
-// unlock contract abis
-const abis = require("@unlock-protocol/contracts");
-
 const { ethers } = require("ethers");
+// const nameHash = require("@ensdomains/eth-ens-namehash");
+
 /*
-    Welcome to 🏗 scaffold-eth !
+    Welcome to ENS YOLO!
 
     Code:
     https://github.com/scaffold-eth/scaffold-eth
@@ -56,6 +54,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
+// const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
@@ -69,18 +68,19 @@ const web3Modal = Web3ModalSetup();
 // 🛰 providers
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+  `https://eth-mainnet.g.alchemy.com/v2/DBHlwdwP4V7w9M0nt_0waEjaO3a1tXDV`,
   "https://rpc.scaffoldeth.io:48544",
 ];
 
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = [initialNetwork.name, "mainnet", "rinkeby"];
+  const networkOptions = [initialNetwork.name, "mainnet", "goerli"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+
   const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
@@ -92,6 +92,7 @@ function App(props) {
   const localProvider = useStaticJsonRPC([
     process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
   ]);
+
   const mainnetProvider = useStaticJsonRPC(providers);
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
@@ -138,7 +139,7 @@ function App(props) {
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userSigner, gasPrice);
 
-  // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
+  //  Action Loogies is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
@@ -155,7 +156,6 @@ function App(props) {
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
   // EXTERNAL CONTRACT EXAMPLE:
-  //
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
@@ -169,53 +169,6 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
-
-  //
-  // 🧫 DEBUG 👨🏻‍🔬
-  //
-  useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetContracts
-    ) {
-      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-      console.log("🌎 mainnetProvider", mainnetProvider);
-      console.log("🏠 localChainId", localChainId);
-      console.log("👩‍💼 selected address:", address);
-      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
-      console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
-      console.log("🔐 writeContracts", writeContracts);
-    }
-  }, [
-    mainnetProvider,
-    address,
-    selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
-    readContracts,
-    writeContracts,
-    mainnetContracts,
-    localChainId,
-    myMainnetDAIBalance,
-  ]);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -246,44 +199,6 @@ function App(props) {
   }, [loadWeb3Modal]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
-
-  ////////////////Unlock Protocol///////////////////
-  const unlockData = JSON.parse(window.localStorage.getItem("unlock"));
-  const publicLockData = JSON.parse(window.localStorage.getItem("publicLock"));
-  useEffect(() => {
-    if (unlockData && publicLockData) {
-      const unlockAddress = unlockData.unlockAddress;
-      const publicLockAddress = publicLockData.publicLockAddress;
-      setDeployedUnlockAddress(unlockAddress);
-      setPublicLockAddress(publicLockAddress);
-    }
-  }, []);
-
-  const [deployedUnlockAddress, setDeployedUnlockAddress] = useState();
-  const [publicLockAddress, setPublicLockAddress] = useState();
-  const [publicLock, setPublicLock] = useState();
-  const [unlock, setUnlock] = useState();
-
-  useEffect(() => {
-    const readyUnlock = () => {
-      let unlockContract;
-      let publicLockContract;
-      try {
-        if (deployedUnlockAddress) {
-          unlockContract = new ethers.Contract(deployedUnlockAddress, abis.UnlockV11.abi, userSigner)
-        }
-        if (publicLockAddress) {
-          publicLockContract = new ethers.Contract(publicLockAddress, abis.PublicLockV10.abi, userSigner)
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      setUnlock(unlockContract);
-      setPublicLock(publicLockContract);
-    };
-    readyUnlock();
-  }, [address, yourLocalBalance]);
-  ////////////// UNLOCK PROTOCOL: THE END /////////////
 
   return (
     <div className="App">
@@ -316,7 +231,7 @@ function App(props) {
           </div>
         </div>
       </Header>
-      {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
+      {yourLocalBalance.lte(ethers.BigNumber.from("0")) && selectedNetwork === "localhost" && (
         <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
       )}
       <NetworkDisplay
@@ -327,93 +242,20 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <LockedNav
-        address={address}
-        publicLock={publicLock}
-        location={location}
-      />
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <Home injectedProvider={injectedProvider} loadWeb3Modal={loadWeb3Modal} />
         </Route>
-        <Route exact path="/dashboard">
+        <Route path="/dashboard">
           <Dashboard
-            price={price}
-            unlock={unlock}
-            publicLock={publicLock}
-            targetNetwork={targetNetwork}
-            address={address}
-          />
-        </Route>
-        <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
-          <Contract
-            name="YourContract"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/settings">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
             tx={tx}
-            writeContracts={writeContracts}
+            address={address}
             readContracts={readContracts}
-            purpose={purpose}
-            targetNetwork={targetNetwork}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
             writeContracts={writeContracts}
+            userSigner={userSigner}
+            injectedProvider={injectedProvider}
+            loadWeb3Modal={loadWeb3Modal}
             mainnetProvider={mainnetProvider}
           />
         </Route>
@@ -457,6 +299,22 @@ function App(props) {
                 ""
               )
             }
+          </Col>
+        </Row>
+        <Row align="middle">
+          <Col span={8} style={{ textAlign: "center", opacity: 1, marginTop: 5 }}>
+            <Button
+              onClick={() => {
+                window.open("https://twitter.com/dannithomx");
+              }}
+              size="large"
+              shape="round"
+            >
+              <span style={{ marginRight: 8 }} role="img" aria-label="support">
+                <TwitterOutlined style={{ fontSize: "18px", color: "#08c" }} />
+              </span>
+              Follow creator on Twitter
+            </Button>
           </Col>
         </Row>
       </div>

@@ -16,24 +16,35 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
+  const ENSRegistry = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"; // goerli
+  const ENSBaseRegistrar = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"; // goerli
+  const connext = "0xFCa08024A6D4bCc87275b1E4A1E22B71fAD7f649"; // goerli
+  const membershipLock = "0xa4406E1E7722DB81c6Cc14DE4df149F9094e5573"; // goerli
 
-  await deploy("YourContract", {
+  await deploy("ENSYOLO", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [ ENSRegistry, ENSBaseRegistrar, connext, membershipLock ],
     log: true,
     waitConfirmations: 5,
   });
-
-  // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
-  /*  await YourContract.setPurpose("Hello");
+  // Getting previously deployed loogies contract
+  const ensYolo = await ethers.getContract(
+    "ENSYOLO",
+    deployer
+  );
+  // transferring ownership
+  const tx = await ensYolo.transferOwnership(
+    "0xCA7632327567796e51920F6b16373e92c7823854"
+  );
+  console.log(`Transferring ENSYOLO ownership with Txn: ${tx.hash} `);
+  /*  await ActionCollectible.setPurpose("Hello");
   
     To take ownership of yourContract using the ownable library uncomment next line and add the 
     address you want to be the owner. 
     // await yourContract.transferOwnership(YOUR_ADDRESS_HERE);
 
-    //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
+    //const yourContract = await ethers.getContractAt('ActionCollectible', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   */
 
   /*
@@ -47,7 +58,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   /*
   //If you want to send some ETH to a contract on deploy (make your constructor payable!)
-  const yourContract = await deploy("YourContract", [], {
+  const yourContract = await deploy("ActionCollectible", [], {
   value: ethers.utils.parseEther("0.05")
   });
   */
@@ -55,7 +66,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   /*
   //If you want to link a library into your contract:
   // reference: https://github.com/austintgriffith/scaffold-eth/blob/using-libraries-example/packages/hardhat/scripts/deploy.js#L19
-  const yourContract = await deploy("YourContract", [], {}, {
+  const yourContract = await deploy("ActionCollectible", [], {}, {
    LibraryName: **LibraryAddress**
   });
   */
@@ -67,8 +78,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   // try {
   //   if (chainId !== localChainId) {
   //     await run("verify:verify", {
-  //       address: YourContract.address,
-  //       contract: "contracts/YourContract.sol:YourContract",
+  //       address: ActionCollectible.address,
+  //       contract: "contracts/ActionCollectible.sol:ActionCollectible",
   //       constructorArguments: [],
   //     });
   //   }
@@ -76,4 +87,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   //   console.error(error);
   // }
 };
-module.exports.tags = ["YourContract"];
+module.exports.tags = ["ENSYOLO"];

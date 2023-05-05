@@ -1,8 +1,4 @@
-# Scaffold-ETH + Unlock Protocol
-
-Scaffold-ETH gives you everything you need to get started building on Ethereum and we've added some additional tools to help you get started in creating NFTs using Unlock Protocol.
-
-# 🏗 Scaffold-ETH
+# Scaffold-eth-unlock
 
 > everything you need to build on Ethereum! 🚀
 
@@ -11,11 +7,30 @@ Scaffold-ETH gives you everything you need to get started building on Ethereum a
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
 
-# 🏄‍♂️ Quick Start
+# 🏄‍♂️ ENS.YOLO
+
+## Description
+ENS.YOLO is a fun experiment at onboarding new people to web3. To get started purchase an ENS NFT. Approve ENS.YOLO contract for transactions on both of ENS smart contracts (Registry and Registrar) and yolo some ETH which will be received by the person who claims the ens. Airdrop them a key so they are the only ones able to claim it.
+
+ENS.YOLO integrates the Unlock Protocol, which enables the possibility of users gamifying the claim process and creating different experiences for their friends(or community) such as treasure hunts, contests, etc.
+
+## How it works
+
+🔏 Deploy a free lock smart contract using [Unlock](https://app.unlock-protocol.com)
+
+📝 Get a `.eth` ENS name and head over to YOLO ENS tab and provide the requested info 
+
+💼 Approve ENS.YOLO smart contract for transactions on ENSRegistry and BaseRegistrarImplementation smart contracts (2 Approve transactions)
+
+📱 Airdrop key(s) to recepient(s). In case of multiple keys, the first user with a valid claim key to `claim` gets the ENS and the accompanying ETH. 
+
+👩‍👩‍👧‍👧 Creators can Cancel YOLO anytime provided it has not been claimed.
+
+## 🏄‍♂️ Quick Start
 
 Prerequisites: [Node (v16 LTS)](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
+> clone/fork ENS YOLO:
 
 ```bash
 git clone https://github.com/unlock-protocol/scaffold-eth-unlock.git
@@ -25,6 +40,7 @@ git clone https://github.com/unlock-protocol/scaffold-eth-unlock.git
 
 ```bash
 cd scaffold-eth-unlock
+git checkout ensyolo
 yarn install
 yarn chain
 ```
@@ -43,21 +59,15 @@ cd scaffold-eth-unlock
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contracts in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+
+🛠 Edit your componets `YoloEns.jsx, ClaimEns.jsx, CancelEns.jsx` in `packages/react-app/src/components/yolo`
 
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
 📱 Open http://localhost:3000 to see the app
-
-# Unlock Settings
-
-⚙️ Configure Unlock-protocol variables on `settings` tab or `packages/react-app/src/components/UnlockVariables.jsx`
-
-🔧 Modify your Locked Navigation and Locked Content at `/src/components/LockedNav.jsx` and `/src/components/LockedContent.jsx`
-
-🚀 Deploy a new Lock with the Create Lock Component on `Dashboard` 
 
 # 📚 Documentation
 
@@ -80,7 +90,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 
 📕 Read the docs: https://docs.soliditylang.org
 
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
+📚 Go through each topic from [solidity by example](https://solidity-by-example.org) 
 
 - [Primitive Data Types](https://solidity-by-example.org/primitives/)
 - [Mappings](https://solidity-by-example.org/mapping/)
@@ -123,7 +133,7 @@ Register as a builder [here](https://speedrunethereum.com) and start on some of 
 
 # 💬 Support Chat
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with ENS YOLO!
 
 ---
 

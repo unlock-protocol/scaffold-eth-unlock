@@ -1,125 +1,123 @@
 import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { Col, Divider, Row, Space, Image, Button } from "antd";
+import { CenterContent, ContentRow, ContentCol } from "../components";
+import { useHistory } from "react-router-dom";
 
-/**
- * web3 props can be passed from '../App.jsx' into your local view component for use
- * @param {*} yourLocalBalance balance on current network
- * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
- * @returns react component
- **/
-function Home({ yourLocalBalance, readContracts }) {
-  // you can also use hooks locally in your component of choice
-  // in this case, let's keep track of 'purpose' variable from our contract
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+import { ethImg, mhLogo, searchImg } from "../img";
+
+function Home({ loadWeb3Modal, injectedProvider }) {
+  let history = useHistory();
+  const getStarted = route => {
+    if (injectedProvider) {
+      history.push(route);
+    } else {
+      loadWeb3Modal();
+    }
+  };
 
   return (
-    <div>
-      <div style={{ margin: 32 }}>
-        <h1 style={{ marginBottom: 10 }}>This is an example app of unlock protocol 👜 + scaffold-eth 🧑‍🔧</h1>
-        <h2 style={{ marginBottom: 20 }}>Head to the dashboard to see some pretty cool stuff 😉</h2>
-        <h3 style={{ marginBottom: 32 }}>Hint: First setup unlock protocol variables in settings tab to get started</h3>
-        <span style={{ marginRight: 8 }}>📝</span>
-        This Is Your App Home. You can start editing it in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/react-app/src/views/Home.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>✏️</span>
-        Edit your smart contract{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          YourContract.sol
-        </span>{" "}
-        in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/contracts
-        </span>
-      </div>
-      {!purpose ? (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>👷‍♀️</span>
-          You haven't deployed your contract yet, run
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn chain
-          </span>{" "}
-          and{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn deploy
-          </span>{" "}
-          to deploy your first contract!
-        </div>
-      ) : (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>🤓</span>
-          The "purpose" variable from your contract is{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            {purpose}
-          </span>
-        </div>
-      )}
+    <div className="home">
+      <CenterContent>
+        <div >
+          <ContentRow margin={"0 0 250px 0"}>
+            <ContentCol>
+              <h1 style={{ fontSize: 50, fontWeight: 700, margin: "82px 0px 85px" }}>
+                ENS <span style={{ color: "#FFB44F" }}>YOLO</span>
+              </h1>
+              <p style={{ fontSize: 21, fontWeight: 400, margin: "0 0px 25px 0" }}>
+                eXperince web3 the fun way through social sharing and education
+              </p>
+              <p style={{ marginBottom: 85, padding: "20px 50px 20px 50px", fontWeight: 300, fontSize: 16 }}>
+                ENS is a decentralized domain name system built on the Ethereum blockchain. ENS provides a user-friendly
+                way to assign human-readable names to Ethereum addresses, making it easier for people to send and
+                receive payments, participate in decentralized applications, and interact with the blockchain ecosystem.
+              </p>
+              <QuestionCircleOutlined style={{ fontSize: "66px", color: "#08c" }} />
+            </ContentCol>
+          </ContentRow>
+          <ContentRow margin={"0 0 250px 0"}>
+            <ContentCol colLg={4}>
+              <Image preview={false} width={200} src={ethImg} />
+            </ContentCol>
+            {/* <ContentCol textAlign={"left"} padding={"0 0 0 100px"} flex={3}> */}
+            <ContentCol colLg={8} textLg={"start"}>
+              <div>
+                <h3 style={{ fontSize: 19 }}>What is ENS YOLO</h3>
+                <p style={{ color: "#b1a8a8", fontSize: 14 }}>
+                  ENS.YOLO is a fun experiment to onboard new users to web3. With ENS YOLO users who own or purchases an
+                  ENS NFT can gift the ENS name to someone else along with some ETH. If the recipient claims the ENS
+                  name, they receive the ENS name and associated ETH.
+                </p>
+                <Button
+                  onClick={() => {
+                    getStarted("/dashboard");
+                  }}
+                  style={{ marginTop: 13 }}
+                  shape="round"
+                  size={"large"}
+                >
+                  {injectedProvider ? "Get started" : "Enter App"}
+                </Button>
+              </div>
+            </ContentCol>
+          </ContentRow>
+          <ContentRow reverseCol={true} margin={"30px 0 250px 0"}>
+            {/* <ContentCol textAlign={"left"} padding={"0 135px 0 0"} flex={3}> */}
+            <ContentCol colLg={8} textLg={"start"}>
+              <h3 style={{ fontSize: 19 }}>Why ENS YOLO?</h3>
 
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🤖</span>
-        An example prop of your balance{" "}
-        <span style={{ fontWeight: "bold", color: "green" }}>({ethers.utils.formatEther(yourLocalBalance)})</span> was
-        passed into the
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          Home.jsx
-        </span>{" "}
-        component from
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          App.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>💭</span>
-        Check out the <Link to="/hints">"Hints"</Link> tab for more tips.
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🛠</span>
-        Tinker with your smart contract using the <Link to="/debug">"Debug Contract"</Link> tab.
-      </div>
+              <div>
+                <p style={{ textAlign: "left", color: "#b1a8a8", fontSize: 14 }}>
+                  Despite the benefits of ENS and web3 many people are still unfamiliar with blockchain technology and
+                  hesitant to use it. ENS YOLO is a project that aims to onboard new users to web3 and encourage them to
+                  interact with the blockchain ecosystem in a fun and engaging way.
+                </p>
+                <Button
+                  onClick={() => {
+                    getStarted("/dashboard/");
+                    // history.push("/dashboard/");
+                  }}
+                  style={{ marginTop: 13 }}
+                  shape="round"
+                  size={"large"}
+                >
+                  {injectedProvider ? "Enter App" : "Connect Wallet"}
+                </Button>
+              </div>
+            </ContentCol>
+            <ContentCol mb={5} mbLg={0} colLg={4}>
+              <Image preview={false} width={200} src={searchImg} />
+            </ContentCol>
+          </ContentRow>
+          <ContentRow>
+            <ContentCol>
+              <span style={{ display: "inline-block", fontSize: 75, marginBottom: 40 }}>💡</span>
+              <div style={{ padding: "0 100px 250px 100px" }}>
+                <h3 style={{ color: "#b1a8a8", fontSize: 14 }}>
+                  ENS YOLO encourages social sharing, users get to show off their newly acquired ENS names on their
+                  social media handles. This can lead to increased exposure for blockchain technology and demonstrate
+                  the potential of web3 beyond just payments as more people become aware, curious interested in the
+                  technology through the power of incentives, engagement and social sharing.
+                </h3>
+                <Button
+                  onClick={() => {
+                    getStarted("/dashboard/");
+                  }}
+                  style={{ marginTop: 13 }}
+                  shape="round"
+                  size={"large"}
+                >
+                  {injectedProvider ? "Dashboard" : "Connect Wallet"}
+                </Button>
+              </div>
+            </ContentCol>
+          </ContentRow>
+        </div>
+      </CenterContent>
     </div>
   );
 }

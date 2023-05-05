@@ -1,0 +1,72 @@
+@import "./home.css";
+@import "./App.css";
+
+/* @media screen and (max-width: 992px) {
+  .home .mh-content {
+    margin-right: 30px !important;
+    margin-left: 30px !important;
+  }
+} */
+
+.App {
+  text-align: center;
+}
+
+
+body {
+  margin: 0;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.ens-yolo-info {
+  list-style: none;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 25px;
+  color: #847c7c
+}
+.ens-yolo-info li:not(:last-child) {
+  border-bottom: 1px solid #dedede;
+}
+.ens-yolo-info li {
+  padding: 8px 0;
+}
+.ens-yolo-info li span {
+  font-weight: 300;
+  margin-left: 10px;
+}
+
+/* @media screen and (max-width: 768px) {
+
+  .ant-list-rtl .ant-list-item-action,
+  .ant-list-rtl .ant-list-vertical .ant-list-item-extra {
+    margin-right: 24px;
+    margin-left: 0;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .ant-list-rtl .ant-list-item-action {
+    margin-right: 22px;
+    margin-left: 0;
+  }
+
+  .ant-list-rtl.ant-list-vertical .ant-list-item-extra {
+    margin: auto auto 16px;
+  }
+
+  @media (min-width: 576px) {}
+  @media (min-width: 768px) {}
+
+} */
+
+@media screen and (max-width: 850px) {
+.home .mh-content {
+    margin-right: 30px !important;
+    margin-left: 30px !important;
+  }
+ }
