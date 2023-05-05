@@ -117,18 +117,18 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
      * @dev Throws if not approved by caller on either contract
      * @param _tokenId specifies the ENS name to be queried.
      */
-    // modifier isAuthorised(uint _tokenId) {
-    //     address _owner = ENSBaseRegistrar.ownerOf(_tokenId);
-    //     require(
-    //         ENSContract.isApprovedForAll(_owner, address(this)),
-    //         "ENSYOLO: Not approved - ENSRegistry"
-    //     );
-    //     require(
-    //         ENSBaseRegistrar.isApprovedForAll(_owner, address(this)),
-    //         "ENSYOLO: Not approved - BaseRegistrarImplementation"
-    //     );
-    //     _;
-    // }
+    modifier isAuthorised(uint _tokenId) {
+        address _owner = ENSBaseRegistrar.ownerOf(_tokenId);
+        require(
+            ENSContract.isApprovedForAll(_owner, address(this)),
+            "ENSYOLO: Not approved - ENSRegistry"
+        );
+        require(
+            ENSBaseRegistrar.isApprovedForAll(_owner, address(this)),
+            "ENSYOLO: Not approved - BaseRegistrarImplementation"
+        );
+        _;
+    }
 
     /**
      * @dev Modifier ensures caller (except owner) has a valid membership on the membership lock smart contract.
@@ -204,18 +204,17 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
         bytes32 _nameHash,
         uint _tokenId,
         address _lockAddress
-    // ) public payable isAuthorised(_tokenId) returns (uint256) {
-    ) public payable returns (uint256) {
+    ) public payable isAuthorised(_tokenId) returns (uint256) {
         require(msg.value >= price, "NOT ENOUGH");
-        // require(isENS(_nameHash), "Non existent ENS node");
-        // require(
-        //     ENSContract.owner(_nameHash) == msg.sender,
-        //     "ENSRegistry: Not owner"
-        // );
-        // require(
-        //     ENSBaseRegistrar.ownerOf(_tokenId) == msg.sender,
-        //     "BaseRegistrarImplementation: Not owner"
-        // );
+        require(isENS(_nameHash), "Non existent ENS node");
+        require(
+            ENSContract.owner(_nameHash) == msg.sender,
+            "ENSRegistry: Not owner"
+        );
+        require(
+            ENSBaseRegistrar.ownerOf(_tokenId) == msg.sender,
+            "BaseRegistrarImplementation: Not owner"
+        );
         require(
             IPublicLock(payable(_lockAddress)).isLockManager(msg.sender),
             "Not lock Manager"
@@ -283,8 +282,7 @@ contract ENSYOLO is ISimpleBridge, ReentrancyGuard, Ownable {
     function claimItem(
         bytes32 _nameHash,
         uint _tokenId
-    // ) public payable isAuthorised(_tokenId) nonReentrant returns (bool) {
-    ) public payable nonReentrant returns (bool) {
+    ) public payable isAuthorised(_tokenId) nonReentrant returns (bool) {
         address _recepient = msg.sender;
         require(gifted[_nameHash].id > 0, "Not gifted");
         require(
