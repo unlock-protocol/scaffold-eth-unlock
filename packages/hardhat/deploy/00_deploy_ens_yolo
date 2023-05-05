@@ -1,21 +1,8 @@
-// deploy/00_deploy_your_contract.js
-
 const { ethers } = require("hardhat");
-
-const localChainId = "31337";
-
-// const sleep = (ms) =>
-//   new Promise((r) =>
-//     setTimeout(() => {
-//       console.log(`waited for ${(ms / 1000).toFixed(3)} seconds`);
-//       r();
-//     }, ms)
-//   );
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  const chainId = await getChainId();
   const ENSRegistry = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"; // goerli
   const ENSBaseRegistrar = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"; // goerli
   const connext = "0xFCa08024A6D4bCc87275b1E4A1E22B71fAD7f649"; // goerli
@@ -35,7 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   );
   // transferring ownership
   const tx = await ensYolo.transferOwnership(
-    "0xCA7632327567796e51920F6b16373e92c7823854"
+    "0xdb26669F95178d5676d661c071705E11d245c3F0"
   );
   console.log(`Transferring ENSYOLO ownership with Txn: ${tx.hash} `);
   /*  await ActionCollectible.setPurpose("Hello");
